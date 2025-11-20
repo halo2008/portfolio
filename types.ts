@@ -8,7 +8,7 @@ export interface Project {
   solution: string;
   tech: string[];
   result: string;
-  iconName: 'Server' | 'Bot' | 'Shield' | 'Smartphone';
+  iconName: 'Server' | 'Bot' | 'Shield' | 'Smartphone' | 'Brain';
   image?: string;
 }
 

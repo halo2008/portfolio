@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Server, Bot, Shield, Smartphone, X, ChevronRight, Cpu, CheckCircle2 } from 'lucide-react';
+import { Server, Bot, Shield, Smartphone, Brain, X, ChevronRight, Cpu, CheckCircle2 } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
 import { Project } from '../types';
 
@@ -7,7 +7,8 @@ const iconMap = {
   'Server': Server,
   'Bot': Bot,
   'Shield': Shield,
-  'Smartphone': Smartphone
+  'Smartphone': Smartphone,
+  'Brain': Brain
 };
 
 const Projects: React.FC = () => {
