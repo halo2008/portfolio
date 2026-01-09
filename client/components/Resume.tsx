@@ -8,85 +8,119 @@ const Resume: React.FC = () => {
     const { philosophy, contact } = content;
 
     return (
-        <section id="resume" className="py-24 px-6 md:px-12 lg:px-24 bg-slate-900/30 overflow-hidden">
+        <section id="resume" className="py-24 px-6 md:px-12 lg:px-24 bg-dark overflow-hidden border-t border-slate-800">
             <div className="max-w-7xl mx-auto">
 
                 {/* Bio / Philosophy Section */}
-                <div className="grid md:grid-cols-2 gap-16 items-center mb-24">
+                <div className="grid md:grid-cols-2 gap-16 items-start mb-24">
                     <div>
-                        <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 flex items-center gap-3">
-                            <Layers className="text-primary" />
+                        <div className="inline-flex items-center gap-2 mb-6 text-primary font-mono text-sm tracking-wider uppercase">
+                            <Layers size={16} />
+                            <span>About Me</span>
+                        </div>
+                        <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
                             {philosophy.title}
                         </h2>
-                        <p className="text-slate-400 text-lg leading-relaxed mb-8">
+                        <p className="text-slate-400 text-lg leading-relaxed mb-8 font-light border-l-2 border-slate-700 pl-6">
                             {philosophy.description}
                         </p>
 
-                        <div className="bg-slate-800/50 p-8 rounded-2xl border border-slate-700/50 relative overflow-hidden group hover:border-primary/30 transition-colors mb-8">
-                            <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                            <h3 className="text-xl font-semibold text-white mb-3 flex items-center gap-2 relative z-10">
-                                <Zap className="text-yellow-400" size={20} />
+                        <div className="bg-surface p-8 rounded-sm border-l-4 border-primary shadow-lg mb-8 relative">
+                            {/* Tech accent lines */}
+                            <div className="absolute top-0 right-0 p-2 opacity-20">
+                                <Zap className="text-primary" size={48} />
+                            </div>
+
+                            <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
                                 {philosophy.differentiatorTitle}
                             </h3>
-                            <p className="text-slate-300 italic relative z-10 border-l-2 border-primary pl-4">
-                                "{philosophy.differentiator}"
+                            <p className="text-slate-300 text-sm font-mono leading-relaxed">
+                                {philosophy.differentiator}
                             </p>
                         </div>
 
                         <a
                             href="/cv.pdf"
                             download
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white font-medium rounded-lg transition-colors border border-slate-700 hover:border-primary"
+                            className="inline-flex items-center gap-3 px-6 py-3 bg-transparent hover:bg-slate-800 text-white font-mono text-sm rounded-sm transition-all border border-slate-600 hover:border-primary group"
                         >
-                            <Download size={18} />
+                            <Download size={16} className="text-slate-400 group-hover:text-primary transition-colors" />
                             {contact.buttons.cv}
                         </a>
                     </div>
 
-                    <div className="relative">
-                        {/* Visual Side (Image) from About */}
-                        <div className="relative rounded-2xl overflow-hidden border border-slate-700 shadow-2xl group">
-                            <div className="absolute inset-0 bg-primary/10 mix-blend-overlay z-10 group-hover:bg-transparent transition-colors duration-500"></div>
+                    <div className="relative mt-8 md:mt-0">
+                        {/* Visual Side (Image) */}
+                        <div className="relative rounded-sm overflow-hidden border border-slate-700 bg-surface shadow-2xl">
+                            {/* Image Overlay */}
+                            <div className="absolute inset-0 bg-primary/20 mix-blend-overlay z-10"></div>
                             <img
-                                src={philosophy.image}
-                                alt="Industrial IoT"
-                                className="w-full h-auto object-cover transform group-hover:scale-105 transition-transform duration-700 grayscale hover:grayscale-0"
+                                src={philosophy.image || "/portrait.jpg"} // Fallback if empty
+                                alt="Industrial Context"
+                                className="w-full h-auto object-cover grayscale opacity-80"
                             />
-                            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 z-20 pointer-events-none"></div>
+                            {/* Grid overlay */}
+                            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 pointer-events-none"></div>
+
+                            {/* Tech readout */}
+                            <div className="absolute bottom-0 left-0 right-0 bg-darker/90 border-t border-slate-700 p-4 flex justify-between items-center font-mono text-xs text-slate-400">
+                                <span>IMG_SOURCE: INDUSTRIAL_CAM_04</span>
+                                <span className="text-primary animate-pulse">REC ●</span>
+                            </div>
                         </div>
-                        {/* Decorative blob */}
-                        <div className="absolute -z-10 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] bg-blue-600/10 blur-[80px] rounded-full pointer-events-none animate-pulse-slow"></div>
+                        {/* Underlay decoration */}
+                        <div className="absolute -z-10 -bottom-4 -right-4 w-full h-full border border-slate-800 rounded-sm"></div>
                     </div>
                 </div>
 
-                {/* Timeline Section (Static for now) */}
-                <div className="mb-24">
-                    <h3 className="text-2xl font-bold text-white mb-8 flex items-center gap-2">
-                        <Calendar className="text-primary" />
-                        Experience Timeline
-                    </h3>
-                    <div className="border-l-2 border-slate-800 ml-4 space-y-12">
-                        {/* Item 1 */}
-                        <div className="relative pl-8">
-                            <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-primary border-4 border-darker"></div>
-                            <span className="text-sm font-mono text-primary mb-1 block">2023 - Present</span>
-                            <h4 className="text-xl font-bold text-white">Full-Stack AI Engineer</h4>
-                            <p className="text-slate-400 mt-2">Freelance & B2B Consulting. Building RAG systems and autonomous agents.</p>
-                        </div>
-                        {/* Item 2 */}
-                        <div className="relative pl-8">
-                            <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-slate-600 border-4 border-darker"></div>
-                            <span className="text-sm font-mono text-slate-500 mb-1 block">2020 - 2023</span>
-                            <h4 className="text-xl font-bold text-white">Cloud Infrastructure Architect</h4>
-                            <p className="text-slate-400 mt-2">Designing scalable Kubernetes clusters and IoT integration layers.</p>
-                        </div>
-                        {/* Item 3 */}
-                        <div className="relative pl-8">
-                            <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-slate-600 border-4 border-darker"></div>
-                            <span className="text-sm font-mono text-slate-500 mb-1 block">2018 - 2020</span>
-                            <h4 className="text-xl font-bold text-white">Industrial Automation Engineer</h4>
-                            <p className="text-slate-400 mt-2">Connecting physical sensors (RS232/Modbus) to IT systems.</p>
-                        </div>
+                {/* Timeline Section */}
+                <div className="mb-24 px-4 md:px-0">
+                    <div className="flex items-center gap-3 mb-10 text-white font-bold text-2xl">
+                        <Calendar className="text-amber-500" size={24} />
+                        <h3 className="font-mono">{content.timeline.title}</h3>
+                    </div>
+
+                    <div className="relative ml-4 md:ml-8 border-l border-slate-800 space-y-12">
+                        {content.timeline.items.map((item) => (
+                            <div key={item.id} className="relative pl-8 md:pl-12 group">
+                                {/* Dot */}
+                                <div className={`absolute -left-[5px] top-1.5 w-2.5 h-2.5 rounded-sm transition-colors ${item.isCurrent
+                                        ? "bg-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.6)]"
+                                        : "bg-slate-600 group-hover:bg-slate-400"
+                                    }`}></div>
+
+                                {/* Period */}
+                                <span className={`text-xs font-mono mb-1 block ${item.isCurrent
+                                        ? "text-amber-500 px-2 py-0.5 bg-amber-500/10 w-fit rounded-sm border border-amber-500/20"
+                                        : "text-slate-500"
+                                    }`}>
+                                    {item.period}
+                                </span>
+
+                                {/* Title */}
+                                <h4 className={`text-xl font-bold text-white transition-colors ${item.isCurrent ? "group-hover:text-amber-500" : "group-hover:text-slate-300"
+                                    }`}>
+                                    {item.role}
+                                </h4>
+                                <div className="text-sm font-mono text-slate-500 mb-2">{item.company}</div>
+
+                                {/* Description */}
+                                <p
+                                    className="text-slate-400 mt-2 max-w-2xl text-sm leading-relaxed"
+                                    dangerouslySetInnerHTML={{ __html: item.description.replace(/\*\*(.*?)\*\*/g, '<strong class="text-slate-300">$1</strong>') }}
+                                />
+
+                                {/* Details List */}
+                                {item.details && item.details.length > 0 && (
+                                    <ul className={`mt-3 space-y-1 text-sm text-slate-400 list-disc list-inside ${item.isCurrent ? "marker:text-amber-500/50" : "marker:text-slate-600"
+                                        }`}>
+                                        {item.details.map((detail, index) => (
+                                            <li key={index} dangerouslySetInnerHTML={{ __html: detail.replace(/\*\*(.*?)\*\*/g, '<strong class="text-slate-300">$1</strong>') }} />
+                                        ))}
+                                    </ul>
+                                )}
+                            </div>
+                        ))}
                     </div>
                 </div>
 

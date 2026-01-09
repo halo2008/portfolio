@@ -74,6 +74,10 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
         }
       ]
     },
+    timeline: {
+      title: "Engineering Path",
+      items: []
+    },
     services: {
       title: "Consulting & Implementation Services",
       items: [
@@ -179,6 +183,10 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
           image: IMAGES.projectC
         }
       ]
+    },
+    timeline: {
+      title: "Ścieżka Inżynierska",
+      items: []
     },
     services: {
       title: "Usługi Konsultingowe i Wdrożeniowe",

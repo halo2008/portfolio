@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Server, Bot, Shield, Smartphone, Brain, Cloud, Wifi, X, CheckCircle2, Cpu, Rocket } from 'lucide-react';
+import { Server, Bot, Shield, Smartphone, Brain, Cloud, Wifi, X, CheckCircle2, Cpu, Rocket, ChevronRight, Hash } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
 import { Project } from '../types';
 
@@ -19,7 +19,6 @@ const Projects: React.FC = () => {
   const { projects } = content;
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
-  // Lock body scroll when modal is open
   useEffect(() => {
     if (selectedProject) {
       document.body.style.overflow = 'hidden';
@@ -32,73 +31,83 @@ const Projects: React.FC = () => {
   }, [selectedProject]);
 
   return (
-    <section id="projects" className="py-24 px-6 md:px-12 lg:px-24 scroll-mt-20 relative">
-      <div className="max-w-7xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-bold text-white mb-16 text-center">
-          {projects.title}
-        </h2>
+    <section id="projects" className="py-24 px-6 md:px-12 lg:px-24 scroll-mt-20 relative bg-darker">
+      {/* Background Grid */}
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.03]"
+        style={{
+          backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)',
+          backgroundSize: '40px 40px'
+        }}>
+      </div>
 
-        <div className="grid md:grid-cols-2 gap-10">
+      <div className="max-w-7xl mx-auto relative z-10">
+        <div className="flex flex-col items-center mb-16">
+          <span className="text-primary font-mono text-sm tracking-widest uppercase mb-2">[ WORK_LOG ]</span>
+          <h2 className="text-3xl md:text-5xl font-bold text-white text-center">
+            {projects.title}
+          </h2>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-8">
           {projects.items.map((project) => {
-            const Icon = iconMap[project.iconName];
+            const Icon = iconMap[project.iconName] || Rocket;
             return (
               <div
                 key={project.id}
                 onClick={() => setSelectedProject(project)}
-                className="group relative bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-2xl overflow-hidden hover:border-primary/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(6,182,212,0.15)] flex flex-col cursor-pointer transform hover:-translate-y-1"
+                className="group relative bg-surface border border-slate-800 rounded-sm overflow-hidden hover:border-primary transition-all duration-300 cursor-pointer hover:shadow-[0_0_20px_rgba(0,0,0,0.5)] flex flex-col"
               >
-                {/* Image Header if available */}
-                {project.image && (
-                  <div className="h-56 overflow-hidden relative">
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent z-10 opacity-90" />
+                {/* Header Decoration */}
+                <div className="h-1 w-full bg-slate-800 group-hover:bg-primary transition-colors"></div>
+
+                {project.image ? (
+                  <div className="h-56 overflow-hidden relative border-b border-slate-800">
                     <img
                       src={project.image}
                       alt={project.title}
-                      className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 opacity-80 group-hover:opacity-100"
                     />
-                    <div className="absolute top-4 right-4 z-20 bg-slate-900/80 backdrop-blur-sm p-2 rounded-lg border border-slate-700 text-primary shadow-lg">
-                      <Icon size={20} />
+                    <div className="absolute top-4 right-4 bg-darker/90 backdrop-blur border border-slate-700 p-2 rounded-sm text-primary">
+                      <Icon size={18} />
                     </div>
-                    <div className="absolute bottom-4 right-4 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-primary text-darker text-xs font-bold px-3 py-1 rounded-full">
-                      Click to Expand
+                    {/* ID Badge */}
+                    <div className="absolute top-4 left-4 font-mono text-xs bg-black/50 backdrop-blur px-2 py-1 text-slate-300 border border-slate-700 rounded-sm">
+                      ID: {project.title.substring(0, 3).toUpperCase()}_0{project.id}
                     </div>
+                  </div>
+                ) : (
+                  <div className="h-56 bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center border-b border-slate-800 relative overflow-hidden">
+                    <Icon size={64} className="text-slate-700 group-hover:text-primary/20 transition-colors duration-500" />
+                    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-5"></div>
                   </div>
                 )}
 
-                <div className={`p-8 flex flex-col flex-grow ${!project.image ? 'pt-8' : 'pt-4'}`}>
-                  {!project.image && (
-                    <div className="flex justify-between items-start mb-6">
-                      <div className="p-3 bg-slate-800 rounded-lg group-hover:bg-primary/20 group-hover:text-primary transition-colors">
-                        <Icon size={32} />
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="mb-6 relative z-20">
-                    <h3 className="text-2xl font-bold text-white mb-2 group-hover:text-primary transition-colors flex items-center gap-2">
+                <div className="p-8 flex flex-col flex-grow">
+                  <div className="mb-6">
+                    <h3 className="text-xl font-bold text-white mb-2 group-hover:text-primary transition-colors flex items-center gap-2">
                       {project.title}
                     </h3>
-                    <p className="text-sm font-mono text-primary">{project.subtitle}</p>
+                    <p className="text-xs font-mono text-slate-500 uppercase tracking-wide">{project.subtitle}</p>
                   </div>
 
-                  <div className="space-y-4 mb-8 flex-grow relative z-20">
-                    {/* Truncated preview for card */}
-                    <div className="line-clamp-3 text-slate-400 text-sm">
-                      {project.solution}
-                    </div>
-                  </div>
+                  <p className="text-slate-400 text-sm leading-relaxed mb-6 line-clamp-3 font-light">
+                    {project.challenge}
+                  </p>
 
-                  <div className="flex flex-wrap gap-2 mt-auto relative z-20">
+                  <div className="mt-auto pt-6 border-t border-slate-800 flex flex-wrap gap-2">
                     {project.tech.slice(0, 3).map(t => (
-                      <span key={t} className="text-xs bg-slate-800/50 text-slate-400 px-2 py-1 rounded border border-slate-700/50">
+                      <span key={t} className="text-[10px] font-mono bg-darker text-slate-400 px-2 py-1 rounded-sm border border-slate-800 uppercase tracking-tight">
                         {t}
                       </span>
                     ))}
                     {project.tech.length > 3 && (
-                      <span className="text-xs bg-slate-800/50 text-slate-400 px-2 py-1 rounded border border-slate-700/50">
-                        +{project.tech.length - 3}
-                      </span>
+                      <span className="text-[10px] font-mono text-primary px-2 py-1">+ {project.tech.length - 3}</span>
                     )}
+                  </div>
+
+                  {/* Hover indicator */}
+                  <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-primary">
+                    <ChevronRight size={20} />
                   </div>
                 </div>
               </div>
@@ -107,105 +116,89 @@ const Projects: React.FC = () => {
         </div>
       </div>
 
-      {/* Expanded Modal */}
+      {/* Industrial Modal */}
       {selectedProject && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 bg-darker/90 backdrop-blur-md animate-fade-in-up"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 bg-black/90 backdrop-blur-sm animate-fade-in-up"
           onClick={() => setSelectedProject(null)}
         >
           <div
-            className="bg-slate-900 border border-slate-700 rounded-3xl max-w-5xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative flex flex-col md:flex-row overflow-hidden"
+            className="bg-surface border border-slate-600 w-full max-w-5xl max-h-[90vh] overflow-y-auto shadow-2xl relative flex flex-col md:flex-row rounded-sm"
             onClick={e => e.stopPropagation()}
           >
-            {/* Close Button */}
             <button
               onClick={() => setSelectedProject(null)}
-              className="absolute top-4 right-4 z-50 p-2 bg-slate-800/80 text-white rounded-full hover:bg-red-500/80 transition-colors backdrop-blur-sm border border-slate-700"
+              className="absolute top-0 right-0 z-50 p-4 bg-darker text-slate-400 hover:text-white hover:bg-red-900/50 transition-colors border-l border-b border-slate-700"
             >
               <X size={24} />
             </button>
 
-            {/* Left/Top: Visuals */}
-            <div className="w-full md:w-2/5 h-64 md:h-auto relative bg-slate-950">
-              {selectedProject.image ? (
-                <>
-                  <img
-                    src={selectedProject.image}
-                    alt={selectedProject.title}
-                    className="w-full h-full object-cover opacity-80"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-b md:bg-gradient-to-r from-transparent to-slate-900"></div>
-                </>
-              ) : (
-                <div className="w-full h-full flex items-center justify-center bg-slate-900">
-                  {(() => {
-                    const Icon = iconMap[selectedProject.iconName];
-                    return <Icon size={64} className="text-slate-700" />;
-                  })()}
-                </div>
-              )}
+            {/* Left Col */}
+            <div className="w-full md:w-5/12 bg-darker border-r border-slate-700 relative flex flex-col">
+              <div className="h-64 md:h-80 w-full relative border-b border-slate-700 overflow-hidden">
+                {selectedProject.image ? (
+                  <img src={selectedProject.image} alt={selectedProject.title} className="w-full h-full object-cover grayscale opacity-80" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-slate-900">
+                    {(() => { const Icon = iconMap[selectedProject.iconName] || Rocket; return <Icon size={80} className="text-slate-800" />; })()}
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-primary/10 mix-blend-overlay"></div>
+              </div>
 
-              <div className="absolute bottom-6 left-6 right-6">
-                <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary text-xs font-mono rounded-full border border-primary/20 mb-2 backdrop-blur-sm">
-                  {selectedProject.subtitle}
+              <div className="p-8 flex-grow">
+                <div className="font-mono text-xs text-primary mb-2">PROJECT_ID: {selectedProject.id}</div>
+                <h3 className="text-2xl font-bold text-white mb-2 leading-tight">{selectedProject.title}</h3>
+                <p className="text-sm text-slate-500 font-mono mb-6">{selectedProject.subtitle}</p>
+
+                <div className="mt-4">
+                  <span className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 block flex items-center gap-2">
+                    <Cpu size={14} /> Technology Stack
+                  </span>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedProject.tech.map(t => (
+                      <span key={t} className="px-2 py-1 bg-slate-900 border border-slate-700 text-slate-300 text-xs font-mono rounded-sm">
+                        {t}
+                      </span>
+                    ))}
+                  </div>
                 </div>
-                <h3 className="text-3xl font-bold text-white leading-tight shadow-black drop-shadow-lg">
-                  {selectedProject.title}
-                </h3>
               </div>
             </div>
 
-            {/* Right/Bottom: Details */}
-            <div className="w-full md:w-3/5 p-8 md:p-12 bg-slate-900 flex flex-col">
-
-              <div className="space-y-8 flex-grow">
-                {/* Challenge */}
-                <div className="relative pl-6 border-l-2 border-red-500/30">
-                  <div className="absolute -left-[9px] top-0 w-4 h-4 bg-slate-900 border-2 border-red-500 rounded-full"></div>
-                  <h4 className="text-sm uppercase tracking-widest text-slate-500 font-bold mb-2">{projects.labels.challenge}</h4>
-                  <p className="text-slate-300 leading-relaxed text-lg">
+            {/* Right Col */}
+            <div className="w-full md:w-7/12 p-8 md:p-12 bg-surface">
+              <div className="space-y-10">
+                <div>
+                  <h4 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-3 border-l-2 border-slate-600 pl-3">
+                    {projects.labels.challenge}
+                  </h4>
+                  <p className="text-slate-300 leading-relaxed font-light text-lg">
                     {selectedProject.challenge}
                   </p>
                 </div>
 
-                {/* Solution */}
-                <div className="relative pl-6 border-l-2 border-blue-500/30">
-                  <div className="absolute -left-[9px] top-0 w-4 h-4 bg-slate-900 border-2 border-blue-500 rounded-full"></div>
-                  <h4 className="text-sm uppercase tracking-widest text-slate-500 font-bold mb-2">{projects.labels.solution}</h4>
-                  <p className="text-slate-300 leading-relaxed text-lg">
+                <div>
+                  <h4 className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-3 border-l-2 border-primary pl-3">
+                    {projects.labels.solution}
+                  </h4>
+                  <p className="text-slate-300 leading-relaxed font-light text-lg">
                     {selectedProject.solution}
                   </p>
                 </div>
 
-                {/* Result */}
-                <div className="bg-slate-800/50 p-6 rounded-xl border border-green-500/20 relative overflow-hidden">
-                  <div className="absolute -right-4 -top-4 bg-green-500/10 w-24 h-24 rounded-full blur-2xl"></div>
-                  <h4 className="text-sm uppercase tracking-widest text-green-500 font-bold mb-2 flex items-center gap-2">
+                <div className="bg-darker border border-slate-700 p-6 rounded-sm relative mt-4">
+                  <div className="absolute top-0 right-0 w-3 h-3 border-t border-r border-primary"></div>
+                  <div className="absolute bottom-0 left-0 w-3 h-3 border-b border-l border-primary"></div>
+
+                  <h4 className="text-xs font-bold text-green-500 uppercase tracking-widest mb-2 flex items-center gap-2">
                     <CheckCircle2 size={16} /> {projects.labels.result}
                   </h4>
-                  <p className="text-white font-medium text-lg relative z-10">
+                  <p className="text-white text-lg font-medium">
                     {selectedProject.result}
                   </p>
                 </div>
               </div>
-
-              {/* Tech Stack */}
-              <div className="mt-8 pt-8 border-t border-slate-800">
-                <h4 className="text-sm uppercase tracking-widest text-slate-500 font-bold mb-4 flex items-center gap-2">
-                  <Cpu size={16} /> Technology Stack
-                </h4>
-                <div className="flex flex-wrap gap-2">
-                  {selectedProject.tech.map((t) => (
-                    <span
-                      key={t}
-                      className="px-3 py-1.5 bg-slate-950 border border-slate-700 text-slate-300 text-sm rounded-lg hover:border-primary/50 transition-colors cursor-default"
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
             </div>
           </div>
         </div>

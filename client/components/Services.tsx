@@ -8,41 +8,47 @@ const Services: React.FC = () => {
 
     const getIcon = (iconName: string) => {
         switch (iconName) {
-            case 'Rocket': return <Rocket size={40} />;
-            case 'Brain': return <Brain size={40} />;
-            case 'Wifi': return <Wifi size={40} />;
-            case 'Shield': return <Shield size={40} />;
-            case 'Server': return <Server size={40} />;
-            case 'Cloud': return <Cloud size={40} />;
-            default: return <Rocket size={40} />;
+            case 'Rocket': return <Rocket size={32} />;
+            case 'Brain': return <Brain size={32} />;
+            case 'Wifi': return <Wifi size={32} />;
+            case 'Shield': return <Shield size={32} />;
+            case 'Server': return <Server size={32} />;
+            case 'Cloud': return <Cloud size={32} />;
+            default: return <Rocket size={32} />;
         }
     };
 
     return (
-        <section id="services" className="py-24 px-6 md:px-12 lg:px-24 relative overflow-hidden">
-            {/* Background Decor */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-to-b from-slate-900/0 via-primary/5 to-slate-900/0 pointer-events-none" />
+        <section id="services" className="py-24 px-6 md:px-12 lg:px-24 bg-dark relative overflow-hidden border-t border-slate-800">
+            {/* Mesh Background */}
+            <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:20px_20px] opacity-[0.2]"></div>
 
             <div className="max-w-7xl mx-auto relative z-10">
-                <h2 className="text-3xl md:text-5xl font-bold text-white mb-16 text-center">
-                    {services.title}
-                </h2>
+                <div className="text-center mb-16">
+                    <span className="text-primary font-mono text-sm tracking-widest uppercase mb-2 block">// OFFERING</span>
+                    <h2 className="text-3xl md:text-5xl font-bold text-white">
+                        {services.title}
+                    </h2>
+                </div>
 
-                <div className="grid md:grid-cols-3 gap-8">
+                <div className="grid md:grid-cols-3 gap-6">
                     {services.items.map((item, index) => (
                         <div
                             key={index}
-                            className="bg-slate-800/40 backdrop-blur-md border border-slate-700/50 p-8 rounded-2xl hover:border-primary/50 hover:bg-slate-800/60 transition-all duration-300 group hover:-translate-y-2"
+                            className="bg-surface border border-slate-700 p-8 rounded-sm hover:border-primary transition-all duration-300 group relative overflow-hidden"
                         >
-                            <div className="mb-6 p-4 bg-slate-900/50 rounded-xl w-fit text-primary group-hover:text-white group-hover:bg-primary transition-colors duration-300">
+                            {/* Hover corner accent */}
+                            <div className="absolute top-0 right-0 w-0 h-0 border-t-[40px] border-r-[40px] border-t-transparent border-r-slate-800 group-hover:border-r-primary transition-all duration-300"></div>
+
+                            <div className="mb-6 p-3 bg-darker border border-slate-700 rounded-sm w-fit text-slate-400 group-hover:text-primary group-hover:border-primary/50 transition-colors duration-300">
                                 {getIcon(item.iconName)}
                             </div>
 
-                            <h3 className="text-2xl font-bold text-white mb-4 group-hover:text-primary transition-colors">
+                            <h3 className="text-xl font-bold text-white mb-4 group-hover:text-primary transition-colors">
                                 {item.title}
                             </h3>
 
-                            <p className="text-slate-400 leading-relaxed">
+                            <p className="text-slate-400 leading-relaxed font-light text-sm">
                                 {item.description}
                             </p>
                         </div>

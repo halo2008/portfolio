@@ -12,36 +12,46 @@ const iconMap: Record<string, React.ElementType> = {
 
 const TechStack: React.FC = () => {
   const { content } = useLanguage();
+  const { techStack } = content;
 
   return (
-    <section className="py-24 px-6 md:px-12 lg:px-24 bg-slate-900/30 border-y border-slate-800/50">
-      <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-bold text-white mb-12 text-center">
-          {content.techStack.title}
-        </h2>
+    <div className="mt-24">
+      <div className="flex items-center gap-3 mb-10 text-white font-bold text-2xl">
+        <Code className="text-primary" size={24} />
+        <h3>Technical Arsenal</h3>
+      </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {content.techStack.items.map((stack) => {
-            const Icon = iconMap[stack.iconName];
-            return (
-              <div key={stack.category} className="bg-slate-950 p-6 rounded-xl border border-slate-800 text-center hover:border-slate-600 transition-colors">
-                <div className="inline-flex p-4 rounded-full bg-slate-900 text-slate-300 mb-4">
+      <div className="grid md:grid-cols-2 gap-8">
+        {techStack.items.map((category, index) => {
+          const Icon = iconMap[category.iconName] || Code;
+
+          return (
+            <div
+              key={index}
+              className="bg-surface border border-slate-700 p-6 rounded-sm relative overflow-hidden group hover:border-primary transition-all duration-300"
+            >
+              <div className="flex items-center gap-4 mb-6">
+                <div className="p-2 bg-darker border border-slate-700 rounded-sm text-primary">
                   <Icon size={24} />
                 </div>
-                <h3 className="text-lg font-bold text-white mb-4">{stack.category}</h3>
-                <ul className="space-y-2">
-                  {stack.items.map(item => (
-                    <li key={item} className="text-sm text-slate-400 font-mono">
-                      {item}
-                    </li>
-                  ))}
-                </ul>
+                <h4 className="text-lg font-bold text-white">{category.category}</h4>
               </div>
-            );
-          })}
-        </div>
+
+              <div className="flex flex-wrap gap-2">
+                {category.items.map((item) => (
+                  <span
+                    key={item}
+                    className="px-3 py-1.5 bg-darker border border-slate-700 text-slate-300 font-mono text-xs rounded-sm hover:border-slate-500 hover:text-white transition-colors"
+                  >
+                    {item}
+                  </span>
+                ))}
+              </div>
+            </div>
+          );
+        })}
       </div>
-    </section>
+    </div>
   );
 };
 

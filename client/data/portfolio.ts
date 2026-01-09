@@ -92,6 +92,47 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 }
             ]
         },
+        timeline: {
+            title: "Engineering Path",
+            items: [
+                {
+                    id: "1",
+                    period: "Aug 2025 - Present",
+                    role: "DevOps Engineer",
+                    company: "ULAMEX",
+                    isCurrent: true,
+                    description: "Designed and deployed a scalable, multi-tenant **GKE (Kubernetes)** platform from scratch.",
+                    details: [
+                        "**Security:** Implemented HashiCorp Vault, ModSecurity WAF, and Zero Trust Network Policies (Calico).",
+                        "**Policy-as-Code:** Enforced cluster-wide security contexts using Kyverno.",
+                        "**IAM:** Centralized access control with Zitadel (OIDC integration).",
+                        "**Observability:** Built full monitoring stack (Prometheus, Grafana, Loki, Jaeger)."
+                    ]
+                },
+                {
+                    id: "2",
+                    period: "Nov 2022 - Jul 2025",
+                    role: "Full Stack Developer & AI Integrator",
+                    company: "ULAMEX",
+                    isCurrent: false,
+                    description: "Lead development of an internal ERP system (NestJS/NextJS) integrating GenAI and Industrial IoT.",
+                    details: [
+                        "**Applied AI (RAG):** Built \"Smart Sales Assistant\" using Local LLMs (Gemma), Milvus Vector DB, and PostgreSQL.",
+                        "**Mobile & Hardware:** Developed native Android CRM (Kotlin) and custom drivers (CPCL) for Zebra printers.",
+                        "**IoT Integration:** Connected RS232 industrial scales and ANPR cameras (H.265 decoding) to the web ERP."
+                    ]
+                },
+                {
+                    id: "3",
+                    period: "2011 - 2022",
+                    role: "Industrial & IT Infrastructure Specialist",
+                    company: "Previous Experience",
+                    isCurrent: false,
+                    description: "Over a decade of hands-on experience in manufacturing management and IT support. Background includes Production Management and maintaining electromechanical systems. *\"This industrial background allows me to bridge the gap between physical hardware and cloud software.\"*",
+                    details: []
+                }
+            ]
+        },
         services: {
             title: "Services",
             items: [
@@ -244,6 +285,47 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     result: "Działający MVP obsługujący wielu tenantów z izolacją danych.",
                     iconName: 'Bot',
                     image: ""
+                }
+            ]
+        },
+        timeline: {
+            title: "Ścieżka Inżynierska",
+            items: [
+                {
+                    id: "1",
+                    period: "Sie 2025 - Obecnie",
+                    role: "DevOps Engineer",
+                    company: "ULAMEX",
+                    isCurrent: true,
+                    description: "Zaprojektowanie i wdrożenie skalowalnej, multi-tenantowej platformy **GKE (Kubernetes)** od zera.",
+                    details: [
+                        "**Bezpieczeństwo:** Wdrożenie HashiCorp Vault, ModSecurity WAF i sieciowych polityk Zero Trust (Calico).",
+                        "**Policy-as-Code:** Wymuszenie bezpiecznych kontekstów w klastrze przy użyciu Kyverno.",
+                        "**IAM:** Scentralizowana kontrola dostępu z Zitadel (integracja OIDC).",
+                        "**Obserwowalność:** Zbudowanie pełnego stosu monitoringu (Prometheus, Grafana, Loki, Jaeger)."
+                    ]
+                },
+                {
+                    id: "2",
+                    period: "Lis 2022 - Lip 2025",
+                    role: "Full Stack Developer & AI Integrator",
+                    company: "ULAMEX",
+                    isCurrent: false,
+                    description: "Prowadzenie rozwoju wewnętrznego systemu ERP (NestJS/NextJS) integrującego GenAI i Industrial IoT.",
+                    details: [
+                        "**Applied AI (RAG):** Budowa \"Inteligentnego Asystenta Sprzedaży\" przy użyciu lokalnych LLM (Gemma), Milvus Vector DB i PostgreSQL.",
+                        "**Mobile & Hardware:** Stworzenie natywnego CRM na Androida (Kotlin) i sterowników (CPCL) dla drukarek Zebra.",
+                        "**IoT Integration:** Podłączenie wag przemysłowych RS232 i kamer ANPR (dekodowanie H.265) do webowego ERP."
+                    ]
+                },
+                {
+                    id: "3",
+                    period: "2011 - 2022",
+                    role: "Specjalista ds. Infrastruktury Przemysłowej i IT",
+                    company: "Poprzednie Doświadczenie",
+                    isCurrent: false,
+                    description: "Ponad dekada praktycznego doświadczenia w zarządzaniu produkcją i wsparciu IT. Tło obejmuje zarządzanie produkcją i utrzymanie systemów elektromechanicznych. *\"To doświadczenie przemysłowe pozwala mi łączyć fizyczny sprzęt z oprogramowaniem w chmurze.\"*",
+                    details: []
                 }
             ]
         },

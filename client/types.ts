@@ -12,6 +12,16 @@ export interface Project {
   image?: string;
 }
 
+export interface TimelineItem {
+  id: string;
+  period: string;
+  role: string;
+  company: string;
+  description: string;
+  details: string[]; // List of bullet points (e.g., "Security: Implemented Vault")
+  isCurrent: boolean;
+}
+
 export interface ServiceItem {
   title: string;
   description: string;
@@ -64,6 +74,10 @@ export interface PortfolioContent {
       solution: string;
       result: string;
     }
+  };
+  timeline: {
+    title: string;
+    items: TimelineItem[];
   };
   services: { // New
     title: string;

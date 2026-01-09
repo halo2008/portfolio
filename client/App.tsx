@@ -36,8 +36,8 @@ const AppContent: React.FC = () => {
         <div className="flex items-center gap-8">
           <div className="hidden md:flex gap-8 text-sm font-medium text-slate-400">
             <a href="#home" className="hover:text-primary transition-colors">{content.nav.home}</a>
-            <a href="#projects" className="hover:text-primary transition-colors">{content.nav.projects}</a>
             <a href="#resume" className="hover:text-primary transition-colors">{content.nav.resume}</a>
+            <a href="#projects" className="hover:text-primary transition-colors">{content.nav.projects}</a>
             <a href="#services" className="hover:text-primary transition-colors">{content.nav.services}</a>
             <a href="#contact" className="hover:text-primary transition-colors">{content.nav.contact}</a>
           </div>
@@ -54,8 +54,8 @@ const AppContent: React.FC = () => {
 
       <main className="relative z-10">
         <Hero />
-        <Projects />
         <Resume />
+        <Projects />
         <Services />
         <Contact />
       </main>
