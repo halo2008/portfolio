@@ -8,8 +8,14 @@ export interface Project {
   solution: string;
   tech: string[];
   result: string;
-  iconName: 'Server' | 'Bot' | 'Shield' | 'Smartphone' | 'Brain';
+  iconName: 'Server' | 'Bot' | 'Shield' | 'Smartphone' | 'Brain' | 'Rocket' | 'Wifi';
   image?: string;
+}
+
+export interface ServiceItem {
+  title: string;
+  description: string;
+  iconName: string;
 }
 
 export interface TechCategory {
@@ -34,11 +40,13 @@ export enum LoadingState {
 export interface PortfolioContent {
   name: string;
   title: string;
+  availability: string; // New
   hero: {
     headline: string;
     subheadline: string;
     tags: string[];
     cta: string;
+    ctaSecondary: string; // New
     profileImage: string;
   };
   philosophy: {
@@ -56,6 +64,10 @@ export interface PortfolioContent {
       solution: string;
       result: string;
     }
+  };
+  services: { // New
+    title: string;
+    items: ServiceItem[];
   };
   techStack: {
     title: string;
@@ -82,9 +94,12 @@ export interface PortfolioContent {
     status: string;
   };
   nav: {
-    philosophy: string;
-    projects: string;
+    home: string; // New
+    projects: string; // Renamed logic (Case Studies)
+    resume: string; // New
+    services: string; // New
     contact: string;
+    philosophy?: string; // Optional or removed? Keeping it for types safety if used elsewhere or removing if not needed. Removing philosophy from Nav as requested.
   };
   footer: string;
 }

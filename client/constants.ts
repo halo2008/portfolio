@@ -21,12 +21,14 @@ const COMMON_TECH = {
 export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
   en: {
     name: "Konrad Sędkowski",
-    title: "The Full-Stack AI & Infrastructure Engineer",
+    title: "AI Infrastructure & DevOps Engineer",
+    availability: "🟢 Open for B2B Contracts & Consulting",
     hero: {
       headline: "I Connect the Physical World with the AI Cloud.",
-      subheadline: "From legacy RS232 sensors to Kubernetes clusters and LLM Agents. I design, build, and deploy autonomous systems that solve real business problems.",
+      subheadline: "I build scalable AI systems and integrate hardware with the cloud. I turn chaos into working MVPs.",
       tags: ["Cloud Architect", "Industrial IoT", "AI Engineer"],
-      cta: "View My Work",
+      cta: "View Projects",
+      ctaSecondary: "Services / Collaboration",
       profileImage: IMAGES.portrait
     },
     philosophy: {
@@ -37,7 +39,7 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
       image: IMAGES.factory
     },
     projects: {
-      title: "Featured Deployments",
+      title: "Case Studies",
       labels: { challenge: "Challenge", solution: "Solution", result: "Result" },
       items: [
         {
@@ -108,6 +110,26 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
         }
       ]
     },
+    services: {
+      title: "Services & Collaboration",
+      items: [
+        {
+          title: "AI/DevOps Consultation",
+          description: "Having trouble deploying a model? I'll help you fix it in an hour.",
+          iconName: "Brain"
+        },
+        {
+          title: "MVP Development",
+          description: "Have an idea for a SaaS? I'll build the backend and infrastructure.",
+          iconName: "Rocket"
+        },
+        {
+          title: "IoT Integrations",
+          description: "I'll connect your machines to the network.",
+          iconName: "Wifi"
+        }
+      ]
+    },
     techStack: {
       title: "The Arsenal",
       items: [
@@ -120,7 +142,7 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
     contact: {
       cta: "Ready to automate your business? Let's build something impossible.",
       sub: "Available for complex infrastructure migrations and AI system design.",
-      buttons: { cv: "Download CV", linkedin: "Contact on LinkedIn", email: "Email Me" },
+      buttons: { cv: "Download CV (PDF)", linkedin: "Contact on LinkedIn", email: "Email Me" },
       linkedinUrl: "https://linkedin.com/in/placeholder",
       emailUrl: "konrad@example.com"
     },
@@ -133,17 +155,19 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
       error: "I encountered an error.",
       status: "Online (Gemini 2.5)"
     },
-    nav: { philosophy: "Philosophy", projects: "Projects", contact: "Contact" },
+    nav: { home: "Home", projects: "Case Studies", resume: "Resume / About", services: "Services", contact: "Contact" },
     footer: "Konrad Sędkowski. Built with React, Tailwind, and Gemini AI."
   },
   pl: {
     name: "Konrad Sędkowski",
-    title: "Inżynier AI & Infrastruktury Full-Stack",
+    title: "Inżynier AI Infrastructure & DevOps",
+    availability: "🟢 Otwarty na kontrakty B2B i konsultacje",
     hero: {
       headline: "Łączę Świat Fizyczny z Chmurą AI.",
-      subheadline: "Od starszych czujników RS232 po klastry Kubernetes i Agenty LLM. Projektuję, buduję i wdrażam autonomiczne systemy, które rozwiązują rzeczywiste problemy biznesowe.",
+      subheadline: "Buduję skalowalne systemy AI i integruję hardware z chmurą. Zamieniam chaos w działające MVP.",
       tags: ["Architekt Chmury", "Przemysłowe IoT", "Inżynier AI"],
       cta: "Zobacz Projekty",
+      ctaSecondary: "Współpraca / Usługi",
       profileImage: IMAGES.portrait
     },
     philosophy: {
@@ -154,7 +178,7 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
       image: IMAGES.factory
     },
     projects: {
-      title: "Wyróżnione Wdrożenia",
+      title: "Case Studies",
       labels: { challenge: "Wyzwanie", solution: "Rozwiązanie", result: "Wynik" },
       items: [
         {
@@ -225,6 +249,26 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
         }
       ]
     },
+    services: {
+      title: "Współpraca i Usługi",
+      items: [
+        {
+          title: "Konsultacja AI/DevOps",
+          description: "Masz problem z wdrożeniem modelu? Pomogę Ci w godzinę.",
+          iconName: "Brain"
+        },
+        {
+          title: "Budowa MVP",
+          description: "Masz pomysł na SaaS? Zbuduję backend i infrastrukturę.",
+          iconName: "Rocket"
+        },
+        {
+          title: "Integracje IoT",
+          description: "Podłączę Twoje maszyny do sieci.",
+          iconName: "Wifi"
+        }
+      ]
+    },
     techStack: {
       title: "Arsenał Technologiczny",
       items: [
@@ -237,7 +281,7 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
     contact: {
       cta: "Gotowy na automatyzację swojego biznesu? Zbudujmy coś niemożliwego.",
       sub: "Dostępny do złożonych migracji infrastruktury i projektowania systemów AI.",
-      buttons: { cv: "Pobierz CV", linkedin: "Kontakt na LinkedIn", email: "Napisz Email" },
+      buttons: { cv: "Pobierz CV (PDF)", linkedin: "Kontakt na LinkedIn", email: "Napisz Email" },
       linkedinUrl: "https://linkedin.com/in/placeholder",
       emailUrl: "konrad@example.com"
     },
@@ -250,7 +294,7 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
       error: "Wystąpił błąd.",
       status: "Online (Gemini 2.5)"
     },
-    nav: { philosophy: "Filozofia", projects: "Projekty", contact: "Kontakt" },
+    nav: { home: "Home", projects: "Case Studies", resume: "Resume / O mnie", services: "Współpraca", contact: "Kontakt" },
     footer: "Konrad Sędkowski. Zbudowano w React, Tailwind i Gemini AI."
   }
 };
@@ -272,9 +316,13 @@ Context Data:
 Bio: ${DATA.hero.subheadline}
 Philosophy: ${DATA.philosophy.description}
 Key Differentiator: ${DATA.philosophy.differentiator}
+Availability: ${DATA.availability}
 
-Projects:
+Projects (Case Studies):
 ${DATA.projects.items.map(p => `- ${p.title} (${p.subtitle}): ${p.solution} Tech: ${p.tech.join(', ')}. Result: ${p.result}`).join('\n')}
+
+Services:
+${DATA.services.items.map(s => `- ${s.title}: ${s.description}`).join('\n')}
 
 Tech Stack:
 ${DATA.techStack.items.map(t => `- ${t.category}: ${t.items.join(', ')}`).join('\n')}
