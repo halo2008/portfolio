@@ -6,9 +6,6 @@ const IMAGES = {
   projectA: "https://image.pollinations.ai/prompt/Industrial%20Logistics%20Truck%20Weighing%20Station%20Night%20Cyberpunk%20Neon%20Lights%20Rain%20Reflections%20High%20Tech%20Overlay%20UI%20Data%20Visualization%204k%20realistic?width=1024&height=1024&nologo=true",
   projectB: "https://image.pollinations.ai/prompt/Artificial%20Intelligence%20Brain%20Neural%20Network%20Glowing%20Synapses%20Data%20Flow%20Digital%20Art%20Dark%20Background%20Blue%20Purple%20Neon?width=1024&height=1024&nologo=true",
   projectC: "https://image.pollinations.ai/prompt/Kubernetes%20Cluster%20Abstract%203D%20Visualization%20Server%20Racks%20Glowing%20Blue%20Neon%20Data%20Streams%20Isometric%20View%20Tech%20Background?width=1024&height=1024&nologo=true",
-  projectD: "https://image.pollinations.ai/prompt/Smartphone%20App%20Dashboard%20Hand%20Holding%20Phone%20Warehouse%20Background%20Augmented%20Reality%20Sales%20Data%20Hologram%20Futuristic%20UI%20Dark%20Mode?width=1024&height=1024&nologo=true",
-  projectE: "https://image.pollinations.ai/prompt/Warehouse%20Worker%20Scanning%20Barcode%20With%20Smartphone%20Close%20Up%20Thermal%20Printer%20Bluetooth%20Blue%20Laser%20Scan%20Line%20Industrial%20Lighting?width=1024&height=1024&nologo=true",
-  projectF: "https://image.pollinations.ai/prompt/Futuristic%20Holographic%20Data%20Visualization%20Supply%20Chain%20Forecast%20Glowing%20Neon%20Trend%20Lines%20Dark%20Glass%20Dashboard%20Industrial%20Background%20Prediction%20Confidence%20High%20Tech%20UI?width=1024&height=1024&nologo=true"
 };
 
 const COMMON_TECH = {
@@ -24,109 +21,76 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
     title: "AI Infrastructure & DevOps Engineer",
     availability: "🟢 Open for B2B Contracts & Consulting",
     hero: {
-      headline: "I Connect the Physical World with the AI Cloud.",
-      subheadline: "I build scalable AI systems and integrate hardware with the cloud. I turn chaos into working MVPs.",
-      tags: ["Cloud Architect", "Industrial IoT", "AI Engineer"],
-      cta: "View Projects",
+      headline: "Bridging the Gap Between Legacy Hardware, Cloud, and AI.",
+      subheadline: "I help companies migrate from chaotic setups to scalable Kubernetes (GKE) and Cloud Run. I build cost-effective RAG pipelines optimized for CPU inference and integrate industrial IoT hardware with modern ERPs.",
+      tags: ["MLOps", "AI Engineer", "Cloud Architect"],
+      cta: "View Case Studies",
       ctaSecondary: "Services / Collaboration",
       profileImage: IMAGES.portrait
     },
     philosophy: {
       title: "Not Just a DevOps. A Problem Solver.",
-      description: "Most engineers specialize in one narrow field. I thrive on the full spectrum. I can solder a cable to a factory scale, write the driver to read its data, build a secure Cloud Platform to process it, and train an AI model to predict future demand based on that data.",
-      differentiatorTitle: "AI-Augmented Efficiency",
-      differentiator: "I leverage modern AI tools to deliver enterprise-grade MVPs 10x faster than traditional teams.",
+      description: "Most engineers specialize in one narrow field. I thrive on the full spectrum. I turn 'it works on my machine' into 'it works at scale'. From soldering cables to deploying LLMs on Kubernetes, I deliver end-to-end solutions.",
+      differentiatorTitle: "AI-Augmented Cloud Engineering",
+      differentiator: "I don't just deploy infrastructure. I design intelligent systems that learn, adapt, and scale autonomously (e.g., Autoscaling based on AI predictions).",
       image: IMAGES.factory
     },
     projects: {
-      title: "Case Studies",
-      labels: { challenge: "Challenge", solution: "Solution", result: "Result" },
+      title: "Case Studies & Deployments",
+      labels: { challenge: "The Challenge", solution: "The Solution", result: "The Result" },
       items: [
         {
-          id: 'F',
-          title: "AI Supply Chain Oracle",
-          subtitle: "Predictive Analytics",
-          challenge: "Inventory management is a gamble without data. Purchasing decisions relied on gut feeling, leading to overstock or shortages.",
-          solution: "Built a State-of-the-Art forecasting system using Temporal Fusion Transformers (TFT) via PyTorch & Darts. It analyzes historical ERP data, seasonality, and economic indicators, utilizing Hidden Markov Models (HMM) for market state detection.",
-          tech: ["Python", "PyTorch", "Darts (TFT)", "MSSQL", "Matplotlib"],
-          result: "Visual forecasts with confidence intervals (10%/50%/90%) allowing for data-driven purchasing decisions.",
+          id: '1',
+          title: "High-Accuracy Invoice Processing Pipeline (RAG & Vision AI)",
+          subtitle: "RAG • MLOps • Optimization",
+          challenge: "Standard OCR tools failed to extract structured data from multi-format vendor invoices, leading to 75% manual intervention. The business required a solution that 'understands' layout context without expensive GPU instances.",
+          solution: "I engineered a hybrid pipeline: 1) Vision-First Approach: Replaced raw text extraction with YOLO v8 for document layout analysis. 2) Contextual RAG: Implemented Dynamic Prompting stored in Pgvector to identify vendors. 3) Hardware Optimization: Optimized Gemma 7b quantization to run efficiently on Intel Xeon (AVX-512) CPUs, eliminating dedicated GPUs.",
+          tech: ["Python", "YOLO v8", "PgVector", "Gemma 7b (Quantized)", "Docker"],
+          result: "Accuracy increased from 75% to 95%+. Processing time dropped from minutes to seconds per document. Cloud costs reduced by 60%.",
           iconName: 'Brain',
-          image: IMAGES.projectF
-        },
-        {
-          id: 'A',
-          title: "The Autonomous Logistics System",
-          subtitle: "IoT + Cloud",
-          challenge: "Manual weighing and tracking of steel shipments caused delays and errors.",
-          solution: "Built an Edge-to-Cloud system. Integrated legacy RS232 industrial scales and ANPR (License Plate Recognition) cameras.",
-          tech: ["Node.js", "WebSockets", "Kubernetes", "PostgreSQL", "Video Streaming"],
-          result: "100% automated entry/exit logging, real-time video preview on low-end hardware.",
-          iconName: 'Server',
-          image: IMAGES.projectA
-        },
-        {
-          id: 'E',
-          title: "Custom Mobile Warehousing",
-          subtitle: "Android + Bluetooth CPCL",
-          challenge: "Expensive proprietary handhelds locked operations to specific vendors and increased costs.",
-          solution: "Engineered a rapid scan-to-print workflow combining camera-based barcode recognition with a custom CPCL communication layer via Bluetooth RFCOMM to control legacy Zebra printers directly.",
-          tech: ["Android", "Kotlin", "Bluetooth RFCOMM", "CPCL", "Zebra"],
-          result: "Decoupled software from hardware, reducing device costs by 80% using budget smartphones.",
-          iconName: 'Smartphone',
-          image: IMAGES.projectE
-        },
-        {
-          id: 'B',
-          title: "The AI Sales Agent",
-          subtitle: "GenAI + RAG",
-          challenge: "Sales team wasted hours calculating quotes and writing emails.",
-          solution: "Created an intelligent RAG system. It retrieves client history from Milvus (Vector DB) and uses the Gemma 3 LLM to calculate pricing and generate personalized sales emails with one click.",
-          tech: ["Python", "LangChain", "Milvus", "Gemma 3", "NestJS"],
-          result: "Drastic reduction in time-to-quote.",
-          iconName: 'Bot',
           image: IMAGES.projectB
         },
         {
-          id: 'C',
-          title: "Secure Cloud Platform",
-          subtitle: "DevSecOps",
-          challenge: "Migrating critical ERP infrastructure to the cloud with zero trust security.",
-          solution: "Designed a GCP architecture using Terraform. Implemented GKE with Workload Identity and HashiCorp Vault for secret management.",
-          tech: ["GCP", "Terraform", "Kubernetes", "Vault", "External Secrets"],
-          result: "Enterprise-grade security and scalability with optimized costs.",
-          iconName: 'Shield',
-          image: IMAGES.projectC
+          id: '2',
+          title: "Connecting Legacy Industrial Hardware (IoT) to Cloud ERP",
+          subtitle: "Industrial IoT • Edge Computing",
+          challenge: "A manufacturing plant needed real-time data from 20-year-old heavy-duty truck scales and ANPR cameras. The hardware used archaic protocols (RS232) and was air-gapped from the modern web-based ERP.",
+          solution: "I designed an Edge-to-Cloud bridge: 1) Edge Gateway: Developed a custom Node.js/Python middleware running on local edge devices to buffer and parse binary RS232 streams into JSON. 2) Video Pipeline: Integrated FFmpeg transcoding to stream 4K ANPR feeds (H.265 to H.264). 3) Secure Transport: Established a secure tunnel for bi-directional communication.",
+          tech: ["Node.js", "Python", "RS232/Modbus", "FFmpeg", "WebSockets"],
+          result: "Fully automated weighing process. Removed manual data entry errors and enabled real-time inventory tracking.",
+          iconName: 'Wifi',
+          image: IMAGES.projectA
         },
         {
-          id: 'D',
-          title: "Mobile Sales Force Automation",
-          subtitle: "Native Android",
-          solution: "Native Android App (Kotlin) for 60+ sales reps with Firebase synchronization and \"Click-to-Call\" integration from the ERP.",
-          challenge: "Field sales data was disconnected from the central ERP.",
-          tech: ["Android (Kotlin)", "Firebase", "REST API", "Offline-First"],
-          result: "Real-time synchronization of 60+ field agents.",
-          iconName: 'Smartphone',
-          image: IMAGES.projectD
+          id: '3',
+          title: "Monolith to Microservices: Zero-Downtime Migration to GKE",
+          subtitle: "DevSecOps • Kubernetes Transformation",
+          challenge: "Critical ERP systems were hosted on a single-point-of-failure VPS with manual deployment scripts. Backups caused system freezes, and secret management was non-existent.",
+          solution: "I orchestrated a complete infrastructure overhaul: 1) IaC: Codified the entire stack using Terraform. 2) GKE Autopilot: Migrated workloads to a highly available cluster. 3) Security First: Implemented HashiCorp Vault interactions and Kyverno policies. 4) Observability: Deployed Prometheus/Grafana/Loki stack.",
+          tech: ["GCP (GKE)", "Terraform", "HashiCorp Vault", "Kyverno", "GitLab CI"],
+          result: "99.9% uptime, automated CI/CD pipelines, and recovery time (RTO) reduced from hours to minutes.",
+          iconName: 'Cloud',
+          image: IMAGES.projectC
         }
       ]
     },
     services: {
-      title: "Services & Collaboration",
+      title: "Consulting & Implementation Services",
       items: [
         {
-          title: "AI/DevOps Consultation",
-          description: "Having trouble deploying a model? I'll help you fix it in an hour.",
-          iconName: "Brain"
-        },
-        {
-          title: "MVP Development",
-          description: "Have an idea for a SaaS? I'll build the backend and infrastructure.",
+          title: "MVP Development with AI",
+          description: "Rapid prototyping of AI-driven applications (Chatbots, RAG, Automation). I take you from 'idea' to 'deployed on Cloud Run' in weeks, not months.",
           iconName: "Rocket"
         },
         {
-          title: "IoT Integrations",
-          description: "I'll connect your machines to the network.",
-          iconName: "Wifi"
+          title: "Cloud Cost Optimization",
+          description: "Analysis of your AWS/GCP bills. I optimize Kubernetes clusters, spot instances, and serverless setups to stop burning money.",
+          iconName: "Shield"
+        },
+        {
+          title: "Legacy System Integration",
+          description: "I build APIs and secure bridges for hardware or software that 'doesn't have an API'.",
+          iconName: "Server"
         }
       ]
     },
@@ -140,7 +104,7 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
       ]
     },
     contact: {
-      cta: "Ready to automate your business? Let's build something impossible.",
+      cta: "Ready to scale your business? Let's talk.",
       sub: "Available for complex infrastructure migrations and AI system design.",
       buttons: { cv: "Download CV (PDF)", linkedin: "Contact on LinkedIn", email: "Email Me" },
       linkedinUrl: "https://linkedin.com/in/placeholder",
@@ -149,123 +113,90 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
     aiChat: {
       trigger: "Ask AI About Me",
       title: "Konrad's Assistant",
-      placeholder: "Ask about logistics, IoT, or specific tech...",
-      initialMessage: "Hi! I'm Konrad's AI Assistant. Ask me about his projects, tech stack, or experience.",
+      placeholder: "Ask about RAG, Kubernetes, or IoT...",
+      initialMessage: "Hi! I'm Konrad's AI Assistant. Ask me about my case studies, tech stack, or experience.",
       thinking: "Thinking...",
       error: "I encountered an error.",
       status: "Online (Gemini 2.5)"
     },
-    nav: { home: "Home", projects: "Case Studies", resume: "Resume / About", services: "Services", contact: "Contact" },
-    footer: "Konrad Sędkowski. Built with React, Tailwind, and Gemini AI."
+    nav: { home: "Home", projects: "Case Studies", resume: "About / Resume", services: "Services", contact: "Contact" },
+    footer: "Konrad Sędkowski. Engineered with React, NestJS, and Gemini AI on Cloud Run."
   },
   pl: {
     name: "Konrad Sędkowski",
     title: "Inżynier AI Infrastructure & DevOps",
     availability: "🟢 Otwarty na kontrakty B2B i konsultacje",
     hero: {
-      headline: "Łączę Świat Fizyczny z Chmurą AI.",
-      subheadline: "Buduję skalowalne systemy AI i integruję hardware z chmurą. Zamieniam chaos w działające MVP.",
-      tags: ["Architekt Chmury", "Przemysłowe IoT", "Inżynier AI"],
-      cta: "Zobacz Projekty",
-      ctaSecondary: "Współpraca / Usługi",
+      headline: "Łączę Legacy Hardware, Chmurę i Nowoczesne AI.",
+      subheadline: "Pomagam firmom migrować z chaotycznych VPS-ów na skalowalne środowiska Kubernetes (GKE) i Cloud Run. Buduję efektywne kosztowo systemy RAG (CPU inference) i integruję przemysłowe IoT z nowoczesnymi systemami ERP.",
+      tags: ["MLOps", "Inżynier AI", "Architekt Chmury"],
+      cta: "Zobacz Case Studies",
+      ctaSecondary: "Usługi / Współpraca",
       profileImage: IMAGES.portrait
     },
     philosophy: {
       title: "Nie Tylko DevOps. Problem Solver.",
       description: "Większość inżynierów specjalizuje się w jednej wąskiej dziedzinie. Ja działam w pełnym spektrum. Potrafię przylutować kabel do wagi przemysłowej, napisać sterownik do odczytu danych, zbudować bezpieczną platformę chmurową do ich przetwarzania i wytrenować model AI przewidujący popyt na podstawie tych danych.",
       differentiatorTitle: "Efektywność Wspierana przez AI",
-      differentiator: "Wykorzystuję nowoczesne narzędzia AI, aby dostarczać rozwiązania klasy enterprise 10x szybciej niż tradycyjne zespoły.",
+      differentiator: "Nie tylko wdrażam infrastrukturę. Projektuję inteligentne systemy, które uczą się, adaptują i skalują autonomicznie.",
       image: IMAGES.factory
     },
     projects: {
-      title: "Case Studies",
+      title: "Case Studies & Wdrożenia",
       labels: { challenge: "Wyzwanie", solution: "Rozwiązanie", result: "Wynik" },
       items: [
         {
-          id: 'F',
-          title: "AI Supply Chain Oracle",
-          subtitle: "Analityka Predykcyjna",
-          challenge: "Zarządzanie zapasami bez danych to hazard. Decyzje zakupowe opierały się na intuicji, co prowadziło do nadstanów lub braków.",
-          solution: "Zbudowałem system prognozowania State-of-the-Art wykorzystujący Temporal Fusion Transformers (TFT). Analizuje historię z ERP, sezonowość i wskaźniki ekonomiczne, używając Ukrytych Modeli Markowa do detekcji stanów rynku.",
-          tech: ["Python", "PyTorch", "Darts (TFT)", "MSSQL", "Matplotlib"],
-          result: "Wizualne prognozy z przedziałami ufności (10%/50%/90%) umożliwiające podejmowanie decyzji opartych na danych.",
+          id: '1',
+          title: "Inteligentne Przetwarzanie Dokumentów (OCR & RAG)",
+          subtitle: "RAG • MLOps • Optymalizacja",
+          challenge: "Standardowe narzędzia OCR nie radziły sobie z fakturami o zmiennym formacie, co wymuszało 75% ręcznej ingerencji. Biznes potrzebował rozwiązania 'rozumiejącego' kontekst bez drogich instancji GPU.",
+          solution: "Zbudowałem hybrydowy pipeline: 1) Vision-First: Zastąpiłem surowy OCR modelem YOLO v8 do analizy układu. 2) Kontekstowy RAG: Dynamiczne prompty przechowywane w Pgvector identyfikowały dostawców. 3) Optymalizacja Sprzętowa: Gemma 7b skwantyzowana pod procesory Intel Xeon (AVX-512), eliminująca potrzebę GPU.",
+          tech: ["Python", "YOLO v8", "PgVector", "Gemma 7b", "Docker"],
+          result: "Wzrost dokładności z 75% do 95%+. Czas przetwarzania spadł z minut do sekund. Koszty chmury zredukowane o 60%.",
           iconName: 'Brain',
-          image: IMAGES.projectF
-        },
-        {
-          id: 'A',
-          title: "Autonomiczny System Logistyczny",
-          subtitle: "IoT + Chmura",
-          challenge: "Ręczne ważenie i śledzenie transportów stali powodowało opóźnienia i błędy.",
-          solution: "Zbudowałem system Edge-to-Cloud. Zintegrowałem starsze wagi przemysłowe RS232 i kamery ANPR (Rozpoznawanie Tablic).",
-          tech: ["Node.js", "WebSockets", "Kubernetes", "PostgreSQL", "Streaming Wideo"],
-          result: "100% zautomatyzowanej rejestracji wjazdów/wyjazdów, podgląd wideo w czasie rzeczywistym.",
-          iconName: 'Server',
-          image: IMAGES.projectA
-        },
-        {
-          id: 'E',
-          title: "Mobilny System Magazynowy",
-          subtitle: "Android + Bluetooth CPCL",
-          challenge: "Drogie, dedykowane terminale uzależniały operacje od konkretnych dostawców sprzętu i zwiększały koszty.",
-          solution: "Zaprojektowałem workflow 'Scan-to-Print' łączący rozpoznawanie kodów kamerą z autorską implementacją protokołu CPCL przez Bluetooth RFCOMM do bezpośredniego sterowania starszymi drukarkami Zebra.",
-          tech: ["Android", "Kotlin", "Bluetooth RFCOMM", "CPCL", "Zebra"],
-          result: "Uniezależnienie oprogramowania od sprzętu, redukcja kosztów urządzeń o 80% przy użyciu budżetowych smartfonów.",
-          iconName: 'Smartphone',
-          image: IMAGES.projectE
-        },
-        {
-          id: 'B',
-          title: "Agent Sprzedaży AI",
-          subtitle: "GenAI + RAG",
-          challenge: "Zespół sprzedaży tracił godziny na kalkulację ofert i pisanie e-maili.",
-          solution: "Stworzyłem inteligentny system RAG. Pobiera historię klienta z Milvus (Vector DB) i używa modelu Gemma 3 do obliczania cen oraz generowania spersonalizowanych ofert jednym kliknięciem.",
-          tech: ["Python", "LangChain", "Milvus", "Gemma 3", "NestJS"],
-          result: "Drastyczna redukcja czasu przygotowania oferty.",
-          iconName: 'Bot',
           image: IMAGES.projectB
         },
         {
-          id: 'C',
-          title: "Bezpieczna Platforma Chmurowa",
-          subtitle: "DevSecOps",
-          challenge: "Migracja krytycznej infrastruktury ERP do chmury z zachowaniem bezpieczeństwa Zero Trust.",
-          solution: "Zaprojektowałem architekturę GCP przy użyciu Terraform. Wdrożyłem GKE z Workload Identity i HashiCorp Vault do zarządzania sekretami.",
-          tech: ["GCP", "Terraform", "Kubernetes", "Vault", "External Secrets"],
-          result: "Bezpieczeństwo i skalowalność klasy Enterprise przy zoptymalizowanych kosztach.",
-          iconName: 'Shield',
-          image: IMAGES.projectC
+          id: '2',
+          title: "Integracja Legacy Industrial IoT z Chmurą",
+          subtitle: "Industrial IoT • Edge Computing",
+          challenge: "Fabryka potrzebowała danych w czasie rzeczywistym z 20-letnich wag ciężarowych i kamer ANPR. Sprzęt używał archaicznych protokołów (RS232) i był odcięty od sieci.",
+          solution: "Zaprojektowałem most Edge-to-Cloud: 1) Edge Gateway: Custom middleware (Node.js/Python) na urządzeniach brzegowych do buforowania RS232. 2) Video Pipeline: Transkodowanie FFmpeg strumieni 4K ANPR. 3) Bezpieczny Tunel do dwukierunkowej komunikacji z chmurą.",
+          tech: ["Node.js", "Python", "RS232/Modbus", "FFmpeg", "WebSockets"],
+          result: "Pełna automatyzacja procesu ważenia. Eliminacja błędów ręcznych i śledzenie zapasów w czasie rzeczywistym.",
+          iconName: 'Wifi',
+          image: IMAGES.projectA
         },
         {
-          id: 'D',
-          title: "Automatyzacja Sprzedaży Mobilnej",
-          subtitle: "Natywny Android",
-          solution: "Natywna aplikacja Android (Kotlin) dla 60+ handlowców z synchronizacją Firebase i integracją \"Click-to-Call\" z systemem ERP.",
-          challenge: "Dane sprzedażowe z terenu były odłączone od centralnego systemu ERP.",
-          tech: ["Android (Kotlin)", "Firebase", "REST API", "Offline-First"],
-          result: "Synchronizacja 60+ agentów terenowych w czasie rzeczywistym.",
-          iconName: 'Smartphone',
-          image: IMAGES.projectD
+          id: '3',
+          title: "Monolit do Mikroserwisów: Migracja na GKE",
+          subtitle: "DevSecOps • Transformacja Kubernetes",
+          challenge: "Krytyczne systemy ERP stały na pojedynczym VPS z ręcznymi skryptami wdrażania. Brak zarządzania sekretami i częste zamrożenia przy backupach.",
+          solution: "Przeprowadziłem całkowitą przebudowę infrastruktury: 1) IaC: Terraform dla całego stacku. 2) GKE Autopilot: Migracja na klaster wysokiej dostępności. 3) Security First: HashiCorp Vault i polityki Kyverno. 4) Observability: Pełny stack Prometheus/Grafana/Loki.",
+          tech: ["GCP (GKE)", "Terraform", "HashiCorp Vault", "Kyverno", "GitLab CI"],
+          result: "99.9% uptime, automatyczne CI/CD, czas przywracania (RTO) zredukowany z godzin do minut.",
+          iconName: 'Cloud',
+          image: IMAGES.projectC
         }
       ]
     },
     services: {
-      title: "Współpraca i Usługi",
+      title: "Usługi Konsultingowe i Wdrożeniowe",
       items: [
         {
-          title: "Konsultacja AI/DevOps",
-          description: "Masz problem z wdrożeniem modelu? Pomogę Ci w godzinę.",
-          iconName: "Brain"
-        },
-        {
-          title: "Budowa MVP",
-          description: "Masz pomysł na SaaS? Zbuduję backend i infrastrukturę.",
+          title: "Budowa MVP z AI",
+          description: "Szybkie prototypowanie aplikacji opartych na AI (Chatboty, RAG, Automatyzacja). Zabieram Cię od 'pomysłu' do 'wdrożenia na Cloud Run' w kilka tygodni.",
           iconName: "Rocket"
         },
         {
-          title: "Integracje IoT",
-          description: "Podłączę Twoje maszyny do sieci.",
-          iconName: "Wifi"
+          title: "Optymalizacja Kosztów Chmury",
+          description: "Analiza rachunków AWS/GCP. Optymalizuję klastry Kubernetes i konfiguracje Serverless, aby przestać przepalać budżet.",
+          iconName: "Shield"
+        },
+        {
+          title: "Integracja Systemów Legacy",
+          description: "Buduję API i bezpieczne mosty dla sprzętu lub oprogramowania, które 'nie posiada API'.",
+          iconName: "Server"
         }
       ]
     },
@@ -279,7 +210,7 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
       ]
     },
     contact: {
-      cta: "Gotowy na automatyzację swojego biznesu? Zbudujmy coś niemożliwego.",
+      cta: "Gotowy na skalowanie swojego biznesu? Porozmawiajmy.",
       sub: "Dostępny do złożonych migracji infrastruktury i projektowania systemów AI.",
       buttons: { cv: "Pobierz CV (PDF)", linkedin: "Kontakt na LinkedIn", email: "Napisz Email" },
       linkedinUrl: "https://linkedin.com/in/placeholder",
@@ -288,14 +219,14 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
     aiChat: {
       trigger: "Zapytaj AI o mnie",
       title: "Asystent Konrada",
-      placeholder: "Zapytaj o logistykę, IoT lub technologie...",
-      initialMessage: "Cześć! Jestem Asystentem AI Konrada. Zapytaj mnie o jego projekty, technologie lub doświadczenie.",
+      placeholder: "Zapytaj o RAG, Kubernetes lub IoT...",
+      initialMessage: "Cześć! Jestem Asystentem AI Konrada. Zapytaj mnie o Case Studies, technologie lub doświadczenie.",
       thinking: "Myślę...",
       error: "Wystąpił błąd.",
       status: "Online (Gemini 2.5)"
     },
-    nav: { home: "Home", projects: "Case Studies", resume: "Resume / O mnie", services: "Współpraca", contact: "Kontakt" },
-    footer: "Konrad Sędkowski. Zbudowano w React, Tailwind i Gemini AI."
+    nav: { home: "Home", projects: "Case Studies", resume: "O mnie / Resume", services: "Usługi", contact: "Kontakt" },
+    footer: "Konrad Sędkowski. Zbudowano w React, NestJS i Gemini AI na Cloud Run."
   }
 };
 
@@ -305,7 +236,7 @@ const DATA = TRANSLATIONS.en;
 
 export const SYSTEM_INSTRUCTION = `
 You are "Konrad's AI Assistant", a helpful agent on the portfolio website of Konrad Sędkowski.
-Your goal is to answer questions about Konrad's experience, skills, and projects.
+Your goal is to answer questions about Konrad's experience, skills, and projects in a professional, concise manner suitable for recruiters and B2B clients.
 
 IMPORTANT LANGUAGE INSTRUCTION:
 - If the user asks in Polish, reply in Polish.
@@ -318,8 +249,12 @@ Philosophy: ${DATA.philosophy.description}
 Key Differentiator: ${DATA.philosophy.differentiator}
 Availability: ${DATA.availability}
 
-Projects (Case Studies):
-${DATA.projects.items.map(p => `- ${p.title} (${p.subtitle}): ${p.solution} Tech: ${p.tech.join(', ')}. Result: ${p.result}`).join('\n')}
+Case Studies (Projects):
+${DATA.projects.items.map(p => `### ${p.title} (${p.subtitle})
+Challenge: ${p.challenge}
+Solution: ${p.solution}
+Tech: ${p.tech.join(', ')}
+Result: ${p.result}`).join('\n\n')}
 
 Services:
 ${DATA.services.items.map(s => `- ${s.title}: ${s.description}`).join('\n')}

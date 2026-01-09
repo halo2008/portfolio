@@ -1,5 +1,5 @@
 import React from 'react';
-import { Rocket, Brain, Wifi } from 'lucide-react';
+import { Rocket, Brain, Wifi, Shield, Server, Cloud } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
 
 const Services: React.FC = () => {
@@ -11,6 +11,9 @@ const Services: React.FC = () => {
             case 'Rocket': return <Rocket size={40} />;
             case 'Brain': return <Brain size={40} />;
             case 'Wifi': return <Wifi size={40} />;
+            case 'Shield': return <Shield size={40} />;
+            case 'Server': return <Server size={40} />;
+            case 'Cloud': return <Cloud size={40} />;
             default: return <Rocket size={40} />;
         }
     };

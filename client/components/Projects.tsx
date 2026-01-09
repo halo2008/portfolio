@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Server, Bot, Shield, Smartphone, Brain, X, ChevronRight, Cpu, CheckCircle2 } from 'lucide-react';
+import { Server, Bot, Shield, Smartphone, Brain, Cloud, Wifi, X, CheckCircle2, Cpu, Rocket } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
 import { Project } from '../types';
 
-const iconMap = {
+const iconMap: Record<string, React.ElementType> = {
   'Server': Server,
   'Bot': Bot,
   'Shield': Shield,
   'Smartphone': Smartphone,
-  'Brain': Brain
+  'Brain': Brain,
+  'Cloud': Cloud,
+  'Wifi': Wifi,
+  'Rocket': Rocket
 };
 
 const Projects: React.FC = () => {
@@ -39,7 +42,7 @@ const Projects: React.FC = () => {
           {projects.items.map((project) => {
             const Icon = iconMap[project.iconName];
             return (
-              <div 
+              <div
                 key={project.id}
                 onClick={() => setSelectedProject(project)}
                 className="group relative bg-slate-900/80 backdrop-blur-sm border border-slate-800 rounded-2xl overflow-hidden hover:border-primary/50 transition-all duration-300 hover:shadow-[0_0_30px_rgba(6,182,212,0.15)] flex flex-col cursor-pointer transform hover:-translate-y-1"
@@ -48,9 +51,9 @@ const Projects: React.FC = () => {
                 {project.image && (
                   <div className="h-56 overflow-hidden relative">
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/20 to-transparent z-10 opacity-90" />
-                    <img 
-                      src={project.image} 
-                      alt={project.title} 
+                    <img
+                      src={project.image}
+                      alt={project.title}
                       className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
                     />
                     <div className="absolute top-4 right-4 z-20 bg-slate-900/80 backdrop-blur-sm p-2 rounded-lg border border-slate-700 text-primary shadow-lg">
@@ -64,11 +67,11 @@ const Projects: React.FC = () => {
 
                 <div className={`p-8 flex flex-col flex-grow ${!project.image ? 'pt-8' : 'pt-4'}`}>
                   {!project.image && (
-                     <div className="flex justify-between items-start mb-6">
-                        <div className="p-3 bg-slate-800 rounded-lg group-hover:bg-primary/20 group-hover:text-primary transition-colors">
-                          <Icon size={32} />
-                        </div>
-                     </div>
+                    <div className="flex justify-between items-start mb-6">
+                      <div className="p-3 bg-slate-800 rounded-lg group-hover:bg-primary/20 group-hover:text-primary transition-colors">
+                        <Icon size={32} />
+                      </div>
+                    </div>
                   )}
 
                   <div className="mb-6 relative z-20">
@@ -106,16 +109,16 @@ const Projects: React.FC = () => {
 
       {/* Expanded Modal */}
       {selectedProject && (
-        <div 
+        <div
           className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 bg-darker/90 backdrop-blur-md animate-fade-in-up"
           onClick={() => setSelectedProject(null)}
         >
-          <div 
+          <div
             className="bg-slate-900 border border-slate-700 rounded-3xl max-w-5xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative flex flex-col md:flex-row overflow-hidden"
             onClick={e => e.stopPropagation()}
           >
             {/* Close Button */}
-            <button 
+            <button
               onClick={() => setSelectedProject(null)}
               className="absolute top-4 right-4 z-50 p-2 bg-slate-800/80 text-white rounded-full hover:bg-red-500/80 transition-colors backdrop-blur-sm border border-slate-700"
             >
@@ -126,9 +129,9 @@ const Projects: React.FC = () => {
             <div className="w-full md:w-2/5 h-64 md:h-auto relative bg-slate-950">
               {selectedProject.image ? (
                 <>
-                  <img 
-                    src={selectedProject.image} 
-                    alt={selectedProject.title} 
+                  <img
+                    src={selectedProject.image}
+                    alt={selectedProject.title}
                     className="w-full h-full object-cover opacity-80"
                   />
                   <div className="absolute inset-0 bg-gradient-to-b md:bg-gradient-to-r from-transparent to-slate-900"></div>
@@ -141,7 +144,7 @@ const Projects: React.FC = () => {
                   })()}
                 </div>
               )}
-              
+
               <div className="absolute bottom-6 left-6 right-6">
                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary text-xs font-mono rounded-full border border-primary/20 mb-2 backdrop-blur-sm">
                   {selectedProject.subtitle}
@@ -154,7 +157,7 @@ const Projects: React.FC = () => {
 
             {/* Right/Bottom: Details */}
             <div className="w-full md:w-3/5 p-8 md:p-12 bg-slate-900 flex flex-col">
-              
+
               <div className="space-y-8 flex-grow">
                 {/* Challenge */}
                 <div className="relative pl-6 border-l-2 border-red-500/30">
@@ -176,13 +179,13 @@ const Projects: React.FC = () => {
 
                 {/* Result */}
                 <div className="bg-slate-800/50 p-6 rounded-xl border border-green-500/20 relative overflow-hidden">
-                   <div className="absolute -right-4 -top-4 bg-green-500/10 w-24 h-24 rounded-full blur-2xl"></div>
-                   <h4 className="text-sm uppercase tracking-widest text-green-500 font-bold mb-2 flex items-center gap-2">
-                     <CheckCircle2 size={16} /> {projects.labels.result}
-                   </h4>
-                   <p className="text-white font-medium text-lg relative z-10">
-                     {selectedProject.result}
-                   </p>
+                  <div className="absolute -right-4 -top-4 bg-green-500/10 w-24 h-24 rounded-full blur-2xl"></div>
+                  <h4 className="text-sm uppercase tracking-widest text-green-500 font-bold mb-2 flex items-center gap-2">
+                    <CheckCircle2 size={16} /> {projects.labels.result}
+                  </h4>
+                  <p className="text-white font-medium text-lg relative z-10">
+                    {selectedProject.result}
+                  </p>
                 </div>
               </div>
 
@@ -193,8 +196,8 @@ const Projects: React.FC = () => {
                 </h4>
                 <div className="flex flex-wrap gap-2">
                   {selectedProject.tech.map((t) => (
-                    <span 
-                      key={t} 
+                    <span
+                      key={t}
                       className="px-3 py-1.5 bg-slate-950 border border-slate-700 text-slate-300 text-sm rounded-lg hover:border-primary/50 transition-colors cursor-default"
                     >
                       {t}
