@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { Language, PortfolioContent } from './types';
-import { TRANSLATIONS } from './constants';
+import { PORTFOLIO_DATA } from './data/portfolio';
 
 interface LanguageContextType {
   language: Language;
@@ -16,7 +16,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
   const value = {
     language,
     setLanguage,
-    content: TRANSLATIONS[language]
+    content: PORTFOLIO_DATA[language]
   };
 
   return (

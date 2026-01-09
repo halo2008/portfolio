@@ -8,7 +8,7 @@ export interface Project {
   solution: string;
   tech: string[];
   result: string;
-  iconName: 'Server' | 'Bot' | 'Shield' | 'Smartphone' | 'Brain' | 'Rocket' | 'Wifi';
+  iconName: 'Server' | 'Bot' | 'Shield' | 'Smartphone' | 'Brain' | 'Rocket' | 'Wifi' | 'Cloud';
   image?: string;
 }
 
@@ -21,7 +21,7 @@ export interface ServiceItem {
 export interface TechCategory {
   category: string;
   items: string[];
-  iconName: 'Cloud' | 'Lock' | 'Brain' | 'Code';
+  iconName: 'Cloud' | 'Lock' | 'Brain' | 'Code' | 'Wifi';
 }
 
 export interface ChatMessage {

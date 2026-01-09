@@ -1,12 +1,13 @@
 import React from 'react';
-import { Cloud, Lock, Brain, Code } from 'lucide-react';
+import { Cloud, Lock, Brain, Code, Wifi } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
 
-const iconMap = {
+const iconMap: Record<string, React.ElementType> = {
   'Cloud': Cloud,
   'Lock': Lock,
   'Brain': Brain,
-  'Code': Code
+  'Code': Code,
+  'Wifi': Wifi
 };
 
 const TechStack: React.FC = () => {
