@@ -23,15 +23,23 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
 
   useEffect(() => {
     const saved = localStorage.getItem('language');
+    console.log('LanguageContext: Initial check. Saved:', saved);
     if (!saved) {
-      fetch('https://api.country.is')
+      console.log('LanguageContext: No language saved. Fetching country...');
+      fetch('https://get.geojs.io/v1/ip/country.json')
         .then((res) => res.json())
         .then((data) => {
+          console.log('LanguageContext: API response:', data);
           if (data.country === 'PL') {
+            console.log('LanguageContext: Setting language to PL');
             setLanguage('pl');
+          } else {
+            console.log('LanguageContext: Country is not PL, staying EN');
           }
         })
         .catch((err) => console.error('Geo-IP check failed:', err));
+    } else {
+      console.log('LanguageContext: Language already saved:', saved);
     }
   }, []);
 

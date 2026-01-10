@@ -45,12 +45,10 @@ export class ChatService {
 
             this.logger.log(`RAG: Found ${searchResults.length} relevant chunks in collection '${this.COLLECTION_NAME}'`);
 
-            // Łączenie znalezionej wiedzy w jeden tekst
             const context = searchResults
                 .map(res => res.payload?.content || '')
                 .join('\n\n---\n\n');
 
-            // 3. Generowanie odpowiedzi
             const finalPrompt = `
             You are Konrad's AI Assistant. Use the context below to answer the user's question.
             
@@ -62,12 +60,11 @@ export class ChatService {
             
             INSTRUCTIONS:
             - Only answer based on the provided context.
-            - If the answer is not in the context, say: "Niestety nie mam takich informacji w mojej bazie wiedzy."
+            - If the answer is not in the context, say: "Niestety nie mam takich informacji w mojej bazie wiedzy." or in English: "I don't have such information in my knowledge base."
             `;
 
-            // POPRAWKA 2: Używamy istniejącego modelu (gemini-1.5-flash)
             const result = await this.genAI.models.generateContent({
-                model: 'gemini-1.5-flash', 
+                model: 'gemini-3-flash-preview', 
                 contents: finalPrompt,
             });
 
