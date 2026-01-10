@@ -18,21 +18,21 @@ const COMMON_TECH = {
 export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
   en: {
     name: "Konrad Sędkowski",
-    title: "AI Infrastructure & DevOps Engineer",
-    availability: "🟢 Open for B2B Contracts & Consulting",
+    title: "DevOps Engineer & Full Stack Developer",
+    availability: "🟢 Open for B2B contracts",
     hero: {
-      headline: "Bridging the Gap Between Legacy Hardware, Cloud, and AI.",
-      subheadline: "I help companies migrate from chaotic setups to scalable Kubernetes (GKE) and Cloud Run. I build cost-effective RAG pipelines optimized for CPU inference and integrate industrial IoT hardware with modern ERPs.",
-      tags: ["MLOps", "AI Engineer", "Cloud Architect"],
+      headline: "Bridging the Gap Between Industrial Hardware, Cloud Infrastructure, and Applied AI.",
+      subheadline: "DevOps Engineer & Full Stack Developer with 10+ years of industrial background. I build systems that solve real physical and business problems.",
+      tags: ["DevOps", "Full Stack", "Industrial AI"],
       cta: "View Case Studies",
-      ctaSecondary: "Services / Collaboration",
+      ctaSecondary: "Discuss Your Project",
       profileImage: IMAGES.portrait
     },
     philosophy: {
-      title: "Not Just a DevOps. A Problem Solver.",
-      description: "Most engineers specialize in one narrow field. I thrive on the full spectrum. I turn 'it works on my machine' into 'it works at scale'. From soldering cables to deploying LLMs on Kubernetes, I deliver end-to-end solutions.",
-      differentiatorTitle: "AI-Augmented Cloud Engineering",
-      differentiator: "I don't just deploy infrastructure. I design intelligent systems that learn, adapt, and scale autonomously (e.g., Autoscaling based on AI predictions).",
+      title: "Engineering Pragmatism over Hype.",
+      description: "I am not just a coder. With over a decade of experience in mechanics and production management, I understand that software is merely a tool to solve business problems. My path from repairing heavy machinery to architecting scalable Kubernetes clusters and training AI models gives me a unique advantage: I know how things work from the inside out.",
+      differentiatorTitle: "Reliability & Automation",
+      differentiator: "I don't build over-complicated solutions. I build reliable, secure, and automated systems that drive efficiency—whether it's on a production line or in a Google Cloud cluster.",
       image: IMAGES.factory
     },
     projects: {
@@ -128,21 +128,21 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
   },
   pl: {
     name: "Konrad Sędkowski",
-    title: "Inżynier AI Infrastructure & DevOps",
-    availability: "🟢 Otwarty na kontrakty B2B i konsultacje",
+    title: "DevOps Engineer & Full Stack Developer",
+    availability: "🟢 Otwarty na kontrakty B2B",
     hero: {
-      headline: "Łączę Legacy Hardware, Chmurę i Nowoczesne AI.",
-      subheadline: "Pomagam firmom migrować z chaotycznych VPS-ów na skalowalne środowiska Kubernetes (GKE) i Cloud Run. Buduję efektywne kosztowo systemy RAG (CPU inference) i integruję przemysłowe IoT z nowoczesnymi systemami ERP.",
-      tags: ["MLOps", "Inżynier AI", "Architekt Chmury"],
+      headline: "Łączę Industrial Hardware, Infrastrukturę Chmurową i Applied AI.",
+      subheadline: "DevOps Engineer & Full Stack Developer z 10+ letnim doświadczeniem przemysłowym. Buduję systemy, które rozwiązują realne problemy fizyczne i biznesowe.",
+      tags: ["DevOps", "Full Stack", "Industrial AI"],
       cta: "Zobacz Case Studies",
-      ctaSecondary: "Usługi / Współpraca",
+      ctaSecondary: "Omów Swój Projekt",
       profileImage: IMAGES.portrait
     },
     philosophy: {
-      title: "Nie Tylko DevOps. Problem Solver.",
-      description: "Większość inżynierów specjalizuje się w jednej wąskiej dziedzinie. Ja działam w pełnym spektrum. Potrafię przylutować kabel do wagi przemysłowej, napisać sterownik do odczytu danych, zbudować bezpieczną platformę chmurową do ich przetwarzania i wytrenować model AI przewidujący popyt na podstawie tych danych.",
-      differentiatorTitle: "Efektywność Wspierana przez AI",
-      differentiator: "Nie tylko wdrażam infrastrukturę. Projektuję inteligentne systemy, które uczą się, adaptują i skalują autonomicznie.",
+      title: "Inżynierski Pragmatyzm ponad Hype.",
+      description: "Nie jestem tylko programistą. Dzięki ponad dekadzie doświadczenia w mechanice i zarządzaniu produkcją rozumiem, że oprogramowanie to tylko narzędzie do rozwiązywania problemów biznesowych. Moja droga od naprawy ciężkiego sprzętu do architektury skalowalnych klastrów Kubernetes i trenowania modeli AI daje mi unikalną przewagę: wiem, jak rzeczy działają od podszewki.",
+      differentiatorTitle: "Niezawodność i Automatyzacja",
+      differentiator: "Nie buduję przekomplikowanych rozwiązań. Tworzę niezawodne, bezpieczne i zautomatyzowane systemy, które napędzają wydajność — czy to na linii produkcyjnej, czy w klastrze Google Cloud.",
       image: IMAGES.factory
     },
     projects: {

@@ -1,10 +1,10 @@
 import React from 'react';
-import { ChevronDown, Terminal } from 'lucide-react';
+import { ChevronDown, Terminal, Download, Zap } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
 
 const Hero: React.FC = () => {
   const { content } = useLanguage();
-  const { name, title, hero, availability } = content;
+  const { name, title, hero, availability, philosophy, contact } = content;
 
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center px-6 md:px-12 lg:px-24 pt-20 overflow-hidden bg-dark">
@@ -52,6 +52,26 @@ const Hero: React.FC = () => {
             </div>
           </div>
 
+          {/* About Me / Philosophy Section Merged */}
+          <div className="mb-10 animate-fade-in-up space-y-6" style={{ animationDelay: '0.4s' }}>
+            <div>
+              <h3 className="text-xl font-bold text-white mb-2">{philosophy.title}</h3>
+              <p className="text-slate-400 font-light leading-relaxed text-sm md:text-base">
+                {philosophy.description}
+              </p>
+            </div>
+
+            <div className="bg-surface/50 p-4 rounded-sm border-l-2 border-primary">
+              <h4 className="text-white font-bold text-sm flex items-center gap-2 mb-1">
+                <Zap size={14} className="text-primary" />
+                {philosophy.differentiatorTitle}
+              </h4>
+              <p className="text-slate-400 text-xs md:text-sm font-mono">
+                {philosophy.differentiator}
+              </p>
+            </div>
+          </div>
+
           <div className="flex flex-wrap gap-4 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
             <a
               href="#projects"
@@ -60,14 +80,14 @@ const Hero: React.FC = () => {
               {hero.cta}
               <ChevronDown size={20} />
             </a>
-            {hero.ctaSecondary && (
-              <a
-                href="#services"
-                className="inline-flex items-center gap-2 px-8 py-3.5 bg-surface border border-slate-700 text-slate-300 font-bold rounded-sm hover:border-slate-500 hover:text-white transition-all duration-300"
-              >
-                {hero.ctaSecondary}
-              </a>
-            )}
+            <a
+              href="/cv.pdf"
+              download
+              className="inline-flex items-center gap-2 px-8 py-3.5 bg-surface border border-slate-700 text-slate-300 font-bold rounded-sm hover:border-slate-500 hover:text-white transition-all duration-300"
+            >
+              <Download size={20} />
+              {contact.buttons.cv}
+            </a>
           </div>
         </div>
 
