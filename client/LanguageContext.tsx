@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { Language, PortfolioContent } from './types';
 import { PORTFOLIO_DATA } from './data/portfolio';
 
@@ -11,7 +11,29 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState<Language>('en');
+  const [language, setLanguageState] = useState<Language>(() => {
+    const saved = localStorage.getItem('language');
+    return (saved === 'en' || saved === 'pl') ? saved : 'en';
+  });
+
+  const setLanguage = (lang: Language) => {
+    setLanguageState(lang);
+    localStorage.setItem('language', lang);
+  };
+
+  useEffect(() => {
+    const saved = localStorage.getItem('language');
+    if (!saved) {
+      fetch('https://api.country.is')
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.country === 'PL') {
+            setLanguage('pl');
+          }
+        })
+        .catch((err) => console.error('Geo-IP check failed:', err));
+    }
+  }, []);
 
   const value = {
     language,

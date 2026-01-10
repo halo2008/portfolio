@@ -8,7 +8,7 @@ import { v5 as uuidv5 } from 'uuid';
 export class IngestionService {
     private readonly logger = new Logger(IngestionService.name);
     private genAI: GoogleGenAI;
-    private readonly COLLECTION_NAME = 'portfolio_knowledge';
+    private readonly COLLECTION_NAME = 'portfolio';
     private readonly NAMESPACE_UUID = '1b671a64-40d5-491e-99b0-da01ff1f3341';
 
     constructor(@Inject(QDRANT_CLIENT) private readonly qdrantClient: QdrantClient) {
