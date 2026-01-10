@@ -44,7 +44,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     tech: ["IoT", "NestJS", "RS232", "Hardware", "FFmpeg"],
                     result: "Automatic weight logging upon license plate recognition. 100% digitalization of the goods receipt process.",
                     iconName: 'Wifi',
-                    image: "" // Missing: Truck Scale/ANPR/Logistics image
+                    image: "/img/anpr.jpg"
                 },
                 {
                     id: '3',
