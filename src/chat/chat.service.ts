@@ -2,14 +2,13 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { GoogleGenAI } from '@google/genai';
 import { QdrantClient } from '@qdrant/js-client-rest';
-import { QDRANT_CLIENT } from '../qdrant/qdrant.provider'; // Ścieżka do providera
+import { QDRANT_CLIENT } from '../qdrant/qdrant.provider';
 
 @Injectable()
 export class ChatService {
     private readonly logger = new Logger(ChatService.name);
     private genAI: GoogleGenAI;
 
-    // Nazwa Twojej kolekcji w Qdrant (musi być stworzona wcześniej!)
     private readonly COLLECTION_NAME = 'portfolio_knowledge';
 
     constructor(
@@ -27,8 +26,6 @@ export class ChatService {
         if (!this.genAI) return "System Error: AI Brain not connected.";
 
         try {
-            // KROK 1: Zamień pytanie użytkownika na wektor (Embedding)
-            // To kluczowe w RAG - szukamy po znaczeniu, nie po słowach kluczowych
             const embeddingResult = await this.genAI.models.embedContent({
                 model: 'text-embedding-004',
                 contents: userMessage,
@@ -38,22 +35,17 @@ export class ChatService {
             if (!queryVector) {
                 throw new Error("Failed to generate embedding");
             }
-
-            // KROK 2: Przeszukaj Qdrant (Semantic Search)
             const searchResults = await this.qdrantClient.search(this.COLLECTION_NAME, {
                 vector: queryVector,
-                limit: 3, // Pobierz 3 najbardziej pasujące fragmenty wiedzy
+                limit: 3,
                 with_payload: true,
             });
-
-            // Zbuduj kontekst z wyników (jeśli coś znaleziono)
             const context = searchResults
-                .map(res => res.payload?.content || '') // Zakładam, że tekst trzymasz w polu 'content'
+                .map(res => res.payload?.content || '')
                 .join('\n\n---\n\n');
 
             this.logger.log(`RAG Context found: ${searchResults.length} chunks`);
 
-            // KROK 3: Generuj odpowiedź z kontekstem
             const finalPrompt = `
       You are Konrad's AI Assistant. Use the context below to answer the user's question.
       If the answer is not in the context, say you don't know (or answer based on general knowledge if it's chit-chat).
