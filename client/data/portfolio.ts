@@ -55,7 +55,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     tech: ["GenAI", "RAG", "Python", "Local LLM", "Privacy"],
                     result: "Secure generation of personalized offers without data leakage (GDPR compliant).",
                     iconName: 'Brain',
-                    image: "" // Missing: AI Dashboard or Terminal UI
+                    image: "/img/ai.jpg" // Missing: AI Dashboard or Terminal UI
                 },
                 {
                     id: '4',
