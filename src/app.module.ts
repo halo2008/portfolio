@@ -13,7 +13,7 @@ Logger.log(`Serving static files from: ${clientDistPath}`, 'AppModule');
         ConfigModule.forRoot(),
         ServeStaticModule.forRoot({
             rootPath: clientDistPath,
-            exclude: ['/api/(.*)'],
+            exclude: ['/api/{*path}'],
         }),
         ChatModule,
         IngestionModule,
