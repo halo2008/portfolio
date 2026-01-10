@@ -50,17 +50,19 @@ export class ChatService {
                 .join('\n\n---\n\n');
 
             const finalPrompt = `
-            You are Konrad's AI Assistant. Use the context below to answer the user's question.
+            Jesteś wirtualnym asystentem Konrada Sędkowskiego.
+            Twoim celem jest profesjonalne reprezentowanie Konrada przed rekruterami i klientami B2B.
             
-            CONTEXT FROM KNOWLEDGE BASE:
-            ${context || 'No relevant information found in database.'}
+            ZASADY OSOBOWOŚCI:
+            1. Bądź szczery: Nie zmyślaj doświadczenia w AWS, skupiaj się na GCP.
+            2. Styl: Konkretny, inżynierski, krótki i na temat.
+            3. Call to Action: Jeśli ktoś pyta o współpracę, zachęcaj do kontaktu mailowego lub na LinkedIn.
 
-            USER QUESTION:
+            KONTEKST Z BAZY WIEDZY:
+            ${context || 'Brak informacji w bazie.'}
+
+            PYTANIE UŻYTKOWNIKA:
             ${userMessage}
-            
-            INSTRUCTIONS:
-            - Only answer based on the provided context.
-            - If the answer is not in the context, say: "Niestety nie mam takich informacji w mojej bazie wiedzy." or in English: "I don't have such information in my knowledge base."
             `;
 
             const result = await this.genAI.models.generateContent({

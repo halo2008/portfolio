@@ -55,7 +55,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     tech: ["GenAI", "RAG", "Python", "Local LLM", "Privacy"],
                     result: "Secure generation of personalized offers without data leakage (GDPR compliant).",
                     iconName: 'Brain',
-                    image: "/img/ai.jpg" // Missing: AI Dashboard or Terminal UI
+                    image: "/img/ai.jpg"
                 },
                 {
                     id: '4',
@@ -66,7 +66,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     tech: ["Android", "Kotlin", "Zebra", "CPCL", "Firebase"],
                     result: "Full control over steel labeling process and automatic reporting of sales department KPIs.",
                     iconName: 'Smartphone',
-                    image: "" // Missing: Mobile App Screenshot
+                    image: "/img/mobile.jpg"
                 },
                 {
                     id: '5',
@@ -77,7 +77,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     tech: ["AI", "Computer Vision", "R&D", "Process Automation"],
                     result: "Data extraction accuracy increased from 75% to 95%.",
                     iconName: 'Brain',
-                    image: "" // Missing: Document Processing/OCR Visualization
+                    image: "/img/invoice.jpg"
                 },
                 {
                     id: '6',
@@ -88,7 +88,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     tech: ["Microservices", "Docker", "Redis", "WebSockets"],
                     result: "Functional MVP supporting multiple tenants with data isolation.",
                     iconName: 'Bot',
-                    image: "" // Missing: Chat Widget Interface
+                    image: "/img/chat.jpg"
                 }
             ]
         },
