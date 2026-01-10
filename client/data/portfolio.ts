@@ -18,7 +18,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             description: "I am not just a coder. With over a decade of experience in mechanics and production management, I understand that software is merely a tool to solve business problems. My path from repairing heavy machinery to architecting scalable Kubernetes clusters and training AI models gives me a unique advantage: I know how things work from the inside out.",
             differentiatorTitle: "Reliability & Automation",
             differentiator: "I don't build over-complicated solutions. I build reliable, secure, and automated systems that drive efficiency—whether it's on a production line or in a Google Cloud cluster.",
-            image: "" // Missing: Factory/Industrial abstract image
+            image: "/img/industrial.jpg"
         },
         projects: {
             title: "Featured Projects",
@@ -33,7 +33,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     tech: ["Kubernetes", "DevSecOps", "GKE", "Terraform", "Vault"],
                     result: "Eliminated downtime (Zero Downtime Deployments), fully automated Disaster Recovery, and ensured security compliance.",
                     iconName: 'Cloud',
-                    image: "" // Missing: GKE Cluster/Cloud Architecture Diagram
+                    image: "/img/gke.jpg"
                 },
                 {
                     id: '2',
