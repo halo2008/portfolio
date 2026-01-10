@@ -19,6 +19,8 @@ export class IngestionService {
     async processFile(file: Express.Multer.File) {
         if (!this.genAI) throw new Error('Gemini API Key missing');
 
+        await this.ensureCollectionExists();
+
         const content = file.buffer.toString('utf-8');
         this.logger.log(`Processing file: ${file.originalname}, size: ${content.length}`);
 
@@ -60,7 +62,12 @@ export class IngestionService {
             }
         }
 
-        const stats = await this.qdrantClient.getCollection(this.COLLECTION_NAME);
+        let stats = { points_count: 0 };
+        try {
+            stats = await this.qdrantClient.getCollection(this.COLLECTION_NAME) as any;
+        } catch (e) {
+            this.logger.warn('Could not retrieve collection stats after ingestion', e);
+        }
 
         return {
             status: 'Success',
@@ -68,5 +75,19 @@ export class IngestionService {
             chunksProcessed: upsertedCount,
             totalPointsInDb: stats.points_count
         };
+    }
+
+    private async ensureCollectionExists() {
+        try {
+            await this.qdrantClient.getCollection(this.COLLECTION_NAME);
+        } catch (e) {
+            this.logger.log(`Collection ${this.COLLECTION_NAME} not found, creating...`);
+            await this.qdrantClient.createCollection(this.COLLECTION_NAME, {
+                vectors: {
+                    size: 768,
+                    distance: 'Cosine',
+                },
+            });
+        }
     }
 }
