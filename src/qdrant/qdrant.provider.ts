@@ -7,7 +7,7 @@ export const QdrantProvider: Provider = {
   provide: QDRANT_CLIENT,
   useFactory: () => {
     const logger = new Logger('QdrantProvider');
-
+    
     const url = process.env.QDRANT_URL;
     const apiKey = process.env.QDRANT_API_KEY;
 
@@ -15,7 +15,7 @@ export const QdrantProvider: Provider = {
     logger.log(`URL available: ${!!url}`);
     logger.log(`URL value: "${url}"`);
     logger.log(`API Key available: ${!!apiKey}`);
-
+    
     if (apiKey) {
       logger.log(`API Key length: ${apiKey.length}`);
       logger.log(`API Key start: ${apiKey.substring(0, 5)}...`);
@@ -25,7 +25,9 @@ export const QdrantProvider: Provider = {
     }
     logger.log('-------------------------------');
 
-    
+    if (!url || !apiKey) {
+      throw new Error('Qdrant configuration missing (URL or API Key)');
+    }
 
     return new QdrantClient({
       url: url,
