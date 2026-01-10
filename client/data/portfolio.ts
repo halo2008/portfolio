@@ -214,7 +214,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             description: "Nie jestem tylko koderem. Z ponad dekadą doświadczenia w mechanice i zarządzaniu produkcją, rozumiem, że software to tylko narzędzie do rozwiązywania problemów biznesowych. Moja droga od naprawy ciężkich maszyn do architektury klastrów Kubernetes daje mi unikalną przewagę: wiem, jak rzeczy działają od środka.",
             differentiatorTitle: "Niezawodność i Automatyzacja",
             differentiator: "Nie buduję przekomplikowanych rozwiązań. Buduję niezawodne, bezpieczne i zautomatyzowane systemy, które napędzają efektywność – czy to na linii produkcyjnej, czy w klastrze Google Cloud.",
-            image: ""
+            image: "/img/industrial.jpg"
         },
         projects: {
             title: "Wybrane Projekty",
@@ -229,7 +229,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     tech: ["Kubernetes", "DevSecOps", "GKE", "Terraform", "Vault"],
                     result: "Eliminacja przestojów (Zero Downtime Deployments), pełna automatyzacja odzyskiwania (Disaster Recovery) i zgodność ze standardami bezpieczeństwa.",
                     iconName: 'Cloud',
-                    image: ""
+                    image: "/img/gke.jpg"
                 },
                 {
                     id: '2',
@@ -240,7 +240,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     tech: ["IoT", "NestJS", "RS232", "Hardware", "FFmpeg"],
                     result: "Automatyczny zapis wagi po rozpoznaniu tablicy rejestracyjnej. 100% cyfryzacja procesu przyjęcia towaru.",
                     iconName: 'Wifi',
-                    image: ""
+                    image: "/img/anpr.jpg"
                 },
                 {
                     id: '3',
@@ -251,7 +251,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     tech: ["GenAI", "RAG", "Python", "Local LLM", "Privacy"],
                     result: "Bezpieczne generowanie spersonalizowanych ofert bez wycieku danych (GDPR compliant).",
                     iconName: 'Brain',
-                    image: ""
+                    image: "/img/ai.jpg"
                 },
                 {
                     id: '4',
@@ -262,7 +262,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     tech: ["Android", "Kotlin", "Zebra", "CPCL", "Firebase"],
                     result: "Pełna kontrola nad procesem etykietowania stali i automatyczne raportowanie KPI działu handlowego.",
                     iconName: 'Smartphone',
-                    image: ""
+                    image: "/img/mobile.jpg"
                 },
                 {
                     id: '5',
@@ -273,7 +273,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     tech: ["AI", "Computer Vision", "R&D", "Process Automation"],
                     result: "Wzrost skuteczności ekstrakcji danych z 75% do 95%.",
                     iconName: 'Brain',
-                    image: ""
+                    image: "/img/invoice.jpg"
                 },
                 {
                     id: '6',
@@ -284,7 +284,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     tech: ["Microservices", "Docker", "Redis", "WebSockets"],
                     result: "Działający MVP obsługujący wielu tenantów z izolacją danych.",
                     iconName: 'Bot',
-                    image: ""
+                    image: "/img/chat.jpg"
                 }
             ]
         },
