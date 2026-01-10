@@ -3,7 +3,7 @@ import { QdrantClient } from '@qdrant/js-client-rest';
 
 export const QDRANT_CLIENT = 'QDRANT_CLIENT';
 
-export const qdrantProvider: Provider = {
+export const QdrantProvider: Provider = {
   provide: QDRANT_CLIENT,
   useFactory: () => {
     const logger = new Logger('QdrantProvider');

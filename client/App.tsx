@@ -31,7 +31,7 @@ const AppContent: React.FC = () => {
 
       {/* Global Navbar */}
       <nav className="fixed top-0 left-0 right-0 z-40 backdrop-blur-md bg-darker/80 border-b border-slate-800 h-16 flex items-center justify-between px-6 lg:px-24 transition-all duration-300">
-        <span className="font-mono font-bold text-xl text-white tracking-tighter">KS<span className="text-primary">.dev</span></span>
+        <span className="font-mono font-bold text-xl text-white tracking-tighter">ks-infra<span className="text-primary">.dev</span></span>
 
         <div className="flex items-center gap-8">
           <div className="hidden md:flex gap-8 text-sm font-medium text-slate-400">
