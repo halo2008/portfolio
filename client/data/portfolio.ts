@@ -222,7 +222,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             items: [
                 {
                     id: '1',
-                    title: "Secure Multi-Tenant Container Platform on Google Cloud (GKE)",
+                    title: "Bezpieczna Platforma Kontenerowa Multi-Tenant na Google Cloud (GKE)",
                     subtitle: "DevSecOps • Kubernetes",
                     challenge: "Migracja systemu ERP z awaryjnej infrastruktury VPS (Single Point of Failure, problemy z backupami) do skalowalnego środowiska chmurowego.",
                     solution: "Zaprojektowanie klastra GKE od zera. Wdrożenie HashiCorp Vault do zarządzania sekretami, polityk sieciowych Calico (Default Deny) oraz WAF na warstwie Ingress. Automatyzacja wdrażania za pomocą skryptów Helm i Bash.",
@@ -233,8 +233,8 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 },
                 {
                     id: '2',
-                    title: "Warehouse Logistics Automation: Integrating Industrial Scales & ANPR with ERP",
-                    subtitle: "IoT • Hardware Integration",
+                    title: "Automatyzacja Logistyki Magazynowej: Integracja Wag Przemysłowych i ANPR z ERP",
+                    subtitle: "IoT • Integracja Hardware",
                     challenge: "Wagi samochodowe komunikujące się przez przestarzały protokół RS232 oraz kamery 4K (H.265) dławiące komputery biurowe.",
                     solution: "Stworzenie middleware tłumaczącego sygnał RS232 na REST API (regex parser). Wdrożenie serwera streamującego wideo (FFmpeg) do transkodowania obrazu z kamer ANPR w czasie rzeczywistym.",
                     tech: ["IoT", "NestJS", "RS232", "Hardware", "FFmpeg"],
@@ -244,8 +244,8 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 },
                 {
                     id: '3',
-                    title: "Privacy-First AI Sales Assistant using Local LLMs & RAG Architecture",
-                    subtitle: "GenAI • RAG • Privacy",
+                    title: "Prywatny Asystent Sprzedaży AI z użyciem Lokalnych LLM i Architektury RAG",
+                    subtitle: "GenAI • RAG • Prywatność",
                     challenge: "Dział handlowy potrzebował wsparcia AI w pisaniu e-maili, ale polityka firmy zabraniała wysyłania danych klientów do publicznych chmur (ChatGPT).",
                     solution: "Wdrożenie lokalnych modeli (Gemma/Phi) na własnej infrastrukturze (CPU optimized/AVX-512). Architektura RAG pobierająca dane klienta z bazy wektorowej i wstrzykująca je do promptu.",
                     tech: ["GenAI", "RAG", "Python", "Local LLM", "Privacy"],
@@ -255,7 +255,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 },
                 {
                     id: '4',
-                    title: "Custom Mobile CRM & Proprietary Printer Drivers for Warehouse Ops",
+                    title: "Dedykowany Mobilny CRM i Własne Sterowniki Drukarek dla Magazynu",
                     subtitle: "Mobile • Hardware",
                     challenge: "Brak sterowników do mobilnych drukarek Zebra dla specyficznego procesu etykietowania oraz potrzeba śledzenia połączeń handlowców.",
                     solution: "Reverse-engineering protokołu drukarki i napisanie własnego sterownika w CPCL. Stworzenie aplikacji Android integrującej logi połączeń z systemem ERP (most Firebase).",
@@ -266,7 +266,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 },
                 {
                     id: '5',
-                    title: "Advanced Invoice Extraction System with 'Prompt-per-Vendor' Logic",
+                    title: "Zaawansowany System Ekstrakcji Faktur z Logiką 'Prompt-per-Vendor'",
                     subtitle: "AI • Computer Vision",
                     challenge: "Niska skuteczność klasycznych OCR (Tesseract) przy polskich fakturach i halucynacje modeli LLM przy analizie całych dokumentów.",
                     solution: "Odejście od OCR na rzecz analizy surowego PDF przez LLM. Opracowanie systemu dynamicznych promptów dobieranych na podstawie rozpoznanego NIP-u wystawcy faktury.",
@@ -277,8 +277,8 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 },
                 {
                     id: '6',
-                    title: "Scalable SaaS AI Chat Widget Architecture",
-                    subtitle: "SaaS • Microservices",
+                    title: "Skalowalna Architektura Widgetu Czat AI (SaaS)",
+                    subtitle: "SaaS • Mikroserwisy",
                     challenge: "Stworzenie lekkiego widgetu czatu, który klienci mogą osadzić na dowolnej stronie, z obsługą historii rozmów i przejmowania czatu przez człowieka.",
                     solution: "Architektura mikroserwisowa oparta na Dockerze. Redis do obsługi sesji i cache’owania, Nginx jako reverse proxy, Postgres z Pgvector dla bazy wiedzy bota.",
                     tech: ["Microservices", "Docker", "Redis", "WebSockets"],
@@ -333,17 +333,17 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             title: "Usługi",
             items: [
                 {
-                    title: "Kubernetes & Cloud Migration",
+                    title: "Kubernetes i Migracja do Chmury",
                     description: "Przenoszenie aplikacji z VPS/On-prem do GKE. Audyt bezpieczeństwa i wdrożenie IaC.",
                     iconName: "Cloud"
                 },
                 {
-                    title: "Custom IoT & Hardware Integration",
+                    title: "Dedykowane IoT i Integracja Hardware",
                     description: "Łączenie nietypowych urządzeń przemysłowych (wagi, kamery, czytniki) z nowoczesnym webem.",
                     iconName: "Wifi"
                 },
                 {
-                    title: "Local AI & RAG Implementation",
+                    title: "Lokalne AI i Wdrożenia RAG",
                     description: "Wdrażanie prywatnych modeli językowych dla firm, które boją się wycieku danych.",
                     iconName: "Brain"
                 }
@@ -353,22 +353,22 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             title: "Stack Technologiczny",
             items: [
                 {
-                    category: "Cloud & DevOps",
+                    category: "Cloud i DevOps",
                     items: ["Kubernetes (GKE, On-premise)", "Docker", "Helm", "Terraform", "Bash Scripting"],
                     iconName: 'Cloud'
                 },
                 {
-                    category: "Security & Observability",
+                    category: "Bezpieczeństwo i Obserwowalność",
                     items: ["HashiCorp Vault", "ModSecurity WAF", "Calico (Zero Trust)", "Prometheus", "Grafana", "Loki", "Jaeger"],
                     iconName: 'Lock'
                 },
                 {
-                    category: "Backend & AI",
+                    category: "Backend i AI",
                     items: ["NestJS (TypeScript)", "Python", "Local LLM Inference (Ollama, Gemma)", "RAG Architecture", "Milvus/Pgvector", "PostgreSQL", "Redis"],
                     iconName: 'Brain'
                 },
                 {
-                    category: "Mobile, IoT & Hardware",
+                    category: "Mobile, IoT i Hardware",
                     items: ["Android (Kotlin)", "Jetpack Compose", "RS232", "CPCL (Zebra Printers)", "Modbus", "ANPR Cameras", "Digital Scales"],
                     iconName: 'Wifi'
                 }

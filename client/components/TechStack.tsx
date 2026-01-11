@@ -18,7 +18,7 @@ const TechStack: React.FC = () => {
     <div className="mt-24">
       <div className="flex items-center gap-3 mb-10 text-white font-bold text-2xl">
         <Code className="text-primary" size={24} />
-        <h3>Technical Arsenal</h3>
+        <h3>{techStack.title}</h3>
       </div>
 
       <div className="grid md:grid-cols-2 gap-8">
