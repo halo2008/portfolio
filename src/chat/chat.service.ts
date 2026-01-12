@@ -2,39 +2,45 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { GoogleGenAI } from '@google/genai';
 import { QdrantClient } from '@qdrant/js-client-rest';
 import { QDRANT_CLIENT } from '../qdrant/qdrant.provider';
+import { SlackService } from '../slack/slack.service';
 
 @Injectable()
 export class ChatService {
     private readonly logger = new Logger(ChatService.name);
     private genAI: GoogleGenAI;
-
-    private readonly COLLECTION_NAME = 'portfolio'; 
+    private readonly COLLECTION_NAME = 'portfolio';
 
     constructor(
         @Inject(QDRANT_CLIENT) private readonly qdrantClient: QdrantClient,
+        private readonly slackService: SlackService,
     ) {
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey) {
-            this.logger.error('CRITICAL: GEMINI_API_KEY is missing.');
+            this.logger.error('CRITICAL: GEMINI_API_KEY is missing. AI Brain dead.');
         } else {
             this.genAI = new GoogleGenAI({ apiKey });
         }
     }
 
-    async generateResponse(userMessage: string): Promise<string> {
+    async generateResponse(userMessage: string, socketId?: string): Promise<string> {
         if (!this.genAI) return "System Error: AI Brain not connected.";
 
+        const slackThreadTs = await this.slackService.logNewConversation(userMessage, socketId);
+
         try {
+            if (!userMessage.trim()) throw new Error("Empty message provided");
+
             const embeddingResult = await this.genAI.models.embedContent({
                 model: 'text-embedding-004',
-                contents: userMessage, 
+                contents: [
+                    { role: 'user', parts: [{ text: userMessage }] }
+                ] as any,
             });
 
             const queryVector = embeddingResult.embeddings?.[0]?.values;
 
             if (!queryVector) {
-                this.logger.error('Embedding failed', embeddingResult);
-                throw new Error("Failed to generate embedding");
+                throw new Error("Failed to generate embedding: Vector is null");
             }
 
             const searchResults = await this.qdrantClient.search(this.COLLECTION_NAME, {
@@ -43,7 +49,7 @@ export class ChatService {
                 with_payload: true,
             });
 
-            this.logger.log(`RAG: Found ${searchResults.length} relevant chunks in collection '${this.COLLECTION_NAME}'`);
+            this.logger.log(`RAG: Found ${searchResults.length} relevant chunks.`);
 
             const context = searchResults
                 .map(res => res.payload?.content || '')
@@ -66,15 +72,26 @@ export class ChatService {
             `;
 
             const result = await this.genAI.models.generateContent({
-                model: 'gemini-3-flash-preview', 
+                model: 'gemini-3.0-flash-preview',
                 contents: finalPrompt,
             });
 
-            return result.text || "I couldn't generate a response.";
+            const responseText = result.text || "I couldn't generate a response.";
+
+            if (slackThreadTs) {
+                await this.slackService.logAiResponse(slackThreadTs, responseText);
+            }
+
+            return responseText;
 
         } catch (error) {
             this.logger.error("RAG Pipeline Error detailed:", error);
-            return "Something went wrong while accessing my memory.";
+
+            if (slackThreadTs) {
+                await this.slackService.logAiResponse(slackThreadTs, `❌ *ERROR generating response:* ${error.message}`);
+            }
+
+            return "Something went wrong while accessing my memory. Please contact Konrad directly.";
         }
     }
 }
