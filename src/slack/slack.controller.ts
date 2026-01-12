@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpCode, HttpStatus, Logger, Inject, forwardRef } from '@nestjs/common';
+import { Controller, Post, Get, Body, HttpCode, HttpStatus, Logger, Inject, forwardRef } from '@nestjs/common';
 import { ConversationStateService } from '../chat/conversation-state.service';
 import { ChatGateway } from '../chat/chat.gateway';
 
@@ -10,6 +10,11 @@ export class SlackController {
         private readonly conversationState: ConversationStateService,
         @Inject(forwardRef(() => ChatGateway)) private readonly chatGateway: ChatGateway,
     ) { }
+
+    @Get()
+    checkStatus() {
+        return "Slack Controller is ready. Please use POST /slack/events for Slack Event Subscriptions.";
+    }
 
     @Post('events')
     @HttpCode(HttpStatus.OK)

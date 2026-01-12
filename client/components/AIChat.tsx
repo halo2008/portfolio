@@ -6,7 +6,7 @@ import { io, Socket } from 'socket.io-client';
 
 // Initialize socket connection outside component to avoid reconnects on re-render
 // In production, use an environment variable for the URL
-const socket: Socket = io('http://localhost:3000');
+const socket: Socket = io('http://localhost:8080');
 
 const AIChat: React.FC = () => {
   const { content, language } = useLanguage();
@@ -114,8 +114,8 @@ const AIChat: React.FC = () => {
               >
                 <div
                   className={`max-w-[80%] p-3 rounded-2xl text-sm leading-relaxed ${msg.role === 'user'
-                      ? 'bg-primary text-darker rounded-tr-none font-medium'
-                      : 'bg-slate-800 text-slate-200 rounded-tl-none border border-slate-700'
+                    ? 'bg-primary text-darker rounded-tr-none font-medium'
+                    : 'bg-slate-800 text-slate-200 rounded-tl-none border border-slate-700'
                     }`}
                 >
                   {msg.text}
