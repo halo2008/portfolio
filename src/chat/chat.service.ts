@@ -78,7 +78,7 @@ export class ChatService {
             `;
 
             const result = await this.genAI.models.generateContent({
-                model: 'gemini-3.0-flash-preview',
+                model: 'gemini-3-flash-preview',
                 contents: finalPrompt,
             });
 
