@@ -5,8 +5,8 @@ import { useLanguage } from '../LanguageContext';
 import { io, Socket } from 'socket.io-client';
 
 // Initialize socket connection outside component to avoid reconnects on re-render
-// In production, use an environment variable for the URL
-const socket: Socket = io('http://localhost:8080');
+// When no URL is provided, it defaults to window.location.origin
+const socket: Socket = io();
 
 const AIChat: React.FC = () => {
   const { content, language } = useLanguage();
