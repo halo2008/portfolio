@@ -1,12 +1,16 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { ChatController } from './chat.controller';
 import { ChatService } from './chat.service';
 import { QdrantModule } from '../qdrant/qdrant.module';
 import { SlackModule } from '../slack/slack.module';
+import { ChatGateway } from './chat.gateway';
+import { ConversationStateService } from './conversation-state.service';
+import { FirestoreProvider } from '../firestore/firestore.provider';
 
 @Module({
-    imports: [QdrantModule, SlackModule],
+    imports: [QdrantModule, forwardRef(() => SlackModule)],
     controllers: [ChatController],
-    providers: [ChatService],
+    providers: [ChatService, ChatGateway, ConversationStateService, FirestoreProvider],
+    exports: [ChatGateway, ConversationStateService],
 })
 export class ChatModule { }

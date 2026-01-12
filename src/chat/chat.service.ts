@@ -3,6 +3,7 @@ import { GoogleGenAI } from '@google/genai';
 import { QdrantClient } from '@qdrant/js-client-rest';
 import { QDRANT_CLIENT } from '../qdrant/qdrant.provider';
 import { SlackService } from '../slack/slack.service';
+import { ConversationStateService } from './conversation-state.service';
 
 @Injectable()
 export class ChatService {
@@ -13,6 +14,7 @@ export class ChatService {
     constructor(
         @Inject(QDRANT_CLIENT) private readonly qdrantClient: QdrantClient,
         private readonly slackService: SlackService,
+        private readonly conversationState: ConversationStateService,
     ) {
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey) {
@@ -26,6 +28,10 @@ export class ChatService {
         if (!this.genAI) return "System Error: AI Brain not connected.";
 
         const slackThreadTs = await this.slackService.logNewConversation(userMessage, socketId);
+
+        if (slackThreadTs && socketId) {
+            await this.conversationState.linkThreadToSocket(slackThreadTs, socketId);
+        }
 
         try {
             if (!userMessage.trim()) throw new Error("Empty message provided");

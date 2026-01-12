@@ -1,8 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { X, Send, Loader2, Bot } from 'lucide-react';
 import { ChatMessage, LoadingState } from '../types';
-import { generateResponse } from '../services/geminiService';
 import { useLanguage } from '../LanguageContext';
+import { io, Socket } from 'socket.io-client';
+
+// Initialize socket connection outside component to avoid reconnects on re-render
+// In production, use an environment variable for the URL
+const socket: Socket = io('http://localhost:3000');
 
 const AIChat: React.FC = () => {
   const { content, language } = useLanguage();
@@ -16,12 +20,34 @@ const AIChat: React.FC = () => {
 
   // Reset/Init messages when language changes or on first load
   useEffect(() => {
-    setMessages([{ 
-      role: 'model', 
-      text: aiChat.initialMessage, 
-      timestamp: new Date() 
+    setMessages([{
+      role: 'model',
+      text: aiChat.initialMessage,
+      timestamp: new Date()
     }]);
   }, [language, aiChat.initialMessage]);
+
+  // WebSocket Event Listeners
+  useEffect(() => {
+    socket.on('connect', () => {
+      console.log('Connected to WebSocket server');
+    });
+
+    socket.on('messageToClient', (payload: { sender: string, message: string }) => {
+      const modelMsg: ChatMessage = {
+        role: 'model',
+        text: payload.message,
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, modelMsg]);
+      setLoading(LoadingState.SUCCESS);
+    });
+
+    return () => {
+      socket.off('connect');
+      socket.off('messageToClient');
+    };
+  }, []);
 
   const toggleChat = () => setIsOpen(!isOpen);
 
@@ -42,21 +68,14 @@ const AIChat: React.FC = () => {
     setInput('');
     setLoading(LoadingState.LOADING);
 
-    try {
-      const responseText = await generateResponse(input);
-      const modelMsg: ChatMessage = { role: 'model', text: responseText, timestamp: new Date() };
-      setMessages(prev => [...prev, modelMsg]);
-      setLoading(LoadingState.SUCCESS);
-    } catch (error) {
-      setMessages(prev => [...prev, { role: 'model', text: aiChat.error, timestamp: new Date() }]);
-      setLoading(LoadingState.ERROR);
-    }
+    // Send message via WebSocket
+    socket.emit('messageToServer', { text: input });
   };
 
   return (
     <div className="fixed bottom-6 right-6 z-50 font-sans">
       {!isOpen && (
-        <button 
+        <button
           onClick={toggleChat}
           className="bg-primary hover:bg-cyan-400 text-darker p-4 rounded-full shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all hover:scale-110 flex items-center gap-2 font-bold"
         >
@@ -89,16 +108,15 @@ const AIChat: React.FC = () => {
           {/* Messages */}
           <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-900/95">
             {messages.map((msg, idx) => (
-              <div 
-                key={idx} 
+              <div
+                key={idx}
                 className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
-                <div 
-                  className={`max-w-[80%] p-3 rounded-2xl text-sm leading-relaxed ${
-                    msg.role === 'user' 
-                      ? 'bg-primary text-darker rounded-tr-none font-medium' 
+                <div
+                  className={`max-w-[80%] p-3 rounded-2xl text-sm leading-relaxed ${msg.role === 'user'
+                      ? 'bg-primary text-darker rounded-tr-none font-medium'
                       : 'bg-slate-800 text-slate-200 rounded-tl-none border border-slate-700'
-                  }`}
+                    }`}
                 >
                   {msg.text}
                 </div>
@@ -124,7 +142,7 @@ const AIChat: React.FC = () => {
               placeholder={aiChat.placeholder}
               className="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-primary transition-colors placeholder-slate-500"
             />
-            <button 
+            <button
               type="submit"
               disabled={loading === LoadingState.LOADING || !input.trim()}
               className="bg-primary text-darker p-2 rounded-xl hover:bg-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"

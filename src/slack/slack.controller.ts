@@ -1,7 +1,6 @@
-import { Controller, Post, Body, HttpCode, HttpStatus, Logger } from '@nestjs/common';
-import { ConversationStateService } from '../chat/conversation-state.service'; 
-// Zakładam, że masz już ChatGateway, jeśli nie - zostawiam komentarz gdzie to wpiąć
-// import { ChatGateway } from '../chat/chat.gateway'; 
+import { Controller, Post, Body, HttpCode, HttpStatus, Logger, Inject, forwardRef } from '@nestjs/common';
+import { ConversationStateService } from '../chat/conversation-state.service';
+import { ChatGateway } from '../chat/chat.gateway';
 
 @Controller('slack')
 export class SlackController {
@@ -9,8 +8,8 @@ export class SlackController {
 
     constructor(
         private readonly conversationState: ConversationStateService,
-        // private readonly chatGateway: ChatGateway, 
-    ) {}
+        @Inject(forwardRef(() => ChatGateway)) private readonly chatGateway: ChatGateway,
+    ) { }
 
     @Post('events')
     @HttpCode(HttpStatus.OK)
@@ -26,26 +25,26 @@ export class SlackController {
 
         // Ignoruj wiadomości, które nie mają treści lub są od botów (np. Twojego własnego)
         if (!event || event.bot_id) {
-            return; 
+            return;
         }
 
         // Sprawdzamy, czy to odpowiedź w wątku (czyli Ty odpisujesz użytkownikowi)
         if (event.thread_ts && event.text) {
             this.logger.log(`Mentor Konrad is typing via Slack! Thread: ${event.thread_ts}`);
-            
+
             // Pobierz SocketID z Firestore na podstawie wątku
             const socketId = await this.conversationState.getSocketId(event.thread_ts);
 
             if (socketId) {
                 this.logger.log(`Found SocketID ${socketId} for this thread. Sending message to user...`);
-                
+
                 // TU JEST MIEJSCE NA WEBSOCKET GATEWAY
                 // To wyśle wiadomość do frontendu użytkownika
-                // this.chatGateway.sendMessageToClient(socketId, {
-                //     sender: 'Konrad (Human)',
-                //     message: event.text
-                // });
-                
+                this.chatGateway.sendMessageToClient(socketId, {
+                    sender: 'Konrad (Human)',
+                    message: event.text
+                });
+
                 this.logger.log(`Message sent to user: "${event.text}"`);
             } else {
                 this.logger.warn(`Orphaned thread! No active socket found for thread ${event.thread_ts}`);
