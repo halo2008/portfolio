@@ -38,6 +38,7 @@ export interface ChatMessage {
   role: 'user' | 'model';
   text: string;
   timestamp: Date;
+  isStreaming?: boolean;
 }
 
 export enum LoadingState {

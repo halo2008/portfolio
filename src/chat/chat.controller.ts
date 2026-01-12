@@ -12,7 +12,11 @@ export class ChatController {
     @Post()
     @HttpCode(HttpStatus.OK)
     async chat(@Body() chatDto: ChatDto) {
-        const response = await this.chatService.generateResponse(chatDto.message);
-        return { response };
+        const stream = this.chatService.generateResponseStream(chatDto.message);
+        let fullResponse = "";
+        for await (const chunk of stream) {
+            fullResponse += chunk;
+        }
+        return { response: fullResponse };
     }
 }

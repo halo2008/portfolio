@@ -39,16 +39,16 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     ): Promise<void> {
         this.logger.log(`Received message from ${client.id}: ${payload.text}`);
 
-        // Send immediate acknowledgement or "typing" status if needed
-        // client.emit('messageToClient', { sender: 'System', message: 'Thinking...' });
-
         try {
-            // Call ChatService to handle the message (RAG + Gemini)
-            // Pass socketId so we can link it to the Slack thread
-            const response = await this.chatService.generateResponse(payload.text, client.id);
+            const stream = this.chatService.generateResponseStream(payload.text, client.id);
 
-            // Send the response back to the client
-            client.emit('messageToClient', { sender: 'AI', message: response });
+            for await (const chunk of stream) {
+                client.emit('messageToClient', { sender: 'AI', message: chunk, isChunk: true });
+            }
+
+            // Optional: Emit a 'done' event if the client needs to know explicitly
+            client.emit('streamComplete', { sender: 'AI' });
+
         } catch (error) {
             this.logger.error(`Error processing message: ${error.message}`);
             client.emit('messageToClient', { sender: 'System', message: 'Error processing your request.' });

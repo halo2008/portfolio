@@ -33,14 +33,39 @@ const AIChat: React.FC = () => {
       console.log('Connected to WebSocket server');
     });
 
-    socket.on('messageToClient', (payload: { sender: string, message: string }) => {
-      const modelMsg: ChatMessage = {
-        role: 'model',
-        text: payload.message,
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, modelMsg]);
-      setLoading(LoadingState.SUCCESS);
+    socket.on('messageToClient', (payload: { sender: string, message: string, isChunk?: boolean }) => {
+      if (payload.isChunk) {
+        setMessages(prev => {
+          const lastMsg = prev[prev.length - 1];
+          if (lastMsg && lastMsg.role === 'model' && lastMsg.isStreaming) {
+            return [
+              ...prev.slice(0, -1),
+              { ...lastMsg, text: lastMsg.text + payload.message }
+            ];
+          } else {
+            return [...prev, { role: 'model', text: payload.message, timestamp: new Date(), isStreaming: true }];
+          }
+        });
+        setLoading(LoadingState.SUCCESS);
+      } else {
+        const modelMsg: ChatMessage = {
+          role: 'model',
+          text: payload.message,
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, modelMsg]);
+        setLoading(LoadingState.SUCCESS);
+      }
+    });
+
+    socket.on('streamComplete', () => {
+      setMessages(prev => {
+        const lastMsg = prev[prev.length - 1];
+        if (lastMsg && lastMsg.isStreaming) {
+          return [...prev.slice(0, -1), { ...lastMsg, isStreaming: false }];
+        }
+        return prev;
+      });
     });
 
     return () => {

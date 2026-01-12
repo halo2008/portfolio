@@ -24,23 +24,26 @@ export class ChatService {
         }
     }
 
-    async generateResponse(userMessage: string, socketId?: string): Promise<string> {
-        if (!this.genAI) return "System Error: AI Brain not connected.";
+    async *generateResponseStream(userMessage: string, socketId?: string): AsyncGenerator<string> {
+        if (!this.genAI) {
+            yield "System Error: AI Brain not connected.";
+            return;
+        }
 
         const slackThreadTs = await this.slackService.logNewConversation(userMessage, socketId);
         if (slackThreadTs && socketId) {
             await this.conversationState.linkThreadToSocket(slackThreadTs, socketId);
         }
 
+        let fullResponse = "";
+
         try {
             if (!userMessage.trim()) throw new Error("Empty message provided");
 
-            // 1. Save User Message
             if (socketId) {
                 await this.conversationState.saveMessage(socketId, 'user', userMessage);
             }
 
-            // 2. Get History
             const history = socketId
                 ? await this.conversationState.getHistory(socketId, 6)
                 : [];
@@ -66,8 +69,7 @@ export class ChatService {
                 .map(res => res.payload?.content || '')
                 .join('\n\n');
 
-            // 3. Generate Response with History
-            const result = await this.genAI.models.generateContent({
+            const result = await this.genAI.models.generateContentStream({
                 model: 'gemini-3-flash-preview',
                 config: {
                     temperature: 0.7,
@@ -87,25 +89,29 @@ export class ChatService {
                 ],
             });
 
-            const responseText = result.text || "I couldn't generate a response.";
-
-            // 4. Save AI Response
-            if (socketId) {
-                await this.conversationState.saveMessage(socketId, 'model', responseText);
+    
+            for await (const chunk of result) {
+                const chunkText = chunk.text;
+                if (chunkText) {
+                    fullResponse += chunkText;
+                    yield chunkText;
+                }
             }
-
-            if (slackThreadTs) {
-                await this.slackService.logAiResponse(slackThreadTs, responseText);
-            }
-
-            return responseText;
 
         } catch (error) {
             this.logger.error("RAG Pipeline Error detailed:", error);
-            if (slackThreadTs) {
-                await this.slackService.logAiResponse(slackThreadTs, `❌ *ERROR:* ${error.message}`);
+            const errorMsg = "Wystąpił błąd systemu. Spróbuj ponownie później lub napisz bezpośrednio do Konrada.";
+            fullResponse = errorMsg;
+            yield errorMsg;
+        } finally {
+            if (fullResponse) {
+                if (socketId) {
+                    await this.conversationState.saveMessage(socketId, 'model', fullResponse);
+                }
+                if (slackThreadTs) {
+                    await this.slackService.logAiResponse(slackThreadTs, fullResponse);
+                }
             }
-            return "Wystąpił błąd systemu. Spróbuj ponownie później lub napisz bezpośrednio do Konrada.";
         }
     }
 
