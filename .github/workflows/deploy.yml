@@ -35,7 +35,9 @@ jobs:
       run: |
         DOCKER_TAG="europe-west1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }}"
         
-        docker build -t $DOCKER_TAG .
+        docker build \
+          --build-arg NEXT_PUBLIC_RECAPTCHA_SITE_KEY="${{ secrets.NEXT_PUBLIC_RECAPTCHA_SITE_KEY }}" \
+          -t $DOCKER_TAG .
         docker push $DOCKER_TAG
 
     - name: Deploy to Cloud Run

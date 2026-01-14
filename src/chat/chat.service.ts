@@ -1,4 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import { firstValueFrom } from 'rxjs';
 import { GoogleGenAI } from '@google/genai';
 import { QdrantClient } from '@qdrant/js-client-rest';
 import { QDRANT_CLIENT } from '../qdrant/qdrant.provider';
@@ -15,6 +17,7 @@ export class ChatService {
         @Inject(QDRANT_CLIENT) private readonly qdrantClient: QdrantClient,
         private readonly slackService: SlackService,
         private readonly conversationState: ConversationStateService,
+        private readonly httpService: HttpService,
     ) {
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey) {
@@ -24,9 +27,17 @@ export class ChatService {
         }
     }
 
-    async *generateResponseStream(userMessage: string, socketId?: string): AsyncGenerator<string> {
+    async *generateResponseStream(userMessage: string, captchaToken: string, socketId?: string): AsyncGenerator<string> {
         if (!this.genAI) {
             yield "System Error: AI Brain not connected.";
+            return;
+        }
+
+        try {
+            await this.verifyCaptcha(captchaToken);
+        } catch (error) {
+            this.logger.warn(`Captcha verification failed: ${error.message}`);
+            yield "System Error: Captcha verification failed.";
             return;
         }
 
@@ -89,7 +100,7 @@ export class ChatService {
                 ],
             });
 
-    
+
             for await (const chunk of result) {
                 const chunkText = chunk.text;
                 if (chunkText) {
@@ -140,5 +151,32 @@ export class ChatService {
         - Use bolding for key technologies (e.g., **Terraform**, **GCP**).
         - Keep answers relatively short unless asked for a detailed explanation.
         `;
+    }
+
+    private async verifyCaptcha(token: string): Promise<boolean> {
+        const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+        if (!secretKey) {
+            this.logger.warn('RECAPTCHA_SECRET_KEY is not set. Skipping verification (DEV MODE).');
+            return true;
+        }
+
+        try {
+            const response = await firstValueFrom(
+                this.httpService.post(
+                    `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`,
+                ),
+            );
+
+            const { success, score } = response.data;
+
+            if (!success || score < 0.5) {
+                throw new Error(`Invalid captcha. Success: ${success}, Score: ${score}`);
+            }
+
+            return true;
+        } catch (error) {
+            this.logger.error(`Captcha verification error: ${error.message}`);
+            throw error;
+        }
     }
 }

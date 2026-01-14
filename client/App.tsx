@@ -69,11 +69,23 @@ const AppContent: React.FC = () => {
   );
 };
 
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
+
 function App() {
   return (
-    <LanguageProvider>
-      <AppContent />
-    </LanguageProvider>
+    <GoogleReCaptchaProvider
+      reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "PLACEHOLDER_SITE_KEY"}
+      scriptProps={{
+        async: false,
+        defer: false,
+        appendTo: "head",
+        nonce: undefined,
+      }}
+    >
+      <LanguageProvider>
+        <AppContent />
+      </LanguageProvider>
+    </GoogleReCaptchaProvider>
   );
 }
 

@@ -6,11 +6,14 @@ import { io, Socket } from 'socket.io-client';
 
 // Initialize socket connection outside component to avoid reconnects on re-render
 // When no URL is provided, it defaults to window.location.origin
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+
 const socket: Socket = io();
 
 const AIChat: React.FC = () => {
   const { content, language } = useLanguage();
   const { aiChat } = content;
+  const { executeRecaptcha } = useGoogleReCaptcha();
 
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -88,13 +91,25 @@ const AIChat: React.FC = () => {
     e?.preventDefault();
     if (!input.trim() || loading === LoadingState.LOADING) return;
 
+    if (!executeRecaptcha) {
+      console.warn('Execute recaptcha not available yet');
+      return;
+    }
+
     const userMsg: ChatMessage = { role: 'user', text: input, timestamp: new Date() };
     setMessages(prev => [...prev, userMsg]);
     setInput('');
     setLoading(LoadingState.LOADING);
 
-    // Send message via WebSocket
-    socket.emit('messageToServer', { text: input });
+    try {
+      const token = await executeRecaptcha('chat_submit');
+      // Send message via WebSocket
+      socket.emit('messageToServer', { text: input, captcha: token });
+    } catch (error) {
+      console.error('Recaptcha execution failed', error);
+      setLoading(LoadingState.ERROR);
+      setMessages(prev => [...prev, { role: 'model', text: 'Error verifying captcha. Please try again.', timestamp: new Date() }]);
+    }
   };
 
   return (

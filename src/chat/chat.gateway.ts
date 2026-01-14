@@ -34,13 +34,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
     @SubscribeMessage('messageToServer')
     async handleMessage(
-        @MessageBody() payload: { text: string },
+        @MessageBody() payload: { text: string; captcha: string },
         @ConnectedSocket() client: Socket,
     ): Promise<void> {
         this.logger.log(`Received message from ${client.id}: ${payload.text}`);
 
         try {
-            const stream = this.chatService.generateResponseStream(payload.text, client.id);
+            const stream = this.chatService.generateResponseStream(payload.text, payload.captcha, client.id);
 
             for await (const chunk of stream) {
                 client.emit('messageToClient', { sender: 'AI', message: chunk, isChunk: true });
