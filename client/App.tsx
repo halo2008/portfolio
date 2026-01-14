@@ -74,7 +74,7 @@ import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 function App() {
   return (
     <GoogleReCaptchaProvider
-      reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "PLACEHOLDER_SITE_KEY"}
+      reCaptchaKey={import.meta.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "PLACEHOLDER_SITE_KEY"}
       scriptProps={{
         async: false,
         defer: false,

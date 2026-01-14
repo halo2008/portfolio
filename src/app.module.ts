@@ -1,5 +1,4 @@
 import { Module, Logger } from '@nestjs/common';
-import { HttpModule } from '@nestjs/axios';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { ConfigModule } from '@nestjs/config';
 import { join, resolve } from 'path';
@@ -18,7 +17,6 @@ Logger.log(`Serving static files from: ${clientDistPath}`, 'AppModule');
         }),
         ChatModule,
         IngestionModule,
-        HttpModule,
     ],
 })
 export class AppModule { }
