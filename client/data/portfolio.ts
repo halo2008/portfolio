@@ -334,17 +334,17 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             items: [
                 {
                     title: "Kubernetes i Migracja do Chmury",
-                    description: "Przenoszenie aplikacji z VPS/On-prem do GKE. Audyt bezpieczeństwa i wdrożenie IaC.",
+                    description: "Kompleksowa migracja aplikacji z VPS/On-prem do Google Kubernetes Engine (GKE). Audyt bezpieczeństwa, wdrożenie Infrastructure as Code (Terraform) oraz optymalizacja kosztów chmury.",
                     iconName: "Cloud"
                 },
                 {
                     title: "Dedykowane IoT i Integracja Hardware",
-                    description: "Łączenie nietypowych urządzeń przemysłowych (wagi, kamery, czytniki) z nowoczesnym webem.",
+                    description: "Łączenie nietypowych urządzeń przemysłowych (wagi, kamery, czytniki RFID) z nowoczesnym webem. Obsługa protokołów RS232/Modbus i wizualizacja danych w czasie rzeczywistym.",
                     iconName: "Wifi"
                 },
                 {
                     title: "Lokalne AI i Wdrożenia RAG",
-                    description: "Wdrażanie prywatnych modeli językowych dla firm, które boją się wycieku danych.",
+                    description: "Wdrażanie prywatnych modeli językowych (Ollama, Local LLM) dla firm, które obawiają się wycieku danych. Budowa baz wiedzy RAG i bezpiecznych asystentów AI działających na własnej infrastrukturze.",
                     iconName: "Brain"
                 }
             ]
