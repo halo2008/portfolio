@@ -8,6 +8,8 @@ import { IngestionModule } from './ingestion/ingestion.module';
 const clientDistPath = resolve(__dirname, '..', 'client', 'dist');
 Logger.log(`Serving static files from: ${clientDistPath}`, 'AppModule');
 
+import { AppController } from './app.controller';
+
 @Module({
     imports: [
         ConfigModule.forRoot(),
@@ -18,5 +20,6 @@ Logger.log(`Serving static files from: ${clientDistPath}`, 'AppModule');
         ChatModule,
         IngestionModule,
     ],
+    controllers: [AppController],
 })
 export class AppModule { }
