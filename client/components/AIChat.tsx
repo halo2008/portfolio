@@ -103,6 +103,7 @@ const AIChat: React.FC = () => {
 
     try {
       const token = await executeRecaptcha('chat_submit');
+      console.log('Recaptcha token generated:', token);
       // Send message via WebSocket
       socket.emit('messageToServer', { text: input, captcha: token });
     } catch (error) {

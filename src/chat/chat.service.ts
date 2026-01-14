@@ -161,13 +161,17 @@ export class ChatService {
         }
 
         try {
+            this.logger.log('Verifying captcha token...');
             const response = await firstValueFrom(
                 this.httpService.post(
                     `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`,
                 ),
             );
 
+            this.logger.debug('Google Recaptcha Response:', response.data);
             const { success, score } = response.data;
+
+            this.logger.log(`Captcha verification result: success=${success}, score=${score}`);
 
             if (!success || score < 0.5) {
                 throw new Error(`Invalid captcha. Success: ${success}, Score: ${score}`);
