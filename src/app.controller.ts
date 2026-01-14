@@ -1,9 +1,14 @@
 import { Controller, Get } from '@nestjs/common';
 
-@Controller('health') // To stworzy endpoint: /api/health (bo masz global prefix 'api')
+@Controller()
 export class AppController {
 
     @Get()
+    root() {
+        return { message: 'API is running' };
+    }
+
+    @Get('health')
     healthCheck() {
         return { status: 'OK', timestamp: new Date().toISOString() };
     }
