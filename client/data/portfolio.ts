@@ -195,7 +195,37 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             status: "Online"
         },
         nav: { home: "Home", projects: "Projects", resume: "About Me", services: "Services", contact: "Contact" },
-        footer: "Open for B2B contracts."
+        footer: "Open for B2B contracts.",
+        landing: {
+            hero: {
+                headline: "Your Technical Documentation available in Slack in 3 seconds. No hallucinations.",
+                subheadline: "Automate Knowledge Sharing. Secure RAG Architecture for Industrial & Tech teams.",
+                cta: "Book a Demo",
+                demoImage: "/img/slack_demo.png"
+            },
+            howItWorks: {
+                title: "How It Works",
+                steps: [
+                    { title: "Documents", description: "Your PDF/Confluence docs are ingested.", iconName: "FileText" },
+                    { title: "Vector Systems", description: "Stored securely in Qdrant (On-premise or Cloud).", iconName: "Database" },
+                    { title: "Gemini Reasoning", description: "Context is retrieved and processed by Gemini Pro.", iconName: "Brain" },
+                    { title: "Slack Response", description: "Answer delivered instantly to your team.", iconName: "MessageSquare" }
+                ]
+            },
+            security: {
+                title: "Security First",
+                description: "Infrastructure maintained by a Cloud & Security Engineer. Your data does not train public models.",
+                features: ["Data Isolation", "GDPR Compliant", "No Public Model Training", "End-to-End Encryption"]
+            },
+            creator: {
+                title: "Built by an Engineer, not an Agency",
+                bio: "Hi, I'm Konrad. I design infrastructure for industry daily. I built this tool because I was tired of searching through 500-page PDFs. I prioritize reliability and security over hype.",
+                name: "Konrad Sędkowski",
+                role: "Senior DevOps & Founder",
+                image: "/portrait.jpg",
+                linkedin: "https://linkedin.com/in/placeholder"
+            }
+        }
     },
     pl: {
         name: "Konrad Sędkowski",
@@ -209,6 +239,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             ctaSecondary: "Omów Projekt",
             profileImage: "/portrait.jpg"
         },
+
         philosophy: {
             title: "Inżynierski Pragmatyzm ponad Hype.",
             description: "Nie jestem tylko koderem. Z ponad dekadą doświadczenia w mechanice i zarządzaniu produkcją, rozumiem, że software to tylko narzędzie do rozwiązywania problemów biznesowych. Moja droga od naprawy ciężkich maszyn do architektury klastrów Kubernetes daje mi unikalną przewagę: wiem, jak rzeczy działają od środka.",
@@ -391,6 +422,36 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             status: "Online"
         },
         nav: { home: "Home", projects: "Projekty", resume: "O mnie", services: "Usługi", contact: "Kontakt" },
-        footer: "Open for B2B contracts."
+        footer: "Open for B2B contracts.",
+        landing: {
+            hero: {
+                headline: "Twoja Dokumentacja Techniczna dostępna w Slacku w 3 sekundy. Bez halucynacji.",
+                subheadline: "Zautomatyzuj dzielenie się wiedzą. Bezpieczna architektura RAG dla zespołów technicznych i przemysłowych.",
+                cta: "Umów Demo",
+                demoImage: "/img/slack_demo.png"
+            },
+            howItWorks: {
+                title: "Jak to działa",
+                steps: [
+                    { title: "Dokumenty", description: "Twoje PDFy i Confluence są indeksowane.", iconName: "FileText" },
+                    { title: "Baza Wektorowa", description: "Bezpieczne przechowywanie w Qdrant.", iconName: "Database" },
+                    { title: "Analiza AI", description: "Gemini przetwarza kontekst i generuje odpowiedź.", iconName: "Brain" },
+                    { title: "Slack", description: "Odpowiedź trafia natychmiast do zespołu.", iconName: "MessageSquare" }
+                ]
+            },
+            security: {
+                title: "Bezpieczeństwo przede wszystkim",
+                description: "Infrastruktura utrzymywana przez inżyniera Cloud & Security. Twoje dane nie trenują modeli Google.",
+                features: ["Izolacja Danych", "Zgodność z RODO", "Brak trenowania na danych klienta", "Szyfrowanie E2E"]
+            },
+            creator: {
+                title: "O Twórcy",
+                bio: "Cześć, jestem Konrad. Na co dzień projektuję infrastrukturę dla przemysłu. Zbudowałem to narzędzie, bo miałem dość szukania w PDF-ach. Stawiam na niezawodność, nie na hype.",
+                name: "Konrad Sędkowski",
+                role: "Senior DevOps & Founder",
+                image: "/portrait.jpg",
+                linkedin: "https://linkedin.com/in/placeholder"
+            }
+        }
     }
 };

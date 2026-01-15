@@ -108,6 +108,35 @@ export interface PortfolioContent {
     error: string;
     status: string;
   };
+  landing: {
+    hero: {
+      headline: string;
+      subheadline: string;
+      cta: string;
+      demoImage: string; // Screenshot of Slack Bot
+    };
+    howItWorks: {
+      title: string;
+      steps: {
+        title: string;
+        description: string;
+        iconName: 'FileText' | 'Database' | 'Brain' | 'MessageSquare'; // Icons for Doc -> Qdrant -> Gemini -> Slack
+      }[];
+    };
+    security: {
+      title: string;
+      description: string;
+      features: string[]; // List of trust markers
+    };
+    creator: {
+      title: string; // "About the Creator"
+      bio: string;
+      name: string;
+      role: string;
+      image: string;
+      linkedin: string;
+    };
+  };
   nav: {
     home: string; // New
     projects: string; // Renamed logic (Case Studies)
