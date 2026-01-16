@@ -53,12 +53,18 @@ export function ChatSimulation() {
                     </div>
 
                     {/* Chat Area */}
-                    <div className="h-[400px] flex flex-col p-6 overflow-y-auto">
+                    <div className="h-[400px] flex flex-col p-6 overflow-y-auto relative">
                         {!hasStarted && (
-                            <div className="flex-1 flex items-center justify-center">
-                                <Button onClick={startDemo} size="lg" className="bg-primary text-black hover:bg-primary/90">
-                                    <Send className="w-4 h-4 mr-2" /> Zapytaj o ostatni transport
-                                </Button>
+                            <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-10">
+                                <motion.div
+                                    initial={{ scale: 0.9, opacity: 0 }}
+                                    animate={{ scale: 1, opacity: 1 }}
+                                    transition={{ duration: 0.3 }}
+                                >
+                                    <Button onClick={startDemo} size="lg" className="bg-primary text-black hover:bg-primary/90 text-md font-bold px-8 py-6 shadow-[0_0_20px_rgba(245,158,11,0.3)]">
+                                        <Send className="w-5 h-5 mr-3" /> Uruchom Demo
+                                    </Button>
+                                </motion.div>
                             </div>
                         )}
 

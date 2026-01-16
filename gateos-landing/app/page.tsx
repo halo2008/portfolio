@@ -4,6 +4,7 @@ import { ChatSimulation } from "@/components/landing/ChatSimulation"
 import { BentoGrid } from "@/components/landing/BentoGrid"
 import { Founder } from "@/components/landing/Founder"
 import { Footer } from "@/components/landing/Footer"
+import { RealChat } from "@/components/landing/RealChat"
 
 export default function Home() {
   return (
@@ -14,6 +15,7 @@ export default function Home() {
       <BentoGrid />
       <Founder />
       <Footer />
+      <RealChat />
     </main>
   )
 }

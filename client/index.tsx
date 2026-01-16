@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import { LanguageProvider } from './LanguageContext';
+import './src/index.css'; // Import Tailwind/Global CSS
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {

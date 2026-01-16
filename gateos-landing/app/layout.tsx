@@ -12,6 +12,8 @@ export const metadata: Metadata = {
   description: "Automate weighbridges, ANPR cameras, and OCR documents with GateOS.",
 };
 
+import { Providers } from "./providers";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -22,7 +24,9 @@ export default function RootLayout({
       <body
         className={`${inter.variable} antialiased bg-background text-text selection:bg-primary selection:text-primary-foreground`}
       >
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );
