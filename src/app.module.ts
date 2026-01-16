@@ -5,7 +5,7 @@ import { join, resolve } from 'path';
 import { ChatModule } from './chat/chat.module';
 import { IngestionModule } from './ingestion/ingestion.module';
 
-const clientDistPath = resolve(__dirname, '..', 'client', 'dist');
+const clientDistPath = resolve(__dirname, '..', 'dist', 'static');
 Logger.log(`Serving static files from: ${clientDistPath}`, 'AppModule');
 
 import { AppController } from './app.controller';

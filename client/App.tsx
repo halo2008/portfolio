@@ -4,16 +4,14 @@ import { LanguageProvider } from './LanguageContext';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 
 // Pages
-import LandingPage from './pages/LandingPage';
 import CVPage from './pages/CVPage';
 
 const AppContent: React.FC = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/cv" element={<CVPage />} />
-        <Route path="/profile" element={<Navigate to="/cv" replace />} />
+        <Route path="/" element={<CVPage />} />
+        <Route path="/cv" element={<Navigate to="/" replace />} />
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
