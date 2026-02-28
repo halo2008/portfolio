@@ -177,6 +177,52 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
       error: "I encountered an error.",
       status: "Online (Gemini 2.5)"
     },
+    landing: {
+      hero: {
+        headline: "Enterprise AI Assistant",
+        subheadline: "RAG-powered Slack bot for instant document queries. Upload PDFs, get answers backed by your knowledge base.",
+        cta: "Try Demo",
+        demoImage: "/img/chat.jpg"
+      },
+      howItWorks: {
+        title: "How It Works",
+        steps: [
+          {
+            title: "Upload Documents",
+            description: "Upload PDFs, manuals, or documentation to the knowledge base.",
+            iconName: "FileText"
+          },
+          {
+            title: "Vector Indexing",
+            description: "Documents are chunked and indexed in Qdrant vector database.",
+            iconName: "Database"
+          },
+          {
+            title: "AI Processing",
+            description: "Gemini AI processes queries with retrieved context.",
+            iconName: "Brain"
+          },
+          {
+            title: "Slack Response",
+            description: "Answers delivered directly in your Slack workspace.",
+            iconName: "MessageSquare"
+          }
+        ]
+      },
+      security: {
+        title: "Enterprise Security",
+        description: "Built with security-first architecture",
+        features: ["End-to-end encryption", "VPC isolation", "GDPR compliant", "SOC 2 ready"]
+      },
+      creator: {
+        title: "About the Architect",
+        bio: "Infrastructure Architect & SRE Consultant specializing in GKE, RAG systems, and Industrial IoT. Building enterprise-grade solutions that bridge physical and digital infrastructure.",
+        name: "Konrad Sędkowski",
+        role: "Infrastructure Architect & SRE Consultant",
+        image: "/portrait.jpg",
+        linkedin: "https://linkedin.com/in/konrad-sedkowski"
+      }
+    },
     nav: { home: "Home", projects: "Case Studies", resume: "Professional Engagements", services: "Services", contact: "Contact" },
     footer: "Konrad Sędkowski. Engineered with React, NestJS, and Gemini AI on Cloud Run."
   },
@@ -241,10 +287,163 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
           title: "R&D: Edge Computing i Przetwarzanie Sygnałów Real-time",
           subtitle: "Android • Przetwarzanie Sygnałów • Baza Edge",
           challenge: "Systemy telemetrii pojazdów wymagają akwizycji danych wysokiej częstotliwości (100Hz+) z lokalnym filtrowaniem w celu redukcji kosztów transmisji do chmury i zapewnienia offline capability. Wyzwaniem było zaimplementowanie przetwarzania sygnałów real-time na urządzeniach Android z ograniczonymi zasobami przy zachowaniu integralności danych.",
+          solution: "Zaprojektowałem system telemetry typu edge-first: 1) Rdzeń Przetwarzania Sygnałów: Implementacja filtrów Moving Average i wygładzania wykładniczego dla redukcji szumu na strumieniach akcelerometru i żyroskopu, z konfigurowalnymi oknami dla różnych warunków jazdy. 2) Port Persystencji Lokalnej: Room DB ze wzorcem circular buffer i automatycznym rozwiązywaniem konfliktów dla architektury offline-first. 3) Adapter Integracji: Integracja Spotify Web API dla kontekstowych rekomendacji muzycznych bazujących na wzorcach zachowań prowadzenia. 4) Obserwowalność: Lokalna analityka z MPAndroidChart dla wizualizacji real-time.",
+          tech: ["Kotlin", "Room DB", "Moving Average Filter", "MPAndroidChart", "WebSockets", "Spotify API"],
+          result: "Redukcja transmisji danych do chmury o 85% przez inteligentne filtrowanie edge. Osiągnięto latencję lokalnego przetwarzania poniżej 10ms dla real-time haptic feedback. 100% funkcjonalności offline z seamless sync przy przywróceniu łączności.",
+          iconName: 'Smartphone',
+          image: IMAGES.projectD
+        }
+      ]
+    },
+    timeline: {
+      title: "Profesjonalne Zaangażowania",
+      items: [
+        {
+          id: '1',
+          period: "Aktualne Zaangażowanie",
+          role: "Infrastructure Architect & SRE Consultant",
+          company: "Tier-1 Dystrybutor Stali Przemysłowej",
+          description: "Prowadzenie architektury platformy Kubernetes zero-trust dla systemów ERP klasy korporacyjnej. Implementacja hardeningu GKE z Vault, politykami Kyverno i segmentacją sieci Calico.",
+          details: [
+            "Zaprojektowano multi-tenant klastry GKE z Workload Identity i Pod Security Standards",
+            "Wdrożono integrację HashiCorp Vault dla dynamicznego zarządzania sekretami",
+            "Ustanowiono stack obserwowalności SRE: Prometheus, Grafana, Loki z custom SLOs",
+            "Zredukowano czas odzyskiwania infrastruktury (RTO) z godzin do minut"
+          ],
+          isCurrent: true
+        },
+        {
+          id: '2',
+          period: "Poprzednie Zaangażowanie",
+          role: "DevSecOps Lead",
+          company: "Enterprise Dostawca Logistyczny",
+          description: "Dostarczanie rozwiązań edge computing IoT przemysłowego i pipeline'ów przetwarzania dokumentów RAG dla klientów z branży ciężkiego przemysłu.",
+          details: [
+            "Zaprojektowano brzegowe gatewaye RS232/Modbus ze wzorcami circuit breaker",
+            "Wdrożono prywatne architektury RAG z kwantyzowanymi LLM na infrastrukturze CPU-only",
+            "Zbudowano pipeline'y przetwarzania wideo real-time z transkodowaniem FFmpeg",
+            "Ustanowiono automatyzację CI/CD redukującą czas deploymentu o 80%"
+          ],
+          isCurrent: false
+        },
+        {
+          id: '3',
+          period: "Poprzednie Zaangażowanie",
+          role: "Systems Engineer",
+          company: "Partner Technologiczny Produkcyjny",
+          description: "Integracja systemów przemysłowych i modernizacja legacy hardware dla środowisk produkcyjnych.",
+          details: [
+            "Zintegrowano 20-letnie wagi przemysłowe z nowoczesnymi systemami ERP w chmurze",
+            "Rozwinięto custom middleware dla translacji protokołów binarnych",
+            "Wdrożono zautomatyzowane procedury backup i disaster recovery"
+          ],
+          isCurrent: false
+        }
+      ]
+    },
+    services: {
+      title: "Usługi Konsultingowe i Wdrożeniowe",
+      items: [
+        {
+          title: "Architektura Platformy Enterprise GKE",
+          description: "Core: Wysoka dostępność, bezpieczeństwo, skalowalność. Ports: Managed GKE, Workload Identity, Izolacja multi-tenant. Adapters: HashiCorp Vault, Polityki Kyverno, Terraform IaC, Calico CNI.",
+          iconName: "Cloud"
+        },
+        {
+          title: "Prywatna Orkiestracja RAG i LLM",
+          description: "Core: Bezpieczne przetwarzanie danych z rozumieniem kontekstu. Ports: Bazy wektorowe, lokalna inferencja LLM, pipeline'y dokumentów. Adapters: Qdrant, LangChain, kwantyzowana Gemma, PgVector.",
+          iconName: "Brain"
+        },
+        {
+          title: "Przemysłowy IoT i Edge Computing",
+          description: "Core: Telemetria real-time, przetwarzanie sygnałów, obserwowalność. Ports: Edge gateways, adaptery protokołów, monitoring SRE. Adapters: Mosty RS232/Modbus, Room DB, FFmpeg, Prometheus.",
+          iconName: "Server"
+        }
+      ]
+    },
+    techStack: {
+      title: "Arsenał Technologiczny",
+      items: [
+        { category: "Infrastruktura Chmurowa", items: COMMON_TECH.cloud, iconName: 'Cloud' },
+        { category: "Bezpieczeństwo i DevOps", items: COMMON_TECH.sec, iconName: 'Lock' },
+        { category: "Inżynieria AI i Danych", items: COMMON_TECH.ai, iconName: 'Brain' },
+        { category: "Full-Stack i Mobile", items: COMMON_TECH.fullstack, iconName: 'Code' }
+      ]
+    },
+    contact: {
+      cta: "Dostępny do Kontraktów B2B i Konsultacji Technicznych",
+      sub: "Specjalizacja w złożonych migracjach infrastruktury i projektowaniu prywatnych systemów AI.",
+      buttons: { cv: "Portfolio Techniczne (PDF)", linkedin: "Kontakt na LinkedIn", email: "Napisz Email" },
+      linkedinUrl: "https://linkedin.com/in/placeholder",
+      emailUrl: "konrad@example.com"
+    },
+    aiChat: {
+      trigger: "Zapytaj AI o mnie",
+      title: "Asystent Konrada",
+      placeholder: "Zapytaj o GKE, RAG lub Industrial IoT...",
+      initialMessage: "Cześć! Jestem Asystentem AI Konrada. Zapytaj mnie o case studies konsultingowe, architekturę GKE, implementacje RAG lub praktyki SRE.",
+      thinking: "Myślę...",
+      error: "Wystąpił błąd.",
+      status: "Online (Gemini 2.5)"
+    },
+    landing: {
+      hero: {
+        headline: "Enterprise AI Assistant",
+        subheadline: "RAG-powered Slack bot do natychmiastowych zapytań o dokumenty. Prześlij PDF-y, otrzymaj odpowiedzi wsparte bazą wiedzy.",
+        cta: "Wypróbuj Demo",
+        demoImage: "/img/chat.jpg"
+      },
+      howItWorks: {
+        title: "Jak To Działa",
+        steps: [
+          {
+            title: "Prześlij Dokumenty",
+            description: "Prześlij PDF-y, instrukcje lub dokumentację do bazy wiedzy.",
+            iconName: "FileText"
+          },
+          {
+            title: "Indeksowanie Wektorowe",
+            description: "Dokumenty są dzielone na fragmenty i indeksowane w bazie wektorowej Qdrant.",
+            iconName: "Database"
+          },
+          {
+            title: "Przetwarzanie AI",
+            description: "Gemini AI przetwarza zapytania z wykorzystaniem pobranego kontekstu.",
+            iconName: "Brain"
+          },
+          {
+            title: "Odpowiedź w Slack",
+            description: "Odpowiedzi dostarczane bezpośrednio w Twoim workspace Slack.",
+            iconName: "MessageSquare"
+          }
+        ]
+      },
+      security: {
+        title: "Bezpieczeństwo Enterprise",
+        description: "Zbudowane z architekturą security-first",
+        features: ["Szyfrowanie end-to-end", "Izolacja VPC", "Zgodność z GDPR", "Gotowość SOC 2"]
+      },
+      creator: {
+        title: "O Architekcie",
+        bio: "Infrastructure Architect & SRE Consultant specjalizujący się w GKE, systemach RAG i Industrial IoT. Budowanie rozwiązań klasy enterprise łączących infrastrukturę fizyczną i cyfrową.",
+        name: "Konrad Sędkowski",
+        role: "Infrastructure Architect & SRE Consultant",
+        image: "/portrait.jpg",
+        linkedin: "https://linkedin.com/in/konrad-sedkowski"
+      }
+    },
+    nav: { home: "Home", projects: "Case Studies", resume: "Profesjonalne Zaangażowania", services: "Usługi", contact: "Kontakt" },
+    footer: "Konrad Sędkowski. Zbudowano w React, NestJS i Gemini AI na Cloud Run."
+  }
+};
+
+// We export English by default for the AI system prompt to contain raw data,
+// but we add an instruction to speak the user's language.
+const DATA = TRANSLATIONS.en;
 
 export const SYSTEM_INSTRUCTION = `
-You are "Konrad's AI Assistant", a helpful agent on the portfolio website of Konrad Sędkowski.
-Your goal is to answer questions about Konrad's experience, skills, and projects in a professional, concise manner suitable for recruiters and B2B clients.
+You are "Konrad's AI Assistant", a helpful agent on the portfolio website of Konrad Sędkowski, an Infrastructure Architect & SRE Consultant.
+Your goal is to answer questions about Konrad's experience, skills, and consultancy case studies in a professional, senior-level manner suitable for B2B clients and technical decision-makers.
 
 IMPORTANT LANGUAGE INSTRUCTION:
 - If the user asks in Polish, reply in Polish.
@@ -257,14 +456,17 @@ Philosophy: ${DATA.philosophy.description}
 Key Differentiator: ${DATA.philosophy.differentiator}
 Availability: ${DATA.availability}
 
-Case Studies (Projects):
+Consultancy Case Studies (Projects):
 ${DATA.projects.items.map(p => `### ${p.title} (${p.subtitle})
 Challenge: ${p.challenge}
 Solution: ${p.solution}
 Tech: ${p.tech.join(', ')}
 Result: ${p.result}`).join('\n\n')}
 
-Services:
+Professional Engagements:
+${DATA.timeline.items.map(e => `- ${e.role} at ${e.company}: ${e.description}`).join('\n')}
+
+Services (Hexagonal Architecture):
 ${DATA.services.items.map(s => `- ${s.title}: ${s.description}`).join('\n')}
 
 Tech Stack:
@@ -272,4 +474,9 @@ ${DATA.techStack.items.map(t => `- ${t.category}: ${t.items.join(', ')}`).join('
 
 Contact:
 Users can contact Konrad via LinkedIn or Email.
+
+TONE GUIDELINES:
+- Use senior-level engineering terminology (idempotency, observability, workload identity, circuit breakers)
+- Focus on business outcomes and technical depth
+- Maintain professional, consultant-level communication
 `;
