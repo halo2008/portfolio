@@ -37,7 +37,7 @@ export class GeminiAiAdapter implements ChatProviderPort {
         try {
             const start = Date.now();
             const response = await this.ai.models.generateContentStream({
-                model: 'gemini-2.0-flash', // Explaining: Using the latest stable flash model.
+                model: 'gemini-2.5-flash', // Updated: Using Gemini 2.5 Flash (stable, widely supported).
                 contents,
                 config: {
                     // Explaining: System instructions provide the persona grounding (Konrad).
@@ -79,7 +79,7 @@ export class GeminiAiAdapter implements ChatProviderPort {
      */
     async generateEmbedding(text: string): Promise<number[]> {
         const result = await this.ai.models.embedContent({
-            model: 'text-embedding-004',
+            model: 'gemini-embedding-001',
             contents: [{ role: 'user', parts: [{ text }] }],
         });
 
