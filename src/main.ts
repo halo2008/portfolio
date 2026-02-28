@@ -10,7 +10,20 @@ async function bootstrap() {
     const logger = app.get(Logger);
 
     // Security: Helmet for HTTP headers
-    app.use(helmet());
+    app.use(helmet({
+        contentSecurityPolicy: {
+            directives: {
+                defaultSrc: ["'self'"],
+                scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://www.google.com", "https://www.gstatic.com"],
+                scriptSrcElem: ["'self'", "'unsafe-inline'", "https://www.google.com", "https://www.gstatic.com"],
+                styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+                fontSrc: ["'self'", "https://fonts.gstatic.com"],
+                imgSrc: ["'self'", "data:", "https://grainy-gradients.vercel.app"],
+                frameSrc: ["'self'", "https://www.google.com", "https://www.recaptcha.net"],
+                connectSrc: ["'self'", "ws:", "wss:"],
+            },
+        },
+    }));
 
     // Validation: Global validation pipe
     app.useGlobalPipes(new ValidationPipe({
