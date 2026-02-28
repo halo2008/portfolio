@@ -74,6 +74,6 @@ const firestoreProvider = {
     }
   ],
   // Explaining: Exporting the UseCase in case other modules need to trigger chat logic.
-  exports: [GenerateChatResponseUseCase, RelayHumanResponseUseCase],
+  exports: [GenerateChatResponseUseCase, RelayHumanResponseUseCase, GeminiAiAdapter, FirestorePersistenceAdapter, QdrantVectorDbAdapter],
 })
 export class ChatModule { }
