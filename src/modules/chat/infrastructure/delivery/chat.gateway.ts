@@ -73,7 +73,9 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, Ch
 
       client.emit('streamComplete', { sender: 'AI' });
     } catch (error) {
-      this.logger.error(`Chat error: ${error.message}`);
+      this.logger.error(`Chat error for socket ${client.id}:`, error.message);
+      this.logger.error(`Full stack:`, error.stack);
+      this.logger.error(`Payload received: text="${payload.text?.substring(0, 50)}", sessionId=${payload.sessionId}, captcha=${!!payload.captcha}`);
       client.emit('messageToClient', { sender: 'System', message: 'Error processing your request.' });
     }
   }
@@ -96,7 +98,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, Ch
 
       client.emit('streamComplete', { sender: 'AI' });
     } catch (error) {
-      this.logger.error(`Chat error: ${error.message}`);
+      this.logger.error(`Chat error for socket ${client.id}:`, error.message);
+      this.logger.error(`Full stack:`, error.stack);
       client.emit('messageToClient', { sender: 'System', message: 'Error processing your request.' });
     }
   }
