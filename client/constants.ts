@@ -6,6 +6,7 @@ const IMAGES = {
   projectA: "https://image.pollinations.ai/prompt/Industrial%20Logistics%20Truck%20Weighing%20Station%20Night%20Cyberpunk%20Neon%20Lights%20Rain%20Reflections%20High%20Tech%20Overlay%20UI%20Data%20Visualization%204k%20realistic?width=1024&height=1024&nologo=true",
   projectB: "https://image.pollinations.ai/prompt/Artificial%20Intelligence%20Brain%20Neural%20Network%20Glowing%20Synapses%20Data%20Flow%20Digital%20Art%20Dark%20Background%20Blue%20Purple%20Neon?width=1024&height=1024&nologo=true",
   projectC: "https://image.pollinations.ai/prompt/Kubernetes%20Cluster%20Abstract%203D%20Visualization%20Server%20Racks%20Glowing%20Blue%20Neon%20Data%20Streams%20Isometric%20View%20Tech%20Background?width=1024&height=1024&nologo=true",
+  projectD: "https://image.pollinations.ai/prompt/Android%20Car%20Telemetry%20Dashboard%20Digital%20Gauges%20Speedometer%20Neon%20Blue%20Accent%20Dark%20Interior%20Modern%20UI%20High%20Tech?width=1024&height=1024&nologo=true",
 };
 
 const COMMON_TECH = {
@@ -18,82 +19,135 @@ const COMMON_TECH = {
 export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
   en: {
     name: "Konrad Sędkowski",
-    title: "DevOps Engineer & Full Stack Developer",
-    availability: "🟢 Open for B2B contracts",
+    title: "Infrastructure Architect & SRE Consultant",
+    availability: "🟢 Available for B2B Contracts",
     hero: {
-      headline: "Bridging the Gap Between Industrial Hardware, Cloud Infrastructure, and Applied AI.",
-      subheadline: "DevOps Engineer & Full Stack Developer with 10+ years of industrial background. I build systems that solve real physical and business problems.",
-      tags: ["DevOps", "Full Stack", "Industrial AI"],
+      headline: "Enterprise Infrastructure & Applied AI Solutions.",
+      subheadline: "GKE Specialist and RAG Expert with 10+ years of industrial systems experience. I architect zero-trust Kubernetes platforms and private AI orchestration systems that solve complex physical and digital infrastructure challenges.",
+      tags: ["GKE Specialist", "RAG Expert", "SRE Consultant"],
       cta: "View Case Studies",
       ctaSecondary: "Discuss Your Project",
       profileImage: IMAGES.portrait
     },
     philosophy: {
       title: "Engineering Pragmatism over Hype.",
-      description: "I am not just a coder. With over a decade of experience in mechanics and production management, I understand that software is merely a tool to solve business problems. My path from repairing heavy machinery to architecting scalable Kubernetes clusters and training AI models gives me a unique advantage: I know how things work from the inside out.",
-      differentiatorTitle: "Reliability & Automation",
-      differentiator: "I don't build over-complicated solutions. I build reliable, secure, and automated systems that drive efficiency—whether it's on a production line or in a Google Cloud cluster.",
+      description: "I am not just a coder. With over a decade of experience in industrial mechanics and production systems management, I understand that software is a tool to solve business-critical problems. My trajectory from heavy machinery engineering to architecting scalable GKE clusters and deploying private RAG systems provides a unique perspective: I know how things work from the physical layer up.",
+      differentiatorTitle: "Reliability & Observability",
+      differentiator: "I don't build over-complicated solutions. I build idempotent, observable, and automated systems that drive efficiency—whether on a production line or in a Google Cloud cluster.",
       image: IMAGES.factory
     },
     projects: {
-      title: "Case Studies & Deployments",
+      title: "Consultancy Case Studies",
       labels: { challenge: "The Challenge", solution: "The Solution", result: "The Result" },
       items: [
         {
           id: '1',
-          title: "High-Accuracy Invoice Processing Pipeline (RAG & Vision AI)",
-          subtitle: "RAG • MLOps • Optimization",
-          challenge: "Standard OCR tools failed to extract structured data from multi-format vendor invoices, leading to 75% manual intervention. The business required a solution that 'understands' layout context without expensive GPU instances.",
-          solution: "I engineered a hybrid pipeline: 1) Vision-First Approach: Replaced raw text extraction with YOLO v8 for document layout analysis. 2) Contextual RAG: Implemented Dynamic Prompting stored in Pgvector to identify vendors. 3) Hardware Optimization: Optimized Gemma 7b quantization to run efficiently on Intel Xeon (AVX-512) CPUs, eliminating dedicated GPUs.",
-          tech: ["Python", "YOLO v8", "PgVector", "Gemma 7b (Quantized)", "Docker"],
-          result: "Accuracy increased from 75% to 95%+. Processing time dropped from minutes to seconds per document. Cloud costs reduced by 60%.",
+          title: "Case Study: Enterprise RAG Orchestration & GenAI Integration",
+          subtitle: "RAG • MLOps • Private LLM Deployment",
+          challenge: "As a RAG Expert, I was engaged by an enterprise client whose standard OCR tools failed to extract structured data from multi-format industrial documentation, leading to 75% manual intervention. The requirement was a solution that understands layout context without expensive GPU instances, ensuring data sovereignty through on-premise deployment.",
+          solution: "I engineered a hybrid pipeline leveraging hexagonal architecture principles: 1) Vision-First Domain: Replaced raw text extraction with YOLO v8 for document layout analysis. 2) Contextual RAG Port: Implemented Dynamic Prompting with Pgvector for vendor identification. 3) Hardware-Optimized Adapter: Optimized Gemma 7b quantization (GGUF) to run efficiently on Intel Xeon AVX-512 CPUs with AVX-512 intrinsics, eliminating dedicated GPU dependency while maintaining inference latency under 500ms.",
+          tech: ["Python", "YOLO v8", "PgVector", "Gemma 7b (Quantized)", "Docker", "LangChain"],
+          result: "Data extraction accuracy increased from 75% to 95%+. Processing time reduced from minutes to seconds per document. Cloud compute costs eliminated through edge deployment. Full data sovereignty maintained.",
           iconName: 'Brain',
           image: IMAGES.projectB
         },
         {
           id: '2',
-          title: "Connecting Legacy Industrial Hardware (IoT) to Cloud ERP",
-          subtitle: "Industrial IoT • Edge Computing",
-          challenge: "A manufacturing plant needed real-time data from 20-year-old heavy-duty truck scales and ANPR cameras. The hardware used archaic protocols (RS232) and was air-gapped from the modern web-based ERP.",
-          solution: "I designed an Edge-to-Cloud bridge: 1) Edge Gateway: Developed a custom Node.js/Python middleware running on local edge devices to buffer and parse binary RS232 streams into JSON. 2) Video Pipeline: Integrated FFmpeg transcoding to stream 4K ANPR feeds (H.265 to H.264). 3) Secure Transport: Established a secure tunnel for bi-directional communication.",
-          tech: ["Node.js", "Python", "RS232/Modbus", "FFmpeg", "WebSockets"],
-          result: "Fully automated weighing process. Removed manual data entry errors and enabled real-time inventory tracking.",
+          title: "Case Study: Industrial IoT & Edge Telemetry System",
+          subtitle: "Industrial IoT • Edge Computing • SRE Observability",
+          challenge: "A Tier-1 heavy industry client required real-time telemetry from legacy industrial hardware including 20-year-old heavy-duty truck scales and ANPR cameras. The equipment utilized archaic serial protocols (RS232/Modbus) and operated in air-gapped environments isolated from modern cloud-based ERP systems.",
+          solution: "I designed an Edge-to-Cloud bridge implementing SRE-grade observability patterns: 1) Edge Gateway Adapter: Developed custom Node.js/Python middleware with circuit breaker patterns for resilience, running on industrial edge devices to buffer and parse binary RS232 streams into structured JSON. 2) Video Pipeline: Integrated FFmpeg transcoding (H.265 to H.264) with hardware acceleration for 4K ANPR feed processing. 3) Secure Transport: Established mutual-TLS tunnels for bidirectional communication with automatic failover.",
+          tech: ["Node.js", "Python", "RS232/Modbus", "FFmpeg", "WebSockets", "Prometheus"],
+          result: "Fully automated weighing process with 99.9% uptime. Eliminated manual data entry errors and enabled real-time inventory tracking. Observability stack provided sub-second alerting for edge device health.",
           iconName: 'Wifi',
           image: IMAGES.projectA
         },
         {
           id: '3',
-          title: "Monolith to Microservices: Zero-Downtime Migration to GKE",
-          subtitle: "DevSecOps • Kubernetes Transformation",
-          challenge: "Critical ERP systems were hosted on a single-point-of-failure VPS with manual deployment scripts. Backups caused system freezes, and secret management was non-existent.",
-          solution: "I orchestrated a complete infrastructure overhaul: 1) IaC: Codified the entire stack using Terraform. 2) GKE Autopilot: Migrated workloads to a highly available cluster. 3) Security First: Implemented HashiCorp Vault interactions and Kyverno policies. 4) Observability: Deployed Prometheus/Grafana/Loki stack.",
-          tech: ["GCP (GKE)", "Terraform", "HashiCorp Vault", "Kyverno", "GitLab CI"],
-          result: "99.9% uptime, automated CI/CD pipelines, and recovery time (RTO) reduced from hours to minutes.",
+          title: "Case Study: Zero-Trust GKE Infrastructure for Heavy Industry",
+          subtitle: "DevSecOps • GKE Specialist • Zero-Trust Architecture",
+          challenge: "Critical ERP systems were hosted on single-point-of-failure VPS infrastructure with manual deployment scripts and no secret management. Backup operations caused system freezes, and the absence of workload identity patterns created security vulnerabilities. The client required enterprise-grade SRE practices with zero-downtime guarantees.",
+          solution: "As a GKE Specialist, I orchestrated a complete infrastructure overhaul following hexagonal architecture: 1) Infrastructure Core: Codified the entire stack using Terraform with remote state and state locking. 2) GKE Autopilot Port: Migrated workloads to a highly available multi-zonal cluster with Workload Identity for pod-level IAM. 3) Security Adapters: Implemented HashiCorp Vault with Kubernetes auth, Kyverno policies for Pod Security Standards, and Calico for network segmentation. 4) Observability Stack: Deployed Prometheus/Grafana/Loki with custom SLO dashboards and alertmanager routing.",
+          tech: ["GCP (GKE)", "Terraform", "HashiCorp Vault", "Kyverno", "Calico", "GitLab CI"],
+          result: "Achieved 99.9% uptime with automated CI/CD pipelines. Recovery Time Objective (RTO) reduced from hours to minutes through idempotent infrastructure-as-code. Zero-trust network segmentation eliminated lateral movement risks.",
           iconName: 'Cloud',
           image: IMAGES.projectC
+        },
+        {
+          id: '4',
+          title: "R&D: Edge Computing & Real-time Signal Processing",
+          subtitle: "Android • Signal Processing • Edge Database",
+          challenge: "Vehicle telemetry systems require high-frequency data acquisition (100Hz+) with local filtering to reduce cloud transmission costs and ensure offline capability. The challenge was implementing real-time signal processing on resource-constrained Android devices while maintaining data integrity and providing responsive UI feedback.",
+          solution: "I architected an edge-first telemetry system: 1) Signal Processing Core: Implemented Moving Average Filters and exponential smoothing algorithms for noise reduction on accelerometer and gyroscope streams, with configurable window sizes for different driving conditions. 2) Local Persistence Port: Room DB with circular buffer pattern and automatic conflict resolution for offline-first architecture. 3) Integration Adapter: Spotify Web API integration for contextual music recommendations based on driving behavior patterns. 4) Observability: Local analytics with MPAndroidChart for real-time visualization.",
+          tech: ["Kotlin", "Room DB", "Moving Average Filter", "MPAndroidChart", "WebSockets", "Spotify API"],
+          result: "Reduced cloud data transmission by 85% through intelligent edge filtering. Achieved sub-10ms local processing latency for real-time haptic feedback. 100% offline functionality with seamless sync when connectivity restored.",
+          iconName: 'Smartphone',
+          image: IMAGES.projectD
         }
       ]
     },
     timeline: {
-      title: "Engineering Path",
-      items: []
+      title: "Professional Engagements",
+      items: [
+        {
+          id: '1',
+          period: "Current Engagement",
+          role: "Infrastructure Architect & SRE Consultant",
+          company: "Tier-1 Industrial Steel Distributor",
+          description: "Leading zero-trust Kubernetes platform architecture for enterprise-grade ERP systems. Implementing GKE security hardening with Vault, Kyverno policies, and Calico network segmentation.",
+          details: [
+            "Architected multi-tenant GKE clusters with Workload Identity and Pod Security Standards",
+            "Implemented HashiCorp Vault integration for dynamic secret management",
+            "Established SRE observability stack: Prometheus, Grafana, Loki with custom SLOs",
+            "Reduced infrastructure recovery time (RTO) from hours to minutes"
+          ],
+          isCurrent: true
+        },
+        {
+          id: '2',
+          period: "Previous Engagement",
+          role: "DevSecOps Lead",
+          company: "Enterprise Logistics Provider",
+          description: "Delivered Industrial IoT edge computing solutions and RAG-based document processing pipelines for heavy industry clients.",
+          details: [
+            "Designed RS232/Modbus edge gateways with circuit breaker resilience patterns",
+            "Implemented private RAG architectures with quantized LLMs on CPU-only infrastructure",
+            "Built real-time video processing pipelines with FFmpeg transcoding",
+            "Established CI/CD automation reducing deployment time by 80%"
+          ],
+          isCurrent: false
+        },
+        {
+          id: '3',
+          period: "Previous Engagement",
+          role: "Systems Engineer",
+          company: "Manufacturing Technology Partner",
+          description: "Industrial systems integration and legacy hardware modernization for production environments.",
+          details: [
+            "Integrated 20-year-old industrial scales with modern cloud ERP systems",
+            "Developed custom middleware for binary protocol translation",
+            "Implemented automated backup and disaster recovery procedures"
+          ],
+          isCurrent: false
+        }
+      ]
     },
     services: {
       title: "Consulting & Implementation Services",
       items: [
         {
-          title: "MVP Development with AI",
-          description: "Rapid prototyping of AI-driven applications (Chatbots, RAG, Automation). I take you from 'idea' to 'deployed on Cloud Run' in weeks, not months.",
-          iconName: "Rocket"
+          title: "Enterprise GKE Platform Architecture",
+          description: "Core: High-availability, security, and scalability. Ports: Managed GKE, Workload Identity, Multi-tenant isolation. Adapters: HashiCorp Vault, Kyverno policies, Terraform IaC, Calico CNI.",
+          iconName: "Cloud"
         },
         {
-          title: "Cloud Cost Optimization",
-          description: "Analysis of your AWS/GCP bills. I optimize Kubernetes clusters, spot instances, and serverless setups to stop burning money.",
-          iconName: "Shield"
+          title: "Private RAG & LLM Orchestration",
+          description: "Core: Secure data processing with context understanding. Ports: Vector DBs, local LLM inference, document pipelines. Adapters: Qdrant, LangChain, quantized Gemma, PgVector.",
+          iconName: "Brain"
         },
         {
-          title: "Legacy System Integration",
-          description: "I build APIs and secure bridges for hardware or software that 'doesn't have an API'.",
+          title: "Industrial IoT & Edge Computing",
+          description: "Core: Real-time telemetry, signal processing, observability. Ports: Edge gateways, protocol adapters, SRE monitoring. Adapters: RS232/Modbus bridges, Room DB, FFmpeg, Prometheus.",
           iconName: "Server"
         }
       ]
@@ -108,128 +162,74 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
       ]
     },
     contact: {
-      cta: "Ready to scale your business? Let's talk.",
-      sub: "Available for complex infrastructure migrations and AI system design.",
-      buttons: { cv: "Download CV (PDF)", linkedin: "Contact on LinkedIn", email: "Email Me" },
+      cta: "Available for B2B Contracts & Technical Consultations",
+      sub: "Specializing in complex infrastructure migrations and private AI system design.",
+      buttons: { cv: "Technical Portfolio (PDF)", linkedin: "Contact on LinkedIn", email: "Email Me" },
       linkedinUrl: "https://linkedin.com/in/placeholder",
       emailUrl: "konrad@example.com"
     },
     aiChat: {
       trigger: "Ask AI About Me",
       title: "Konrad's Assistant",
-      placeholder: "Ask about RAG, Kubernetes, or IoT...",
-      initialMessage: "Hi! I'm Konrad's AI Assistant. Ask me about my case studies, tech stack, or experience.",
+      placeholder: "Ask about GKE, RAG, or Industrial IoT...",
+      initialMessage: "Hi! I'm Konrad's AI Assistant. Ask me about consultancy case studies, GKE architecture, RAG implementations, or SRE practices.",
       thinking: "Thinking...",
       error: "I encountered an error.",
       status: "Online (Gemini 2.5)"
     },
-    nav: { home: "Home", projects: "Case Studies", resume: "About / Resume", services: "Services", contact: "Contact" },
+    nav: { home: "Home", projects: "Case Studies", resume: "Professional Engagements", services: "Services", contact: "Contact" },
     footer: "Konrad Sędkowski. Engineered with React, NestJS, and Gemini AI on Cloud Run."
   },
   pl: {
     name: "Konrad Sędkowski",
-    title: "DevOps Engineer & Full Stack Developer",
-    availability: "🟢 Otwarty na kontrakty B2B",
+    title: "Infrastructure Architect & SRE Consultant",
+    availability: "🟢 Dostępny do Kontraktów B2B",
     hero: {
-      headline: "Łączę Industrial Hardware, Infrastrukturę Chmurową i Applied AI.",
-      subheadline: "DevOps Engineer & Full Stack Developer z 10+ letnim doświadczeniem przemysłowym. Buduję systemy, które rozwiązują realne problemy fizyczne i biznesowe.",
-      tags: ["DevOps", "Full Stack", "Industrial AI"],
+      headline: "Infrastruktura Przedsiębiorstwa i Rozwiązania AI.",
+      subheadline: "Specjalista GKE i ekspert RAG z 10+ letnim doświadczeniem w systemach przemysłowych. Architekturuję platformy Kubernetes zero-trust oraz prywatne systemy orkiestracji AI, rozwiązujące złożone wyzwania infrastruktury fizycznej i cyfrowej.",
+      tags: ["Specjalista GKE", "Ekspert RAG", "Konsultant SRE"],
       cta: "Zobacz Case Studies",
       ctaSecondary: "Omów Swój Projekt",
       profileImage: IMAGES.portrait
     },
     philosophy: {
       title: "Inżynierski Pragmatyzm ponad Hype.",
-      description: "Nie jestem tylko programistą. Dzięki ponad dekadzie doświadczenia w mechanice i zarządzaniu produkcją rozumiem, że oprogramowanie to tylko narzędzie do rozwiązywania problemów biznesowych. Moja droga od naprawy ciężkiego sprzętu do architektury skalowalnych klastrów Kubernetes i trenowania modeli AI daje mi unikalną przewagę: wiem, jak rzeczy działają od podszewki.",
-      differentiatorTitle: "Niezawodność i Automatyzacja",
-      differentiator: "Nie buduję przekomplikowanych rozwiązań. Tworzę niezawodne, bezpieczne i zautomatyzowane systemy, które napędzają wydajność — czy to na linii produkcyjnej, czy w klastrze Google Cloud.",
+      description: "Nie jestem tylko programistą. Dzięki ponad dekadzie doświadczenia w inżynierii mechanicznej i zarządzaniu systemami produkcyjnymi, rozumiem że oprogramowanie jest narzędziem do rozwiązywania problemów krytycznych dla biznesu. Moja trajektoria od inżynierii ciężkich maszyn do architektury skalowalnych klastrów GKE i wdrażania prywatnych systemów RAG daje unikalną perspektywę: wiem jak rzeczy działają od warstwy fizycznej w górę.",
+      differentiatorTitle: "Niezawodność i Obserwowalność",
+      differentiator: "Nie buduję przekomplikowanych rozwiązań. Tworzę systemy idempotentne, obserwowalne i zautomatyzowane, które napędzają efektywność — czy na linii produkcyjnej, czy w klastrze Google Cloud.",
       image: IMAGES.factory
     },
     projects: {
-      title: "Case Studies & Wdrożenia",
+      title: "Case Studies Konsultingowe",
       labels: { challenge: "Wyzwanie", solution: "Rozwiązanie", result: "Wynik" },
       items: [
         {
           id: '1',
-          title: "Inteligentne Przetwarzanie Dokumentów (OCR & RAG)",
-          subtitle: "RAG • MLOps • Optymalizacja",
-          challenge: "Standardowe narzędzia OCR nie radziły sobie z fakturami o zmiennym formacie, co wymuszało 75% ręcznej ingerencji. Biznes potrzebował rozwiązania 'rozumiejącego' kontekst bez drogich instancji GPU.",
-          solution: "Zbudowałem hybrydowy pipeline: 1) Vision-First: Zastąpiłem surowy OCR modelem YOLO v8 do analizy układu. 2) Kontekstowy RAG: Dynamiczne prompty przechowywane w Pgvector identyfikowały dostawców. 3) Optymalizacja Sprzętowa: Gemma 7b skwantyzowana pod procesory Intel Xeon (AVX-512), eliminująca potrzebę GPU.",
-          tech: ["Python", "YOLO v8", "PgVector", "Gemma 7b", "Docker"],
-          result: "Wzrost dokładności z 75% do 95%+. Czas przetwarzania spadł z minut do sekund. Koszty chmury zredukowane o 60%.",
+          title: "Case Study: Orkiestracja RAG i Integracja GenAI",
+          subtitle: "RAG • MLOps • Prywatne Wdrożenie LLM",
+          challenge: "Jako ekspert RAG, zostałem zaangażowany przez klienta korporacyjnego, którego standardowe narzędzia OCR nie radziły sobie z ekstrakcją danych z wieloformatowej dokumentacji przemysłowej, wymuszając 75% ręcznej ingerencji. Wymaganiem było rozwiązanie rozumiejące kontekst layoutu bez drogich instancji GPU, zapewniające suwerenność danych przez wdrożenie on-premise.",
+          solution: "Zaprojektowałem hybrydowy pipeline wykorzystujący zasady architektury heksagonalnej: 1) Domena Vision-First: Zastąpiłem surową ekstrakcję tekstu modelem YOLO v8 do analizy układu dokumentu. 2) Port RAG Kontekstowy: Zaimplementowałem Dynamiczne Prompty z Pgvector do identyfikacji dostawców. 3) Adapter Zoptymalizowany Sprzętowo: Zoptymalizowałem kwantyzację Gemma 7b (GGUF) do efektywnego działania na procesorach Intel Xeon AVX-512, eliminując zależność od dedykowanych GPU przy zachowaniu latencji inferencji poniżej 500ms.",
+          tech: ["Python", "YOLO v8", "PgVector", "Gemma 7b (Kwantyzacja)", "Docker", "LangChain"],
+          result: "Dokładność ekstrakcji danych wzrosła z 75% do 95%+. Czas przetwarzania skrócony z minut do sekund na dokument. Koszty obliczeniowe w chmurze wyeliminowane przez wdrożenie edge. Pełna suwerenność danych zachowana.",
           iconName: 'Brain',
           image: IMAGES.projectB
         },
         {
           id: '2',
-          title: "Integracja Legacy Industrial IoT z Chmurą",
-          subtitle: "Industrial IoT • Edge Computing",
-          challenge: "Fabryka potrzebowała danych w czasie rzeczywistym z 20-letnich wag ciężarowych i kamer ANPR. Sprzęt używał archaicznych protokołów (RS232) i był odcięty od sieci.",
-          solution: "Zaprojektowałem most Edge-to-Cloud: 1) Edge Gateway: Custom middleware (Node.js/Python) na urządzeniach brzegowych do buforowania RS232. 2) Video Pipeline: Transkodowanie FFmpeg strumieni 4K ANPR. 3) Bezpieczny Tunel do dwukierunkowej komunikacji z chmurą.",
-          tech: ["Node.js", "Python", "RS232/Modbus", "FFmpeg", "WebSockets"],
-          result: "Pełna automatyzacja procesu ważenia. Eliminacja błędów ręcznych i śledzenie zapasów w czasie rzeczywistym.",
+          title: "Case Study: System IoT Przemysłowego i Telemetrii Edge",
+          subtitle: "Industrial IoT • Edge Computing • Obserwowalność SRE",
+          challenge: "Klient z branży ciężkiego przemysłu wymagał telemetrii w czasie rzeczywistym z legacy hardware, w tym 20-letnich wag ciężarowych i kamer ANPR. Sprzęt wykorzystywał archaiczne protokoły szeregowe (RS232/Modbus) i działał w środowiskach air-gapped, odizolowanych od nowoczesnych systemów ERP.",
+          solution: "Zaprojektowałem most Edge-to-Cloud implementujący wzorce obserwowalności SRE: 1) Adapter Edge Gateway: Rozwijałem custom middleware Node.js/Python ze wzorcami circuit breaker dla odporności, działający na urządzeniach przemysłowych do buforowania i parsowania binarnych strumieni RS232 do strukturyzowanego JSON. 2) Pipeline Wideo: Zintegrowałem transkodowanie FFmpeg (H.265 do H.264) z akceleracją sprzętową dla przetwarzania strumieni 4K ANPR. 3) Bezpieczny Transport: Wdrożyłem tunele mutual-TLS dla komunikacji dwukierunkowej z automatycznym failover.",
+          tech: ["Node.js", "Python", "RS232/Modbus", "FFmpeg", "WebSockets", "Prometheus"],
+          result: "W pełni zautomatyzowany proces ważenia z 99.9% uptime. Eliminacja błędów ręcznego wprowadzania danych i włączenie śledzenia zapasów w czasie rzeczywistym. Stack obserwowalności zapewnił alerting sub-second dla zdrowia urządzeń edge.",
           iconName: 'Wifi',
           image: IMAGES.projectA
         },
         {
           id: '3',
-          title: "Monolit do Mikroserwisów: Migracja na GKE",
-          subtitle: "DevSecOps • Transformacja Kubernetes",
-          challenge: "Krytyczne systemy ERP stały na pojedynczym VPS z ręcznymi skryptami wdrażania. Brak zarządzania sekretami i częste zamrożenia przy backupach.",
-          solution: "Przeprowadziłem całkowitą przebudowę infrastruktury: 1) IaC: Terraform dla całego stacku. 2) GKE Autopilot: Migracja na klaster wysokiej dostępności. 3) Security First: HashiCorp Vault i polityki Kyverno. 4) Observability: Pełny stack Prometheus/Grafana/Loki.",
-          tech: ["GCP (GKE)", "Terraform", "HashiCorp Vault", "Kyverno", "GitLab CI"],
-          result: "99.9% uptime, automatyczne CI/CD, czas przywracania (RTO) zredukowany z godzin do minut.",
-          iconName: 'Cloud',
-          image: IMAGES.projectC
-        }
-      ]
-    },
-    timeline: {
-      title: "Ścieżka Inżynierska",
-      items: []
-    },
-    services: {
-      title: "Usługi Konsultingowe i Wdrożeniowe",
-      items: [
-        {
-          title: "Budowa MVP z AI",
-          description: "Szybkie prototypowanie aplikacji opartych na AI (Chatboty, RAG, Automatyzacja). Zabieram Cię od 'pomysłu' do 'wdrożenia na Cloud Run' w kilka tygodni.",
-          iconName: "Rocket"
-        },
-        {
-          title: "Optymalizacja Kosztów Chmury",
-          description: "Analiza rachunków AWS/GCP. Optymalizuję klastry Kubernetes i konfiguracje Serverless, aby przestać przepalać budżet.",
-          iconName: "Shield"
-        },
-        {
-          title: "Integracja Systemów Legacy",
-          description: "Buduję API i bezpieczne mosty dla sprzętu lub oprogramowania, które 'nie posiada API'.",
-          iconName: "Server"
-        }
-      ]
-    },
-    techStack: {
-      title: "Arsenał Technologiczny",
-      items: [
-        { category: "Infrastruktura Chmurowa", items: COMMON_TECH.cloud, iconName: 'Cloud' },
-        { category: "Bezpieczeństwo i DevOps", items: COMMON_TECH.sec, iconName: 'Lock' },
-        { category: "Inżynieria AI i Danych", items: COMMON_TECH.ai, iconName: 'Brain' },
-        { category: "Full-Stack i Mobile", items: COMMON_TECH.fullstack, iconName: 'Code' }
-      ]
-    },
-    contact: {
-      cta: "Gotowy na skalowanie swojego biznesu? Porozmawiajmy.",
-      sub: "Dostępny do złożonych migracji infrastruktury i projektowania systemów AI.",
-      buttons: { cv: "Pobierz CV (PDF)", linkedin: "Kontakt na LinkedIn", email: "Napisz Email" },
-      linkedinUrl: "https://linkedin.com/in/placeholder",
-      emailUrl: "konrad@example.com"
-    },
-    aiChat: {
-      trigger: "Zapytaj AI o mnie",
-      title: "Asystent Konrada",
-      placeholder: "Zapytaj o RAG, Kubernetes lub IoT...",
-      initialMessage: "Cześć! Jestem Asystentem AI Konrada. Zapytaj mnie o Case Studies, technologie lub doświadczenie.",
-      thinking: "Myślę...",
+          title: "Case Study: Infrastruktura Zero-Trust GKE dla Przemysłu Ciężkiego",
+          subtitle: "DevSecOps • Specjalista GKE • Architektura Zero-Trust",
+          challenge: "Krytyczne systemy ERP działały na infrastrukturze VPS z pojedynczym punktem awarii, ręcznymi skryptami wdrażania i brakiem zarządzania sekretami. Operacje backup powodowały zamrożenia systemu, a brak wzorców workload identity tworzył luki bezpieczeństwa. Klient wymagał praktyk SRE klasy korporacyjnej z gwarancją zero-downtime.",
       error: "Wystąpił błąd.",
       status: "Online (Gemini 2.5)"
     },

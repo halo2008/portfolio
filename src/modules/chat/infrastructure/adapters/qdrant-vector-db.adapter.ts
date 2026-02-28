@@ -16,24 +16,33 @@ export class QdrantVectorDbAdapter implements VectorDbPort {
     }
 
     async search(vector: number[], threshold: number): Promise<string> {
-        // Explaining: Performing vector search with a score threshold to filter irrelevant data.
-        const results = await this.client.search(this.COLLECTION_NAME, {
-            vector,
-            limit: 5,
-            with_payload: true,
-            score_threshold: threshold,
-        });
+        try {
+            // Explaining: Performing vector search with a score threshold to filter irrelevant data.
+            const results = await this.client.search(this.COLLECTION_NAME, {
+                vector,
+                limit: 5,
+                with_payload: true,
+                score_threshold: threshold,
+            });
 
-        this.logger.debug({
-            msg: 'Vector search performed',
-            threshold,
-            resultsCount: results.length,
-            topScore: results[0]?.score || 0,
-        });
+            this.logger.debug({
+                msg: 'Vector search performed',
+                threshold,
+                resultsCount: results.length,
+                topScore: results[0]?.score || 0,
+            });
 
-        // Explaining: Aggregating retrieved fragments into a single context string.
-        return results
-            .map((res) => res.payload?.content || '')
-            .join('\n\n');
+            // Explaining: Aggregating retrieved fragments into a single context string.
+            return results
+                .map((res) => res.payload?.content || '')
+                .join('\n\n');
+        } catch (error) {
+            this.logger.error({
+                msg: 'Qdrant search failed — returning empty context',
+                error: error.message,
+                stack: error.stack,
+            });
+            return '';
+        }
     }
 }

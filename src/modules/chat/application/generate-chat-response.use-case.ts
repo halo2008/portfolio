@@ -10,33 +10,87 @@ export class GenerateChatResponseUseCase {
     private readonly repository: PersistencePort,
     private readonly vectorDb: VectorDbPort,
     private readonly notifier: NotificationPort,
-  ) {}
+  ) { }
 
   async *execute(message: string, sessionId: string): AsyncGenerator<string> {
-    // 1. Logging to Slack via Port (Notification Adapter handles details)
-    const slackThread = await this.notifier.logConversationStart(message, sessionId);
+    console.log(`[ChatUseCase] Starting execute. sessionId=${sessionId}, message="${message.substring(0, 50)}"`);
 
-    // 2. Fetch history and build RAG context
-    const history = await this.repository.getHistory(sessionId, 6);
-    const embedding = await this.ai.generateEmbedding(message);
-    const context = await this.vectorDb.search(embedding, 0.6); // Explaining: Score threshold saves tokens.
+    // 1. Logging to Slack via Port (Notification Adapter handles details)
+    let slackThread: string | null = null;
+    try {
+      slackThread = await this.notifier.logConversationStart(message, sessionId);
+      console.log(`[ChatUseCase] Step 1 OK: Slack notified, thread=${slackThread}`);
+    } catch (e) {
+      console.error(`[ChatUseCase] Step 1 FAILED (Slack):`, e.message);
+    }
+
+    // 2. Fetch history
+    let history = [];
+    try {
+      history = await this.repository.getHistory(sessionId, 6);
+      console.log(`[ChatUseCase] Step 2 OK: History fetched, ${history.length} messages`);
+    } catch (e) {
+      console.error(`[ChatUseCase] Step 2 FAILED (Firestore getHistory):`, e.message, e.stack);
+      // Continue with empty history
+    }
+
+    // 3. Generate embedding
+    let embedding: number[];
+    try {
+      embedding = await this.ai.generateEmbedding(message);
+      console.log(`[ChatUseCase] Step 3 OK: Embedding generated, dim=${embedding.length}`);
+    } catch (e) {
+      console.error(`[ChatUseCase] Step 3 FAILED (Gemini embedding):`, e.message, e.stack);
+      throw e; // Can't continue without embedding for RAG
+    }
+
+    // 4. Vector search
+    let context = '';
+    try {
+      context = await this.vectorDb.search(embedding, 0.6);
+      console.log(`[ChatUseCase] Step 4 OK: Qdrant search done, context length=${context.length}`);
+    } catch (e) {
+      console.error(`[ChatUseCase] Step 4 FAILED (Qdrant search):`, e.message);
+      // Continue with empty context
+    }
 
     const systemPrompt = KONRAD_SYSTEM_PROMPT(context);
 
-    // 3. Save User message
-    await this.repository.saveMessage(sessionId, 'user', message);
+    // 5. Save User message
+    try {
+      await this.repository.saveMessage(sessionId, 'user', message);
+      console.log(`[ChatUseCase] Step 5 OK: User message saved`);
+    } catch (e) {
+      console.error(`[ChatUseCase] Step 5 FAILED (Firestore save):`, e.message, e.stack);
+      // Continue — saving is non-critical for the response
+    }
 
-    // 4. Stream and accumulate response
+    // 6. Stream and accumulate response
     let fullResponse = "";
+    console.log(`[ChatUseCase] Step 6: Starting Gemini stream...`);
     const stream = this.ai.generateResponseStream(message, systemPrompt, history);
 
     for await (const chunk of stream) {
       fullResponse += chunk;
       yield chunk;
     }
+    console.log(`[ChatUseCase] Step 6 OK: Stream complete, response length=${fullResponse.length}`);
 
-    // 5. Final sync: save to DB and log to Slack
-    await this.repository.saveMessage(sessionId, 'model', fullResponse);
-    await this.notifier.logAiResponse(slackThread, fullResponse);
+    // 7. Final sync: save to DB and log to Slack
+    try {
+      await this.repository.saveMessage(sessionId, 'model', fullResponse);
+      console.log(`[ChatUseCase] Step 7 OK: Model response saved`);
+    } catch (e) {
+      console.error(`[ChatUseCase] Step 7 FAILED (Firestore save model):`, e.message);
+    }
+
+    try {
+      if (slackThread) {
+        await this.notifier.logAiResponse(slackThread, fullResponse);
+        console.log(`[ChatUseCase] Step 7 OK: Slack response logged`);
+      }
+    } catch (e) {
+      console.error(`[ChatUseCase] Step 7 FAILED (Slack response):`, e.message);
+    }
   }
 }
