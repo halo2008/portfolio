@@ -7,7 +7,7 @@ export const QdrantProvider: Provider = {
   provide: QDRANT_CLIENT,
   useFactory: () => {
     const logger = new Logger('QdrantProvider');
-    
+
     const url = process.env.QDRANT_URL;
     const apiKey = process.env.QDRANT_API_KEY;
 
