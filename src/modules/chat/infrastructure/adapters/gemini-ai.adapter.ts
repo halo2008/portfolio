@@ -42,7 +42,7 @@ export class GeminiAiAdapter implements ChatProviderPort {
             });
 
             const response = await this.ai.models.generateContentStream({
-                model: 'gemini-2.0-flash-exp', // Using stable model
+                model: 'gemini-3.0-flash-preview', // Using stable model
                 contents,
                 config: {
                     systemInstruction: context,
@@ -53,7 +53,7 @@ export class GeminiAiAdapter implements ChatProviderPort {
 
             this.logger.info({
                 msg: 'Gemini stream started',
-                model: 'gemini-2.0-flash-exp',
+                model: 'gemini-3.0-flash-preview',
             });
 
             let tokenCount = 0;
