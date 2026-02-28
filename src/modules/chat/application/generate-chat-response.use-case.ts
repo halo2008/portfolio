@@ -2,6 +2,7 @@ import { ChatProviderPort } from '../domain/ports/chat-provider.port';
 import { PersistencePort } from '../domain/ports/persistence.port';
 import { VectorDbPort } from '../domain/ports/vector-db.port';
 import { NotificationPort } from '../domain/ports/notification.port';
+import { TelemetryPort } from '../domain/ports/telemetry.port';
 import { KONRAD_SYSTEM_PROMPT } from '../domain/chat.constants';
 
 export class GenerateChatResponseUseCase {
@@ -10,6 +11,7 @@ export class GenerateChatResponseUseCase {
     private readonly repository: PersistencePort,
     private readonly vectorDb: VectorDbPort,
     private readonly notifier: NotificationPort,
+    private readonly telemetry: TelemetryPort,
   ) { }
 
   async *execute(message: string, sessionId: string, slackThread?: string | null): AsyncGenerator<string> {
@@ -71,11 +73,14 @@ export class GenerateChatResponseUseCase {
 
     // 5. Vector search
     let context = '';
+    const vectorSearchStart = performance.now();
     try {
       context = await this.vectorDb.search(embedding, 0.6);
       console.log(`[ChatUseCase] Step 4 OK: Qdrant search done, context length=${context.length}`);
     } catch (e) {
       console.error(`[ChatUseCase] Step 4 FAILED (Qdrant search):`, e.message);
+    } finally {
+      this.telemetry.observeVectorSearchLatency(performance.now() - vectorSearchStart);
     }
 
     const systemPrompt = KONRAD_SYSTEM_PROMPT(context);
@@ -91,12 +96,16 @@ export class GenerateChatResponseUseCase {
     // 7. Stream and accumulate response
     let fullResponse = "";
     console.log(`[ChatUseCase] Step 6: Starting Gemini stream...`);
+    const streamStart = performance.now();
     const stream = this.ai.generateResponseStream(message, systemPrompt, history);
+
+    this.telemetry.incrementLlmRequests();
 
     for await (const chunk of stream) {
       fullResponse += chunk;
       yield chunk;
     }
+    this.telemetry.observeLlmLatency(performance.now() - streamStart);
     console.log(`[ChatUseCase] Step 6 OK: Stream complete, response length=${fullResponse.length}`);
 
     // 8. Final sync: save to DB and log to Slack

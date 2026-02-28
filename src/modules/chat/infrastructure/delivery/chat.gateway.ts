@@ -6,11 +6,12 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
-import { Logger } from '@nestjs/common';
+import { Logger, Inject } from '@nestjs/common';
 import { Socket } from 'socket.io';
 import { GenerateChatResponseUseCase } from '../../application/generate-chat-response.use-case';
 import { ChatGatewayPort } from '../../domain/ports/chat-gateway.port';
 import { FirestorePersistenceAdapter } from '../adapters/firestore-persistence.adapter';
+import { TELEMETRY_PORT, TelemetryPort } from '../../domain/ports/telemetry.port';
 import { Server } from 'socket.io';
 import { WebSocketServer } from '@nestjs/websockets';
 
@@ -24,6 +25,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, Ch
   constructor(
     private readonly generateChatResponse: GenerateChatResponseUseCase,
     private readonly persistence: FirestorePersistenceAdapter,
+    @Inject(TELEMETRY_PORT) private readonly telemetry: TelemetryPort,
   ) { }
 
   sendMessageToClient(socketId: string, payload: { sender: string; message: string }): void {
@@ -32,10 +34,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, Ch
 
   handleConnection(client: Socket) {
     this.logger.log(`Client connected: ${client.id}`);
+    this.telemetry.incrementActiveWebSockets();
   }
 
   handleDisconnect(client: Socket) {
     this.logger.log(`Client disconnected: ${client.id}`);
+    this.telemetry.decrementActiveWebSockets();
   }
 
   @SubscribeMessage('messageToServer')

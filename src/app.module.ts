@@ -3,6 +3,7 @@ import { LoggerModule } from './core/logger/logger.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { ConfigModule } from '@nestjs/config';
 import { join, resolve } from 'path';
+import { PrometheusModule } from '@willsoto/nestjs-prometheus';
 import { ChatModule } from './modules/chat/chat.module';
 import { IngestionModule } from './ingestion/ingestion.module';
 
@@ -17,8 +18,9 @@ import { AppController } from './app.controller';
         ConfigModule.forRoot({ isGlobal: true }),
         ServeStaticModule.forRoot({
             rootPath: clientDistPath,
-            exclude: ['/api/{*path}'],
+            exclude: ['/api/{*path}', '/metrics'],
         }),
+        PrometheusModule.register(),
         ChatModule,
         IngestionModule,
     ],

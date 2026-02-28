@@ -3,6 +3,8 @@ import { ChatProviderPort } from '../domain/ports/chat-provider.port';
 import { PersistencePort } from '../domain/ports/persistence.port';
 import { VectorDbPort } from '../domain/ports/vector-db.port';
 import { NotificationPort } from '../domain/ports/notification.port';
+import { TelemetryPort } from '../domain/ports/telemetry.port';
+import { ChatMessage } from '../domain/entities/chat-message.entity';
 
 describe('GenerateChatResponseUseCase', () => {
     let useCase: GenerateChatResponseUseCase;
@@ -10,6 +12,7 @@ describe('GenerateChatResponseUseCase', () => {
     let repository: jest.Mocked<PersistencePort>;
     let vectorDb: jest.Mocked<VectorDbPort>;
     let notification: jest.Mocked<NotificationPort>;
+    let telemetry: jest.Mocked<TelemetryPort>;
 
     beforeEach(() => {
         ai = {
@@ -38,7 +41,15 @@ describe('GenerateChatResponseUseCase', () => {
             logSystemEvent: jest.fn(),
         } as unknown as jest.Mocked<NotificationPort>;
 
-        useCase = new GenerateChatResponseUseCase(ai, repository, vectorDb, notification);
+        telemetry = {
+            observeLlmLatency: jest.fn(),
+            observeVectorSearchLatency: jest.fn(),
+            incrementLlmRequests: jest.fn(),
+            incrementActiveWebSockets: jest.fn(),
+            decrementActiveWebSockets: jest.fn(),
+        } as unknown as jest.Mocked<TelemetryPort>;
+
+        useCase = new GenerateChatResponseUseCase(ai, repository, vectorDb, notification, telemetry);
     });
 
     it('should be defined', () => {
