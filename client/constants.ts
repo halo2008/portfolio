@@ -20,7 +20,7 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
   en: {
     name: "Konrad Sędkowski",
     title: "Infrastructure Architect & SRE Consultant",
-    availability: "🟢 Available for B2B Contracts",
+    availability: "Available for B2B Contracts",
     hero: {
       headline: "Enterprise Infrastructure & Applied AI Solutions.",
       subheadline: "GKE Specialist and RAG Expert with 10+ years of industrial systems experience. I architect zero-trust Kubernetes platforms and private AI orchestration systems that solve complex physical and digital infrastructure challenges.",
@@ -254,7 +254,7 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
   pl: {
     name: "Konrad Sędkowski",
     title: "Infrastructure Architect & SRE Consultant",
-    availability: "🟢 Dostępny do Kontraktów B2B",
+    availability: "Dostępny do Kontraktów B2B",
     hero: {
       headline: "Infrastruktura Przedsiębiorstwa i Rozwiązania AI.",
       subheadline: "Specjalista GKE i ekspert RAG z 10+ letnim doświadczeniem w systemach przemysłowych. Architekturuję platformy Kubernetes zero-trust oraz prywatne systemy orkiestracji AI, rozwiązujące złożone wyzwania infrastruktury fizycznej i cyfrowej.",

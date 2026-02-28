@@ -8,7 +8,6 @@ export class FirestorePersistenceAdapter implements PersistencePort {
   constructor(@Inject('FIRESTORE_CLIENT') private readonly firestore: Firestore) {}
 
   async saveMessage(sessionId: string, role: 'user' | 'model', content: string): Promise<void> {
-    // Explaining: Decoupling DB structure from domain. We save with a timestamp for sorting.
     await this.firestore.collection('chats').doc(sessionId).collection('messages').add({
       role,
       content,
@@ -17,7 +16,6 @@ export class FirestorePersistenceAdapter implements PersistencePort {
   }
 
   async getHistory(sessionId: string, limit: number): Promise<ChatMessage[]> {
-    // Explaining: Mapping Firestore documents back to our Domain Entities.
     const snapshot = await this.firestore.collection('chats')
       .doc(sessionId)
       .collection('messages')
@@ -33,13 +31,21 @@ export class FirestorePersistenceAdapter implements PersistencePort {
   }
 
   async linkThread(threadTs: string, socketId: string): Promise<void> {
-    // Explaining: Logic for SRE/DevOps observability - linking Slack threads to users.
-    await this.firestore.collection('threads').doc(threadTs).set({ socketId });
+    // Explaining: Store bidirectional mapping for easy lookups
+    await this.firestore.collection('threads').doc(threadTs).set({ socketId, threadTs });
+    // Also store reverse mapping
+    await this.firestore.collection('chat_sessions').doc(socketId).set({ threadTs, socketId }, { merge: true });
   }
 
   async getSocketId(threadTs: string): Promise<string | null> {
     const doc = await this.firestore.collection('threads').doc(threadTs).get();
     return doc.data()?.socketId || null;
+  }
+
+  // Explaining: Get thread timestamp by socket session ID (reverse lookup)
+  async getThreadBySocketId(socketId: string): Promise<string | null> {
+    const doc = await this.firestore.collection('chat_sessions').doc(socketId).get();
+    return doc.data()?.threadTs || null;
   }
 
   // Explaining: Human-in-the-loop mode management.

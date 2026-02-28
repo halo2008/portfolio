@@ -65,8 +65,12 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, Ch
         }
       }
 
-      // Explaining: Executing the hexagonal Use Case.
-      const stream = this.generateChatResponse.execute(payload.text, sessionId);
+      // Explaining: Check if we already have a Slack thread for this session
+      let slackThread = await this.persistence.getThreadBySocketId(sessionId);
+      this.logger.log(`Using Slack thread: ${slackThread || 'NEW'} for session: ${sessionId}`);
+
+      // Explaining: Executing the hexagonal Use Case with thread info.
+      const stream = this.generateChatResponse.execute(payload.text, sessionId, slackThread);
 
       for await (const chunk of stream) {
         client.emit('messageToClient', { sender: 'AI', message: chunk, isChunk: true });

@@ -25,10 +25,9 @@ export class GeminiAiAdapter implements ChatProviderPort {
      */
     async *generateResponseStream(message: string, context: string, history: ChatMessage[]): AsyncGenerator<string> {
         // Explaining: Mapping our Domain History to the SDK's Content structure.
-        // The new SDK handles strings or explicit Part/Content arrays.
         const contents = [
             ...history.map(h => ({
-                role: h.role, // roles: 'user' | 'model' | 'system'
+                role: h.role,
                 parts: [{ text: h.content }],
             })),
             { role: 'user', parts: [{ text: message }] }
@@ -36,40 +35,54 @@ export class GeminiAiAdapter implements ChatProviderPort {
 
         try {
             const start = Date.now();
+            this.logger.info({
+                msg: 'Starting Gemini stream',
+                historyLength: history.length,
+                inputLength: message.length
+            });
+
             const response = await this.ai.models.generateContentStream({
-                model: 'gemini-3-flash-preview', // Gemini 3 Flash Preview — frontier speed + intelligence.
+                model: 'gemini-2.0-flash-exp', // Using stable model
                 contents,
                 config: {
-                    // Explaining: System instructions provide the persona grounding (Konrad).
                     systemInstruction: context,
                     temperature: 0.7,
+                    maxOutputTokens: 2048,
                 },
             });
 
             this.logger.info({
                 msg: 'Gemini stream started',
-                model: 'gemini-3-flash-preview',
-                inputLength: message.length
+                model: 'gemini-2.0-flash-exp',
             });
 
             let tokenCount = 0;
+            let hasReceivedChunks = false;
 
             // Explaining: Iterating over the response stream chunks.
             for await (const chunk of response) {
                 if (chunk.text) {
-                    tokenCount++; // Approximation
+                    hasReceivedChunks = true;
+                    tokenCount++;
                     yield chunk.text;
                 }
             }
+
             const duration = Date.now() - start;
             this.logger.info({
                 msg: 'Gemini stream complete',
                 durationMs: duration,
-                chunks: tokenCount
+                chunks: tokenCount,
+                receivedChunks: hasReceivedChunks
             });
+
+            // If no chunks received, yield an error message
+            if (!hasReceivedChunks) {
+                this.logger.warn('No chunks received from Gemini');
+                yield '[AI did not generate a response. Please try again.]';
+            }
         } catch (error) {
-            this.logger.error({ msg: 'Gemini Stream Error', error: error.message });
-            console.error('Gemini Stream Error:', error);
+            this.logger.error({ msg: 'Gemini Stream Error', error: error.message, stack: error.stack });
             throw new Error('Failed to generate AI response.');
         }
     }
@@ -79,19 +92,26 @@ export class GeminiAiAdapter implements ChatProviderPort {
      * CRITICAL: Must use SAME model as ingestion (text-embedding-004)!
      */
     async generateEmbedding(text: string): Promise<number[]> {
-        const result = await this.ai.models.embedContent({
-            model: 'text-embedding-004', // MUST match ingestion model!
-            contents: [{ text }], // New SDK format for embeddings
-            config: { taskType: 'RETRIEVAL_QUERY' }, // Query task type for search
-        });
+        try {
+            this.logger.info({ msg: 'Generating embedding', textLength: text.length });
 
-        // Explaining: Accessing the embedding values from the first result.
-        const embedding = result.embeddings?.[0]?.values;
+            const result = await this.ai.models.embedContent({
+                model: 'text-embedding-004',
+                contents: [{ text }],
+                config: { taskType: 'RETRIEVAL_QUERY' },
+            });
 
-        if (!embedding) {
-            throw new Error('Failed to generate embedding: empty result.');
+            const embedding = result.embeddings?.[0]?.values;
+
+            if (!embedding) {
+                throw new Error('Failed to generate embedding: empty result.');
+            }
+
+            this.logger.info({ msg: 'Embedding generated', dimension: embedding.length });
+            return embedding;
+        } catch (error) {
+            this.logger.error({ msg: 'Embedding generation failed', error: error.message });
+            throw error;
         }
-
-        return embedding;
     }
 }

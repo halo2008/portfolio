@@ -16,10 +16,10 @@ const Contact: React.FC = () => {
           {contact.sub}
         </p>
 
-        <div className="flex flex-col md:flex-row gap-4 justify-center">
+        <div className="flex flex-col md:flex-row gap-4 justify-center items-stretch">
           <a
             href="#"
-            className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-slate-950 font-bold rounded hover:bg-slate-200 transition-all"
+            className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-slate-950 font-bold rounded hover:bg-slate-200 transition-all min-w-[220px]"
           >
             <Briefcase size={20} />
             {contact.buttons.cv}
@@ -28,14 +28,14 @@ const Contact: React.FC = () => {
             href={contact.linkedinUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#0077b5] !text-white font-bold rounded hover:bg-[#006396] transition-all"
+            className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#0077b5] !text-white font-bold rounded hover:bg-[#006396] transition-all min-w-[220px]"
           >
             <Linkedin size={20} />
             {contact.buttons.linkedin}
           </a>
           <a
             href={`mailto:${contact.emailUrl}`}
-            className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-slate-800 text-white font-bold rounded hover:bg-slate-700 transition-all border border-slate-700"
+            className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-slate-800 text-white font-bold rounded hover:bg-slate-700 transition-all border border-slate-700 min-w-[220px]"
           >
             <Mail size={20} />
             {contact.buttons.email}

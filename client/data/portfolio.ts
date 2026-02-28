@@ -14,7 +14,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
     en: {
         name: "Konrad Sędkowski",
         title: "DevOps Engineer & Full Stack Developer",
-        availability: "🟢 Open for B2B contracts ",
+        availability: "Open for B2B contracts ",
         hero: {
             headline: "Bridging the Gap Between Industrial Hardware, Cloud Infrastructure, and Applied AI.",
             subheadline: "DevOps Engineer & Full Stack Developer with 10+ years of industrial background. I build systems that solve real physical and business problems.",
@@ -265,7 +265,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
     pl: {
         name: "Konrad Sędkowski",
         title: "DevOps Engineer & Integrator IoT",
-        availability: "🟢 Otwarty na kontrakty B2B",
+        availability: "Otwarty na kontrakty B2B",
         hero: {
             headline: "Łączę Industrial Hardware, Infrastrukturę Chmurową i AI.",
             subheadline: "DevOps Engineer & Full Stack Developer z 10+ letnim doświadczeniem w przemyśle. Buduję systemy rozwiązujące realne problemy fizyczne i biznesowe.",

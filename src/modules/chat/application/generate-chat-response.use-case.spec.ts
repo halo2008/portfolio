@@ -22,6 +22,7 @@ describe('GenerateChatResponseUseCase', () => {
             getHistory: jest.fn(),
             linkThread: jest.fn(),
             getSocketId: jest.fn(),
+            getThreadBySocketId: jest.fn(),
             setHumanMode: jest.fn(),
             isHumanMode: jest.fn(),
         } as unknown as jest.Mocked<PersistencePort>;
