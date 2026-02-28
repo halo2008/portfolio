@@ -230,17 +230,17 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
           title: "Case Study: Infrastruktura Zero-Trust GKE dla Przemysłu Ciężkiego",
           subtitle: "DevSecOps • Specjalista GKE • Architektura Zero-Trust",
           challenge: "Krytyczne systemy ERP działały na infrastrukturze VPS z pojedynczym punktem awarii, ręcznymi skryptami wdrażania i brakiem zarządzania sekretami. Operacje backup powodowały zamrożenia systemu, a brak wzorców workload identity tworzył luki bezpieczeństwa. Klient wymagał praktyk SRE klasy korporacyjnej z gwarancją zero-downtime.",
-      error: "Wystąpił błąd.",
-      status: "Online (Gemini 2.5)"
-    },
-    nav: { home: "Home", projects: "Case Studies", resume: "O mnie / Resume", services: "Usługi", contact: "Kontakt" },
-    footer: "Konrad Sędkowski. Zbudowano w React, NestJS i Gemini AI na Cloud Run."
-  }
-};
-
-// We export English by default for the AI system prompt to contain raw data, 
-// but we add an instruction to speak the user's language.
-const DATA = TRANSLATIONS.en;
+          solution: "Jako Specjalista GKE, przeprowadziłem kompletną przebudowę infrastruktury zgodnie z architekturą heksagonalną: 1) Rdzeń Infrastruktury: Zakodowano cały stack przy użyciu Terraform z remote state i blokadą stanu. 2) Port GKE Autopilot: Migracja workloadów do klastra multi-zonal wysokiej dostępności z Workload Identity na poziomie pod. 3) Adaptery Bezpieczeństwa: Implementacja HashiCorp Vault z Kubernetes auth, polityki Kyverno dla Pod Security Standards i Calico dla segmentacji sieci. 4) Stack Obserwowalności: Wdrożenie Prometheus/Grafana/Loki z custom dashboardami SLO i routingiem alertmanager.",
+          tech: ["GCP (GKE)", "Terraform", "HashiCorp Vault", "Kyverno", "Calico", "GitLab CI"],
+          result: "Osiągnięto 99.9% uptime z zautomatyzowanymi pipeline'ami CI/CD. Cel Odzyskiwania Czasu (RTO) zredukowany z godzin do minut przez idempotentną infrastrukturę-as-code. Segmentacja sieci zero-trust wyeliminowała ryzyko lateral movement.",
+          iconName: 'Cloud',
+          image: IMAGES.projectC
+        },
+        {
+          id: '4',
+          title: "R&D: Edge Computing i Przetwarzanie Sygnałów Real-time",
+          subtitle: "Android • Przetwarzanie Sygnałów • Baza Edge",
+          challenge: "Systemy telemetrii pojazdów wymagają akwizycji danych wysokiej częstotliwości (100Hz+) z lokalnym filtrowaniem w celu redukcji kosztów transmisji do chmury i zapewnienia offline capability. Wyzwaniem było zaimplementowanie przetwarzania sygnałów real-time na urządzeniach Android z ograniczonymi zasobami przy zachowaniu integralności danych.",
 
 export const SYSTEM_INSTRUCTION = `
 You are "Konrad's AI Assistant", a helpful agent on the portfolio website of Konrad Sędkowski.
