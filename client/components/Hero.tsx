@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronDown, Terminal, Download, Zap } from 'lucide-react';
+import { ChevronDown, Terminal, Briefcase, Zap } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
 
 const Hero: React.FC = () => {
@@ -85,7 +85,7 @@ const Hero: React.FC = () => {
               download
               className="inline-flex items-center gap-2 px-8 py-3.5 bg-surface border border-slate-700 text-slate-300 font-bold rounded-sm hover:border-slate-500 hover:text-white transition-all duration-300"
             >
-              <Download size={20} />
+              <Briefcase size={20} />
               {contact.buttons.cv}
             </a>
           </div>

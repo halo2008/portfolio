@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mail, Linkedin, Download } from 'lucide-react';
+import { Mail, Linkedin, Briefcase } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
 
 const Contact: React.FC = () => {
@@ -21,7 +21,7 @@ const Contact: React.FC = () => {
             href="#"
             className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-slate-950 font-bold rounded hover:bg-slate-200 transition-all"
           >
-            <Download size={20} />
+            <Briefcase size={20} />
             {contact.buttons.cv}
           </a>
           <a

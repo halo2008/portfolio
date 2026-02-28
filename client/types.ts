@@ -28,6 +28,12 @@ export interface ServiceItem {
   iconName: string;
 }
 
+export interface BusinessValueItem {
+  title: string;
+  description: string;
+  iconName: 'Zap' | 'ShieldCheck' | 'Layers' | 'TrendingUp';
+}
+
 export interface TechCategory {
   category: string;
   items: string[];
@@ -83,6 +89,10 @@ export interface PortfolioContent {
   services: { // New
     title: string;
     items: ServiceItem[];
+  };
+  businessValue: {
+    title: string;
+    items: BusinessValueItem[];
   };
   techStack: {
     title: string;

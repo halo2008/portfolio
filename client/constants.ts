@@ -152,6 +152,31 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
         }
       ]
     },
+    businessValue: {
+      title: "Strategic Business Value",
+      items: [
+        {
+          title: "High-Velocity Development",
+          description: "Leveraging AI-augmented engineering to deliver custom NextJS & Android solutions with record time-to-market without compromising code integrity.",
+          iconName: "Zap"
+        },
+        {
+          title: "Operational Continuity (SRE)",
+          description: "I translate industrial-grade reliability into 99.9% uptime for your cloud services, mitigating the risk of business-critical interruptions.",
+          iconName: "ShieldCheck"
+        },
+        {
+          title: "Scalable NestJS Ecosystems",
+          description: "Architecting modular, hexagonal backends that eliminate technical debt and ensure your investment is easy to maintain and expand for years.",
+          iconName: "Layers"
+        },
+        {
+          title: "AI Efficiency & RAG",
+          description: "Transforming your proprietary data into a competitive asset through private RAG systems that automate internal processes and reduce overhead.",
+          iconName: "TrendingUp"
+        }
+      ]
+    },
     techStack: {
       title: "The Arsenal",
       items: [
@@ -358,6 +383,31 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
           title: "Przemysłowy IoT i Edge Computing",
           description: "Core: Telemetria real-time, przetwarzanie sygnałów, obserwowalność. Ports: Edge gateways, adaptery protokołów, monitoring SRE. Adapters: Mosty RS232/Modbus, Room DB, FFmpeg, Prometheus.",
           iconName: "Server"
+        }
+      ]
+    },
+    businessValue: {
+      title: "Wartość dla Biznesu",
+      items: [
+        {
+          title: "Błyskawiczne Wdrażanie",
+          description: "Wykorzystuję inżynierię wspomaganą AI, aby dowozić dedykowane aplikacje NextJS i Android w rekordowym czasie, zachowując najwyższe standardy jakości kodu.",
+          iconName: "Zap"
+        },
+        {
+          title: "Ciągłość Operacyjna (SRE)",
+          description: "Przekładam rygor przemysłowy na 99.9% dostępności Twoich usług chmurowych, chroniąc Twój biznes przed kosztownymi przestojami.",
+          iconName: "ShieldCheck"
+        },
+        {
+          title: "Skalowalne Ekosystemy NestJS",
+          description: "Projektuję modułowe backendy heksagonalne, które eliminują dług technologiczny i gwarantują, że Twoja inwestycja będzie łatwa w rozwoju przez lata.",
+          iconName: "Layers"
+        },
+        {
+          title: "Efektywność AI & RAG",
+          description: "Zamieniam Twoje dane w przewagę konkurencyjną dzięki prywatnym systemom RAG, które automatyzują procesy i redukują koszty operacyjne.",
+          iconName: "TrendingUp"
         }
       ]
     },

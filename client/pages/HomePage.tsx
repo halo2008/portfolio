@@ -3,6 +3,7 @@ import Hero from '../components/Hero';
 import Resume from '../components/Resume';
 import Projects from '../components/Projects';
 import Services from '../components/Services';
+import BusinessValue from '../components/BusinessValue';
 import Contact from '../components/Contact';
 import AIChat from '../components/AIChat';
 import { useLanguage } from '../LanguageContext';
@@ -60,6 +61,7 @@ const HomePage: React.FC = () => {
                 <Resume />
                 <Projects />
                 <Services />
+                <BusinessValue />
                 <Contact />
             </main>
 

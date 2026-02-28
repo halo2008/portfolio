@@ -163,6 +163,31 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 }
             ]
         },
+        businessValue: {
+            title: "Strategic Business Value",
+            items: [
+                {
+                    title: "High-Velocity Development",
+                    description: "Leveraging AI-augmented engineering to deliver custom NextJS & Android solutions with record time-to-market without compromising code integrity.",
+                    iconName: "Zap"
+                },
+                {
+                    title: "Operational Continuity (SRE)",
+                    description: "I translate industrial-grade reliability into 99.9% uptime for your cloud services, mitigating the risk of business-critical interruptions.",
+                    iconName: "ShieldCheck"
+                },
+                {
+                    title: "Scalable NestJS Ecosystems",
+                    description: "Architecting modular, hexagonal backends that eliminate technical debt and ensure your investment is easy to maintain and expand for years.",
+                    iconName: "Layers"
+                },
+                {
+                    title: "AI Efficiency & RAG",
+                    description: "Transforming your proprietary data into a competitive asset through private RAG systems that automate internal processes and reduce overhead.",
+                    iconName: "TrendingUp"
+                }
+            ]
+        },
         techStack: {
             title: "Tech Stack",
             items: [
@@ -191,7 +216,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
         contact: {
             cta: "Ready to optimize your infrastructure?",
             sub: "Available for B2B contracts.",
-            buttons: { cv: "Download CV (PDF)", linkedin: "Contact on LinkedIn", email: "Email Me" },
+            buttons: { cv: "Technical Portfolio (PDF)", linkedin: "Contact on LinkedIn", email: "Email Me" },
             linkedinUrl: "https://linkedin.com/in/placeholder",
             emailUrl: "konrad@example.com"
         },
@@ -390,6 +415,31 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 }
             ]
         },
+        businessValue: {
+            title: "Wartość dla Biznesu",
+            items: [
+                {
+                    title: "Błyskawiczne Wdrażanie",
+                    description: "Wykorzystuję inżynierię wspomaganą AI, aby dowozić dedykowane aplikacje NextJS i Android w rekordowym czasie, zachowując najwyższe standardy jakości kodu.",
+                    iconName: "Zap"
+                },
+                {
+                    title: "Ciągłość Operacyjna (SRE)",
+                    description: "Przekładam rygor przemysłowy na 99.9% dostępności Twoich usług chmurowych, chroniąc Twój biznes przed kosztownymi przestojami.",
+                    iconName: "ShieldCheck"
+                },
+                {
+                    title: "Skalowalne Ekosystemy NestJS",
+                    description: "Projektuję modułowe backendy heksagonalne, które eliminują dług technologiczny i gwarantują, że Twoja inwestycja będzie łatwa w rozwoju przez lata.",
+                    iconName: "Layers"
+                },
+                {
+                    title: "Efektywność AI & RAG",
+                    description: "Zamieniam Twoje dane w przewagę konkurencyjną dzięki prywatnym systemom RAG, które automatyzują procesy i redukują koszty operacyjne.",
+                    iconName: "TrendingUp"
+                }
+            ]
+        },
         techStack: {
             title: "Stack Technologiczny",
             items: [
@@ -418,7 +468,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
         contact: {
             cta: "Gotowy na optymalizację?",
             sub: "Dostępny na kontrakty B2B.",
-            buttons: { cv: "Pobierz CV (PDF)", linkedin: "Kontakt na LinkedIn", email: "Napisz Email" },
+            buttons: { cv: "Portfolio Techniczne (PDF)", linkedin: "Kontakt na LinkedIn", email: "Napisz Email" },
             linkedinUrl: "https://linkedin.com/in/placeholder",
             emailUrl: "konrad@example.com"
         },

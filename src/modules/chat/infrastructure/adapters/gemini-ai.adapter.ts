@@ -37,7 +37,7 @@ export class GeminiAiAdapter implements ChatProviderPort {
         try {
             const start = Date.now();
             const response = await this.ai.models.generateContentStream({
-                model: 'gemini-2.5-flash', // Updated: Using Gemini 2.5 Flash (stable, widely supported).
+                model: 'gemini-3-flash', // Updated: Gemini 3 Flash — best quality/speed ratio.
                 contents,
                 config: {
                     // Explaining: System instructions provide the persona grounding (Konrad).
