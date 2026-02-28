@@ -17,6 +17,12 @@ import { ChatGateway } from './infrastructure/delivery/chat.gateway';
 // External Modules (Global Infrastructure)
 import { QdrantModule } from '../../modules/qdrant/qdrant.module';
 import { SlackModule } from '../../modules/slack/slack.module';
+import { Firestore } from '@google-cloud/firestore';
+
+const firestoreProvider = {
+  provide: 'FIRESTORE_CLIENT',
+  useFactory: () => new Firestore(),
+};
 
 @Module({
   imports: [
@@ -27,18 +33,19 @@ import { SlackModule } from '../../modules/slack/slack.module';
   controllers: [ChatController],
   providers: [
     // Explaining: We register all adapters as providers.
+    firestoreProvider,
     GeminiAiAdapter,
     FirestorePersistenceAdapter,
     QdrantVectorDbAdapter,
     SlackNotificationAdapter,
     ChatGateway,
-    
+
     // Explaining: Defining the UseCase with manual dependency injection.
     // This allows us to keep the UseCase class clean of NestJS decorators if we want to.
     {
       provide: GenerateChatResponseUseCase,
       useFactory: (
-        ai: GeminiAiAdapter, 
+        ai: GeminiAiAdapter,
         repo: FirestorePersistenceAdapter,
         vdb: QdrantVectorDbAdapter,
         note: SlackNotificationAdapter
@@ -48,9 +55,9 @@ import { SlackModule } from '../../modules/slack/slack.module';
       },
       // Explaining: Declaring which providers should be injected into the factory.
       inject: [
-        GeminiAiAdapter, 
-        FirestorePersistenceAdapter, 
-        QdrantVectorDbAdapter, 
+        GeminiAiAdapter,
+        FirestorePersistenceAdapter,
+        QdrantVectorDbAdapter,
         SlackNotificationAdapter
       ],
     },
@@ -58,4 +65,4 @@ import { SlackModule } from '../../modules/slack/slack.module';
   // Explaining: Exporting the UseCase in case other modules need to trigger chat logic.
   exports: [GenerateChatResponseUseCase],
 })
-export class ChatModule {}
+export class ChatModule { }

@@ -46,5 +46,4 @@ jobs:
           --image "europe-west1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${{ env.SERVICE_NAME }}:${{ github.sha }}" \
           --region ${{ env.REGION }} \
           --platform managed \
-          --allow-unauthenticated \
-          --set-env-vars "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }},SLACK_BOT_TOKEN=${{ secrets.SLACK_BOT_TOKEN }},SLACK_CHANNEL_ID=${{ secrets.SLACK_CHANNEL_ID }},QDRANT_URL=${{ secrets.QDRANT_URL }},QDRANT_API_KEY=${{ secrets.QDRANT_API_KEY }},RECAPTCHA_SECRET_KEY=${{ secrets.RECAPTCHA_SECRET_KEY }},ADMIN_SECRET=${{ secrets.ADMIN_SECRET }}"
+          --allow-unauthenticated
