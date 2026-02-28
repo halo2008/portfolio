@@ -20,7 +20,7 @@ export class GeminiAiAdapter implements ChatProviderPort {
     }
 
     /**
-     * Explaining: Implements the new streaming pattern. 
+     * Explaining: Implements the new streaming pattern.
      * The generateContentStream method now returns an AsyncIterable directly.
      */
     async *generateResponseStream(message: string, context: string, history: ChatMessage[]): AsyncGenerator<string> {
@@ -76,11 +76,13 @@ export class GeminiAiAdapter implements ChatProviderPort {
 
     /**
      * Explaining: Vector embedding generation using the new models.embedContent method.
+     * CRITICAL: Must use SAME model as ingestion (text-embedding-004)!
      */
     async generateEmbedding(text: string): Promise<number[]> {
         const result = await this.ai.models.embedContent({
-            model: 'gemini-embedding-001',
-            contents: [{ role: 'user', parts: [{ text }] }],
+            model: 'text-embedding-004', // MUST match ingestion model!
+            contents: [{ text }], // New SDK format for embeddings
+            config: { taskType: 'RETRIEVAL_QUERY' }, // Query task type for search
         });
 
         // Explaining: Accessing the embedding values from the first result.

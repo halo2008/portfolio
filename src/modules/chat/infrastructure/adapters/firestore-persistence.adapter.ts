@@ -41,4 +41,17 @@ export class FirestorePersistenceAdapter implements PersistencePort {
     const doc = await this.firestore.collection('threads').doc(threadTs).get();
     return doc.data()?.socketId || null;
   }
+
+  // Explaining: Human-in-the-loop mode management.
+  async setHumanMode(sessionId: string, enabled: boolean): Promise<void> {
+    await this.firestore.collection('chats').doc(sessionId).set(
+      { humanMode: enabled, humanModeUpdatedAt: new Date() },
+      { merge: true }
+    );
+  }
+
+  async isHumanMode(sessionId: string): Promise<boolean> {
+    const doc = await this.firestore.collection('chats').doc(sessionId).get();
+    return doc.data()?.humanMode || false;
+  }
 }
