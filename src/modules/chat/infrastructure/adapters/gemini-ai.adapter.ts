@@ -99,7 +99,7 @@ export class GeminiAiAdapter implements ChatProviderPort {
             this.logger.info({ msg: 'Generating embedding', textLength: text.length });
 
             const result = await this.ai.models.embedContent({
-                model: 'text-embedding-004',
+                model: 'gemini-embedding-001',
                 contents: [{ text }],
                 config: { taskType: 'RETRIEVAL_QUERY' },
             });
