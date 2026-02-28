@@ -20,6 +20,12 @@ export class GenerateChatResponseUseCase {
     try {
       slackThread = await this.notifier.logConversationStart(message, sessionId);
       console.log(`[ChatUseCase] Step 1 OK: Slack notified, thread=${slackThread}`);
+
+      // Explaining: CRITICAL - Link Slack thread to socket session for human-in-the-loop responses.
+      if (slackThread) {
+        await this.repository.linkThread(slackThread, sessionId);
+        console.log(`[ChatUseCase] Step 1b OK: Thread linked ${slackThread} -> ${sessionId}`);
+      }
     } catch (e) {
       console.error(`[ChatUseCase] Step 1 FAILED (Slack):`, e.message);
     }
