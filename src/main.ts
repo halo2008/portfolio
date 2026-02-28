@@ -20,7 +20,7 @@ async function bootstrap() {
                 fontSrc: ["'self'", "https://fonts.gstatic.com"],
                 imgSrc: ["'self'", "data:", "https://grainy-gradients.vercel.app"],
                 frameSrc: ["'self'", "https://www.google.com", "https://www.recaptcha.net"],
-                connectSrc: ["'self'", "ws:", "wss:"],
+                connectSrc: ["'self'", "ws:", "wss:", "https://www.google.com", "https://www.gstatic.com"],
             },
         },
     }));
