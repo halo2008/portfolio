@@ -16,7 +16,10 @@ export class GeminiAiAdapter implements ChatProviderPort {
         if (!apiKey) {
             throw new Error('CRITICAL: GEMINI_API_KEY is missing. AI infrastructure failure.');
         }
-        this.ai = new GoogleGenAI({ apiKey });
+        this.ai = new GoogleGenAI({
+            apiKey,
+            httpOptions: { apiVersion: 'v1' } // Explaining: MUST use v1 for text-embedding-004 to work (v1beta throws NOT_FOUND)
+        });
     }
 
     /**
@@ -42,7 +45,7 @@ export class GeminiAiAdapter implements ChatProviderPort {
             });
 
             const response = await this.ai.models.generateContentStream({
-                model: 'gemini-3.0-flash-preview', // Using stable model
+                model: 'gemini-3-flash-preview', // Explaining: Must be gemini-3-flash-preview, NOT 3.0
                 contents,
                 config: {
                     systemInstruction: context,
