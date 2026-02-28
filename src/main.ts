@@ -33,7 +33,7 @@ async function bootstrap() {
     }));
 
     app.enableCors();
-    app.setGlobalPrefix('api');
+    app.setGlobalPrefix('api', { exclude: ['/metrics'] });
 
     // Graceful Shutdown for Cloud Run
     app.enableShutdownHooks();
