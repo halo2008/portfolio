@@ -4,13 +4,13 @@ import { LanguageProvider } from './LanguageContext';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 
 // Pages
-import CVPage from './pages/CVPage';
+import HomePage from './pages/HomePage';
 
 const AppContent: React.FC = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<CVPage />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/cv" element={<Navigate to="/" replace />} />
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />

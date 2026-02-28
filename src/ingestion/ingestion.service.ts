@@ -1,112 +1,74 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { QDRANT_CLIENT } from '../qdrant/qdrant.provider';
+import { QDRANT_CLIENT } from '../modules/qdrant/qdrant.provider';
 import { QdrantClient } from '@qdrant/js-client-rest';
-import { GoogleGenAI } from '@google/genai';
+import { GoogleGenAI } from '@google/genai'; // Nowy Unified SDK
 import { v5 as uuidv5 } from 'uuid';
+import { KnowledgeAtom } from './ingestion.controller';
 
 @Injectable()
 export class IngestionService {
     private readonly logger = new Logger(IngestionService.name);
-    private genAI: GoogleGenAI;
+    private ai: GoogleGenAI;
     private readonly COLLECTION_NAME = 'portfolio';
     private readonly NAMESPACE_UUID = '1b671a64-40d5-491e-99b0-da01ff1f3341';
-    
-    private readonly CHUNK_SIZE = 500; 
-    private readonly CHUNK_OVERLAP = 100; 
 
     constructor(@Inject(QDRANT_CLIENT) private readonly qdrantClient: QdrantClient) {
-        const apiKey = process.env.GEMINI_API_KEY;
-        if (!apiKey) {
-            this.logger.error('GEMINI_API_KEY is missing via process.env');
-            throw new Error('Gemini API Key missing');
-        }
-        this.genAI = new GoogleGenAI({ apiKey });
+        // Inicjalizacja wg nowej dokumentacji v1.41.0
+        this.ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     }
 
-    async processFile(file: Express.Multer.File) {
-        if (!this.genAI) throw new Error('Gemini API Key missing');
-
+    async processBatch(items: KnowledgeAtom[]) {
         await this.ensureCollectionExists();
+        const allPoints = [];
 
-        const content = file.buffer.toString('utf-8');
-        this.logger.log(`Processing file: ${file.originalname}, size: ${content.length}`);
+        for (const item of items) {
+            const chunks = this.chunkText(item.text, 500, 100);
 
-        const chunks = this.chunkText(content, this.CHUNK_SIZE, this.CHUNK_OVERLAP);
-        
-        let upsertedCount = 0;
-
-        for (const chunk of chunks) {
             try {
-                const pointId = uuidv5(chunk, this.NAMESPACE_UUID);
-
-                const embeddingResult = await this.genAI.models.embedContent({
+                const response = await this.ai.models.embedContent({
                     model: 'text-embedding-004',
-                    contents: chunk,
+                    contents: chunks,
+                    config: { taskType: 'RETRIEVAL_DOCUMENT' }
                 });
 
-                const vector = embeddingResult.embeddings?.[0]?.values;
-                if (!vector) {
-                    this.logger.warn(`Skipping chunk, no vector generated for: ${chunk.substring(0, 20)}...`);
-                    continue;
-                }
-
-                await this.qdrantClient.upsert(this.COLLECTION_NAME, {
-                    points: [
-                        {
-                            id: pointId,
-                            vector: vector,
+                if (response.embeddings) {
+                    response.embeddings.forEach((embedding, index) => {
+                        const chunk = chunks[index];
+                        allPoints.push({
+                            id: uuidv5(chunk, this.NAMESPACE_UUID),
+                            vector: embedding.values,
                             payload: {
                                 content: chunk,
-                                source: file.originalname,
-                                type: 'document_fragment',
-                                length: chunk.length,
-                                timestamp: new Date().toISOString()
+                                category: item.category,
+                                technologies: item.tags,
+                                timestamp: new Date().toISOString(),
+                                source: 'unified_genai_batch'
                             },
-                        },
-                    ],
-                });
-                upsertedCount++;
-            } catch (e) {
-                this.logger.error(`Failed to ingest chunk [${upsertedCount}]: ${chunk.substring(0, 30)}...`, e);
+                        });
+                    });
+                }
+            } catch (err) {
+                this.logger.error(`Error embedding category ${item.category}: ${err.message}`);
             }
         }
 
-        return {
-            status: 'Success',
-            filename: file.originalname,
-            chunksProcessed: upsertedCount,
-            totalPoints: await this.getCollectionCount()
-        };
+        if (allPoints.length > 0) {
+            await this.qdrantClient.upsert(this.COLLECTION_NAME, {
+                wait: true,
+                points: allPoints
+            });
+        }
+
+        return { status: 'Success', points: allPoints.length };
     }
 
-    private chunkText(text: string, chunkSize: number, overlap: number): string[] {
-        if (chunkSize <= overlap) throw new Error('Chunk size must be larger than overlap');
-        
-        const chunks: string[] = [];
-        let startIndex = 0;
-
-        while (startIndex < text.length) {
-            let endIndex = startIndex + chunkSize;
-            
-            if (endIndex < text.length) {
-                const lastSpace = text.lastIndexOf(' ', endIndex);
-                if (lastSpace > startIndex) {
-                    endIndex = lastSpace;
-                }
-            }
-
-            const chunk = text.slice(startIndex, endIndex).trim();
-            if (chunk.length > 20) {
-                chunks.push(chunk);
-            }
-
-            startIndex = endIndex - overlap;
-            
-            if (startIndex <= (endIndex - chunkSize)) {
-                startIndex = endIndex; 
-            }
+    private chunkText(text: string, size: number, overlap: number): string[] {
+        const chunks = [];
+        let i = 0;
+        while (i < text.length) {
+            chunks.push(text.slice(i, i + size));
+            i += size - overlap;
         }
-
         return chunks;
     }
 
@@ -114,26 +76,9 @@ export class IngestionService {
         try {
             await this.qdrantClient.getCollection(this.COLLECTION_NAME);
         } catch (e) {
-            this.logger.log(`Collection ${this.COLLECTION_NAME} not found. Creating with strict config...`);
             await this.qdrantClient.createCollection(this.COLLECTION_NAME, {
-                vectors: {
-                    size: 768,
-                    distance: 'Cosine',
-                },
-                optimizers_config: {
-                    default_segment_number: 2,
-                }
+                vectors: { size: 768, distance: 'Cosine' }
             });
-        }
-    }
-
-    private async getCollectionCount(): Promise<number> {
-        try {
-            const stats = await this.qdrantClient.getCollection(this.COLLECTION_NAME);
-            return stats.points_count ?? 0;
-        } catch (e) {
-            this.logger.warn('Could not retrieve stats', e);
-            return 0;
         }
     }
 }

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { IngestionController } from './ingestion.controller';
 import { IngestionService } from './ingestion.service';
-import { QdrantModule } from '../qdrant/qdrant.module';
+import { QdrantModule } from '../modules/qdrant/qdrant.module';
 
 @Module({
     imports: [QdrantModule],

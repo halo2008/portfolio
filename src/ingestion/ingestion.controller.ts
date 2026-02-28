@@ -1,26 +1,26 @@
-import { Controller, Post, UploadedFile, UseInterceptors, Headers, UnauthorizedException } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import 'multer';
+import { Controller, Post, Body, Headers, UnauthorizedException } from '@nestjs/common';
 import { IngestionService } from './ingestion.service';
+
+export interface KnowledgeAtom {
+    text: string;
+    category: 'Cloud' | 'AI' | 'IoT' | 'Experience' | 'Philosophy';
+    tags: string[];
+}
 
 @Controller('internal/ingest')
 export class IngestionController {
     constructor(private readonly ingestionService: IngestionService) { }
 
-    @Post()
-    @UseInterceptors(FileInterceptor('file'))
-    async uploadFile(
-        @UploadedFile() file: Express.Multer.File,
+    @Post('batch')
+    async ingestBatch(
+        @Body() data: KnowledgeAtom[],
         @Headers('x-admin-secret') secret: string,
     ) {
+        // Blokada na "Klubowiczów" od darmowej kawy
         if (secret !== process.env.ADMIN_SECRET) {
-            throw new UnauthorizedException('Nice try, but you are not Konrad.');
+            throw new UnauthorizedException('Wrong secret. Konrad is watching.');
         }
 
-        if (!file) {
-            return { error: 'No file provided' };
-        }
-
-        return await this.ingestionService.processFile(file);
+        return await this.ingestionService.processBatch(data);
     }
 }
