@@ -16,10 +16,7 @@ export class GeminiAiAdapter implements ChatProviderPort {
         if (!apiKey) {
             throw new Error('CRITICAL: GEMINI_API_KEY is missing. AI infrastructure failure.');
         }
-        this.ai = new GoogleGenAI({
-            apiKey,
-            httpOptions: { apiVersion: 'v1' } // Explaining: MUST use v1 for text-embedding-004 to work (v1beta throws NOT_FOUND)
-        });
+        this.ai = new GoogleGenAI({ apiKey });
     }
 
     /**
