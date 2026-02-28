@@ -9,12 +9,22 @@ import {
 import { Logger } from '@nestjs/common';
 import { Socket } from 'socket.io';
 import { GenerateChatResponseUseCase } from '../../application/generate-chat-response.use-case';
+import { ChatGatewayPort } from '../../domain/ports/chat-gateway.port';
+import { Server } from 'socket.io';
+import { WebSocketServer } from '@nestjs/websockets';
 
 @WebSocketGateway({ cors: { origin: '*' } })
-export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, ChatGatewayPort {
+  @WebSocketServer()
+  server: Server;
+
   private readonly logger = new Logger(ChatGateway.name);
 
-  constructor(private readonly generateChatResponse: GenerateChatResponseUseCase) {}
+  constructor(private readonly generateChatResponse: GenerateChatResponseUseCase) { }
+
+  sendMessageToClient(socketId: string, payload: { sender: string; message: string }): void {
+    this.server.to(socketId).emit('messageToClient', payload);
+  }
 
   handleConnection(client: Socket) {
     this.logger.log(`Client connected: ${client.id}`);

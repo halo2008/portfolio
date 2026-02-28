@@ -3,6 +3,7 @@ import { HttpModule } from '@nestjs/axios';
 
 // Application Layer
 import { GenerateChatResponseUseCase } from './application/generate-chat-response.use-case';
+import { RelayHumanResponseUseCase } from './application/relay-human-response.use-case';
 
 // Infrastructure - Adapters
 import { GeminiAiAdapter } from './infrastructure/adapters/gemini-ai.adapter';
@@ -61,8 +62,18 @@ const firestoreProvider = {
         SlackNotificationAdapter
       ],
     },
+    {
+      provide: RelayHumanResponseUseCase,
+      useFactory: (
+        repo: FirestorePersistenceAdapter,
+        gateway: ChatGateway
+      ) => {
+        return new RelayHumanResponseUseCase(repo, gateway);
+      },
+      inject: [FirestorePersistenceAdapter, ChatGateway],
+    }
   ],
   // Explaining: Exporting the UseCase in case other modules need to trigger chat logic.
-  exports: [GenerateChatResponseUseCase],
+  exports: [GenerateChatResponseUseCase, RelayHumanResponseUseCase],
 })
 export class ChatModule { }
