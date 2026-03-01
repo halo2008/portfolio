@@ -59,11 +59,11 @@ const HomePage: React.FC = () => {
 
             <main className="relative z-10">
                 <Hero />
+                <LiveTelemetry />
                 <Resume />
                 <Projects />
                 <Services />
                 <BusinessValue />
-                <LiveTelemetry />
                 <Contact />
             </main>
 
