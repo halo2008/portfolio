@@ -6,11 +6,21 @@ import { LoggerModule as PinoLoggerModule } from 'nestjs-pino';
         PinoLoggerModule.forRoot({
             pinoHttp: {
                 level: process.env.NODE_ENV !== 'production' ? 'debug' : 'info',
-                // Optional: pretty print in dev, but JSON in prod
-                transport:
-                    process.env.NODE_ENV !== 'production'
-                        ? { target: 'pino-pretty' }
-                        : undefined,
+                transport: process.env.LOKI_HOST ? {
+                    target: 'pino-loki',
+                    options: {
+                        host: process.env.LOKI_HOST,
+                        basicAuth: {
+                            username: process.env.LOKI_USERNAME,
+                            password: process.env.LOKI_PASSWORD,
+                        },
+                        batching: true,
+                        interval: 5,
+                        labels: { application: 'portfolio-backend' },
+                    }
+                } : process.env.NODE_ENV !== 'production'
+                    ? { target: 'pino-pretty' }
+                    : undefined,
             },
         }),
     ],

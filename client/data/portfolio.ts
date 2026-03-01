@@ -229,6 +229,10 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             error: "Error.",
             status: "Online"
         },
+        telemetry: {
+            title: "Live Infrastructure Telemetry",
+            description: "Real-time performance metrics directly from the production environment, monitored via Prometheus and Grafana."
+        },
         nav: { home: "Home", projects: "Projects", resume: "About Me", services: "Services", contact: "Contact" },
         footer: "Open for B2B contracts.",
         landing: {
@@ -480,6 +484,10 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             thinking: "Myślę...",
             error: "Błąd.",
             status: "Online"
+        },
+        telemetry: {
+            title: "Telemetria Infrastruktury na Żywo",
+            description: "Metryki wydajności w czasie rzeczywistym bezpośrednio ze środowiska produkcyjnego, monitorowane przez Prometheus i Grafana."
         },
         nav: { home: "Home", projects: "Projekty", resume: "O mnie", services: "Usługi", contact: "Kontakt" },
         footer: "Open for B2B contracts.",

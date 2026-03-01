@@ -5,6 +5,7 @@ import Projects from '../components/Projects';
 import Services from '../components/Services';
 import BusinessValue from '../components/BusinessValue';
 import Contact from '../components/Contact';
+import LiveTelemetry from '../components/LiveTelemetry';
 import AIChat from '../components/AIChat';
 import { useLanguage } from '../LanguageContext';
 import { Globe } from 'lucide-react';
@@ -62,6 +63,7 @@ const HomePage: React.FC = () => {
                 <Projects />
                 <Services />
                 <BusinessValue />
+                <LiveTelemetry />
                 <Contact />
             </main>
 

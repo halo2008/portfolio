@@ -118,6 +118,10 @@ export interface PortfolioContent {
     error: string;
     status: string;
   };
+  telemetry: {
+    title: string;
+    description: string;
+  };
   landing: {
     hero: {
       headline: string;
