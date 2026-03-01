@@ -5,7 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { join, resolve } from 'path';
 import { PrometheusModule, makeHistogramProvider } from '@willsoto/nestjs-prometheus';
 import { ChatModule } from './modules/chat/chat.module';
-import { IngestionModule } from './ingestion/ingestion.module';
+import { KnowledgeModule } from './modules/knowledge/knowledge.module';
 
 const clientDistPath = resolve(__dirname, '..', 'dist', 'static');
 // Logger.log(`Serving static files from: ${clientDistPath}`, 'AppModule');
@@ -24,7 +24,7 @@ import { MiddlewareConsumer, NestModule } from '@nestjs/common';
         }),
         PrometheusModule.register(),
         ChatModule,
-        IngestionModule,
+        KnowledgeModule,
     ],
     controllers: [AppController],
     providers: [
