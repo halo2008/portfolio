@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { Logger } from 'nestjs-pino';
 import helmet from 'helmet';
+import * as basicAuth from 'express-basic-auth';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, { bufferLogs: true });
@@ -33,6 +34,13 @@ async function bootstrap() {
     }));
 
     app.enableCors();
+
+    // Grafana Cloud requires Basic Auth for Scraping
+    app.use('/metrics', basicAuth({
+        users: { 'admin': 'admin' },
+        challenge: true,
+    }));
+
     app.setGlobalPrefix('api', { exclude: ['/metrics'] });
 
     // Graceful Shutdown for Cloud Run
