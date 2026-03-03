@@ -27,6 +27,9 @@ import { GoogleEmbeddingAdapter } from './infrastructure/adapters/google-embeddi
         DeleteKnowledgeUseCase,
         GetKnowledgeStatsUseCase
     ],
-    exports: []
+    exports: [
+        KNOWLEDGE_REPO_PORT,
+        EMBEDDING_PROVIDER_PORT
+    ]
 })
 export class KnowledgeModule { }

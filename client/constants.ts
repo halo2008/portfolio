@@ -189,7 +189,7 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
     contact: {
       cta: "Available for B2B Contracts & Technical Consultations",
       sub: "Specializing in complex infrastructure migrations and private AI system design.",
-      buttons: { cv: "Technical Portfolio (PDF)", linkedin: "Contact on LinkedIn", email: "Email Me" },
+      buttons: { cv: "Technical Portfolio (PDF)", linkedin: "Contact on LinkedIn", email: "Email Me", tryLab: "Try Personal AI Lab (24h Session)" },
       linkedinUrl: "https://linkedin.com/in/placeholder",
       emailUrl: "konrad@example.com"
     },
@@ -423,7 +423,7 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
     contact: {
       cta: "Dostępny do Kontraktów B2B i Konsultacji Technicznych",
       sub: "Specjalizacja w złożonych migracjach infrastruktury i projektowaniu prywatnych systemów AI.",
-      buttons: { cv: "Portfolio Techniczne (PDF)", linkedin: "Kontakt na LinkedIn", email: "Napisz Email" },
+      buttons: { cv: "Portfolio Techniczne (PDF)", linkedin: "Kontakt na LinkedIn", email: "Napisz Email", tryLab: "Wypróbuj AI Lab (24h sesja)" },
       linkedinUrl: "https://linkedin.com/in/placeholder",
       emailUrl: "konrad@example.com"
     },

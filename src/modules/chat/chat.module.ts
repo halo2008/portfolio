@@ -4,6 +4,8 @@ import { HttpModule } from '@nestjs/axios';
 // Application Layer
 import { GenerateChatResponseUseCase } from './application/generate-chat-response.use-case';
 import { RelayHumanResponseUseCase } from './application/relay-human-response.use-case';
+import { ChatWithAdminKnowledgeUseCase } from './application/use-cases/chat-with-admin-knowledge.use-case';
+import { ChatWithUserKnowledgeUseCase } from '../lab/application/use-cases/chat-with-user-knowledge.use-case';
 import { TELEMETRY_PORT } from './domain/ports/telemetry.port';
 
 // Infrastructure - Adapters
@@ -26,8 +28,11 @@ import { ChatGateway } from './infrastructure/delivery/chat.gateway';
 // External Modules (Global Infrastructure)
 import { QdrantModule } from '../../modules/qdrant/qdrant.module';
 import { SlackModule } from '../../modules/slack/slack.module';
+import { KnowledgeModule } from '../../modules/knowledge/knowledge.module';
+import { LabModule } from '../../modules/lab/lab.module';
 import { Firestore } from '@google-cloud/firestore';
 import { makeCounterProvider, makeGaugeProvider, makeHistogramProvider } from '@willsoto/nestjs-prometheus';
+import { KNOWLEDGE_REPO_PORT } from '../knowledge/domain/ports/knowledge-repo.port';
 
 const firestoreProvider = {
   provide: 'FIRESTORE_CLIENT',
@@ -39,6 +44,8 @@ const firestoreProvider = {
     HttpModule,
     QdrantModule, // Explaining: Provides access to the QdrantClient.
     forwardRef(() => SlackModule), // Explaining: Handles circular dependencies if Slack calls Chat back.
+    KnowledgeModule, // Explaining: Provides KNOWLEDGE_REPO_PORT for admin knowledge search.
+    LabModule, // Explaining: Provides ChatWithUserKnowledgeUseCase for lab chat endpoint.
   ],
   controllers: [ChatController],
   providers: [
@@ -106,9 +113,18 @@ const firestoreProvider = {
         return new RelayHumanResponseUseCase(repo, gateway);
       },
       inject: [FirestorePersistenceAdapter, ChatGateway],
-    }
+    },
+    {
+      provide: ChatWithAdminKnowledgeUseCase,
+      useFactory: (knowledgeRepo: any) => {
+        return new ChatWithAdminKnowledgeUseCase(knowledgeRepo);
+      },
+      inject: [KNOWLEDGE_REPO_PORT],
+    },
+    // ChatWithUserKnowledgeUseCase is provided by LabModule, re-exported for use in ChatController
+    ChatWithUserKnowledgeUseCase,
   ],
   // Explaining: Exporting the UseCase in case other modules need to trigger chat logic.
-  exports: [GenerateChatResponseUseCase, RelayHumanResponseUseCase, GeminiAiAdapter, FirestorePersistenceAdapter, QdrantVectorDbAdapter],
+  exports: [GenerateChatResponseUseCase, RelayHumanResponseUseCase, ChatWithAdminKnowledgeUseCase, GeminiAiAdapter, FirestorePersistenceAdapter, QdrantVectorDbAdapter],
 })
 export class ChatModule { }

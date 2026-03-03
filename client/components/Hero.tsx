@@ -1,10 +1,44 @@
 import React from 'react';
-import { ChevronDown, Terminal, Briefcase, Zap } from 'lucide-react';
+import { ChevronDown, Terminal, Briefcase, Zap, Beaker } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
+import { useAuth } from '../core/auth/AuthContext';
+import { storeUserLanguagePreference } from '../core/auth/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Hero: React.FC = () => {
-  const { content } = useLanguage();
+  const { content, language } = useLanguage();
+  const { user, login } = useAuth();
+  const navigate = useNavigate();
   const { name, title, hero, availability, philosophy, contact } = content;
+
+  const handleTryLab = async () => {
+    try {
+      if (user) {
+        // User already authenticated, store language and redirect
+        await storeUserLanguagePreference(user.uid, language);
+        navigate('/lab');
+      } else {
+        // Trigger anonymous auth
+        await login();
+        // After login, store language preference
+        // Note: login() updates the user state, but we need to wait for it
+        // The navigation will happen on next render when user is set
+      }
+    } catch (error) {
+      console.error('Failed to authenticate for Lab:', error);
+    }
+  };
+
+  // Effect to handle redirect after successful login
+  React.useEffect(() => {
+    if (user) {
+      // Store language preference and redirect when user is authenticated
+      storeUserLanguagePreference(user.uid, language);
+      if (window.location.pathname !== '/lab') {
+        navigate('/lab');
+      }
+    }
+  }, [user, language, navigate]);
 
   return (
     <section id="home" className="relative min-h-screen flex items-center justify-center px-6 md:px-12 lg:px-24 pt-20 overflow-hidden bg-dark">
@@ -73,9 +107,17 @@ const Hero: React.FC = () => {
           </div>
 
           <div className="flex flex-wrap gap-4 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
+            {/* Lab CTA Button - Orange/Solid */}
+            <button
+              onClick={handleTryLab}
+              className="inline-flex items-center gap-2 px-6 py-3.5 bg-primary text-darker font-bold rounded-sm hover:bg-primary/90 transition-all duration-300 shadow-[0_0_15px_rgba(245,158,11,0.3)] hover:shadow-[0_0_25px_rgba(245,158,11,0.5)]"
+            >
+              <Beaker size={18} />
+              {language === 'en' ? 'Try Personal AI Lab (24h Session)' : 'Wypróbuj AI Lab (24h sesja)'}
+            </button>
             <a
               href="#projects"
-              className="inline-flex items-center gap-2 px-8 py-3.5 bg-transparent border border-primary text-primary font-bold rounded-sm hover:bg-primary hover:text-darker transition-all duration-300 shadow-[0_0_15px_rgba(245,158,11,0.1)] hover:shadow-[0_0_20px_rgba(245,158,11,0.4)]"
+              className="inline-flex items-center gap-2 px-6 py-3.5 bg-transparent border border-primary text-primary font-bold rounded-sm hover:bg-primary hover:text-darker transition-all duration-300"
             >
               {hero.cta}
               <ChevronDown size={20} />
@@ -83,7 +125,7 @@ const Hero: React.FC = () => {
             <a
               href="/cv.pdf"
               download
-              className="inline-flex items-center gap-2 px-8 py-3.5 bg-surface border border-slate-700 text-slate-300 font-bold rounded-sm hover:border-slate-500 hover:text-white transition-all duration-300"
+              className="inline-flex items-center gap-2 px-6 py-3.5 bg-surface border border-slate-700 text-slate-300 font-bold rounded-sm hover:border-slate-500 hover:text-white transition-all duration-300"
             >
               <Briefcase size={20} />
               {contact.buttons.cv}

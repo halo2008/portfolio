@@ -99,6 +99,18 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     result: "Functional MVP supporting multiple tenants with data isolation.",
                     iconName: 'Bot',
                     image: asset("img/chat.jpg")
+                },
+                {
+                    id: '7',
+                    title: "AI Knowledge Sandbox",
+                    subtitle: "RAG • Personal AI Lab",
+                    challenge: "Ephemeral RAG environment for personal knowledge exploration",
+                    solution: "A private 24-hour sandbox where you can upload documents (PDF, TXT, MD) and chat with an AI that answers based only on your uploaded content. Uses Qdrant vector database, Gemini AI, and Firebase authentication with anonymous sign-in.",
+                    tech: ["RAG", "Qdrant", "Gemini AI", "Firebase Auth", "Vector Search"],
+                    result: "Secure, isolated environment for experimenting with RAG technology on your own documents.",
+                    iconName: 'FlaskConical',
+                    link: '/lab',
+                    languageBadge: 'en'
                 }
             ]
         },
@@ -216,7 +228,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
         contact: {
             cta: "Ready to optimize your infrastructure?",
             sub: "Available for B2B contracts.",
-            buttons: { cv: "Technical Portfolio (PDF)", linkedin: "Contact on LinkedIn", email: "Email Me" },
+            buttons: { cv: "Technical Portfolio (PDF)", linkedin: "Contact on LinkedIn", email: "Email Me", tryLab: "Try Personal AI Lab (24h Session)" },
             linkedinUrl: "https://linkedin.com/in/placeholder",
             emailUrl: "konrad@example.com"
         },
@@ -355,6 +367,18 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     result: "Działający MVP obsługujący wielu tenantów z izolacją danych.",
                     iconName: 'Bot',
                     image: asset("img/chat.jpg")
+                },
+                {
+                    id: '7',
+                    title: "Sandbox Wiedzy AI",
+                    subtitle: "RAG • Osobiste AI Lab",
+                    challenge: "Tymczasowe środowisko RAG do eksploracji wiedzy",
+                    solution: "Prywatne 24-godzinne środowisko, w którym możesz przesyłać dokumenty (PDF, TXT, MD) i rozmawiać z AI, które odpowiada wyłącznie na podstawie przesłanych treści. Wykorzystuje bazę wektorową Qdrant, Gemini AI oraz uwierzytelnianie Firebase z anonimowym logowaniem.",
+                    tech: ["RAG", "Qdrant", "Gemini AI", "Firebase Auth", "Vector Search"],
+                    result: "Bezpieczne, izolowane środowisko do eksperymentowania z technologią RAG na własnych dokumentach.",
+                    iconName: 'FlaskConical',
+                    link: '/lab',
+                    languageBadge: 'pl'
                 }
             ]
         },
@@ -472,7 +496,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
         contact: {
             cta: "Gotowy na optymalizację?",
             sub: "Dostępny na kontrakty B2B.",
-            buttons: { cv: "Portfolio Techniczne (PDF)", linkedin: "Kontakt na LinkedIn", email: "Napisz Email" },
+            buttons: { cv: "Portfolio Techniczne (PDF)", linkedin: "Kontakt na LinkedIn", email: "Napisz Email", tryLab: "Wypróbuj AI Lab (24h sesja)" },
             linkedinUrl: "https://linkedin.com/in/placeholder",
             emailUrl: "konrad@example.com"
         },

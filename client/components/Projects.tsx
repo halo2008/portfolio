@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Server, Bot, Shield, Smartphone, Brain, Cloud, Wifi, X, CheckCircle2, Cpu, Rocket, ChevronRight, Hash } from 'lucide-react';
+import { Server, Bot, Shield, Smartphone, Brain, Cloud, Wifi, X, CheckCircle2, Cpu, Rocket, ChevronRight, Hash, FlaskConical, ExternalLink } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../LanguageContext';
 import { Project } from '../types';
 
@@ -11,12 +12,14 @@ const iconMap: Record<string, React.ElementType> = {
   'Brain': Brain,
   'Cloud': Cloud,
   'Wifi': Wifi,
-  'Rocket': Rocket
+  'Rocket': Rocket,
+  'FlaskConical': FlaskConical
 };
 
 const Projects: React.FC = () => {
-  const { content } = useLanguage();
+  const { content, language } = useLanguage();
   const { projects } = content;
+  const navigate = useNavigate();
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   useEffect(() => {
@@ -51,10 +54,17 @@ const Projects: React.FC = () => {
         <div className="grid md:grid-cols-2 gap-8">
           {projects.items.map((project) => {
             const Icon = iconMap[project.iconName] || Rocket;
+            const handleClick = () => {
+              if (project.link) {
+                navigate(project.link);
+              } else {
+                setSelectedProject(project);
+              }
+            };
             return (
               <div
                 key={project.id}
-                onClick={() => setSelectedProject(project)}
+                onClick={handleClick}
                 className="group relative bg-surface border border-slate-800 rounded-sm overflow-hidden hover:border-primary transition-all duration-300 cursor-pointer hover:shadow-[0_0_20px_rgba(0,0,0,0.5)] flex flex-col"
               >
                 {/* Header Decoration */}
@@ -86,6 +96,7 @@ const Projects: React.FC = () => {
                   <div className="mb-6">
                     <h3 className="text-xl font-bold text-white mb-2 group-hover:text-primary transition-colors flex items-center gap-2">
                       {project.title}
+                      {project.link && <ExternalLink size={16} className="text-slate-500" />}
                     </h3>
                     <p className="text-xs font-mono text-slate-500 uppercase tracking-wide">{project.subtitle}</p>
                   </div>
@@ -93,6 +104,14 @@ const Projects: React.FC = () => {
                   <p className="text-slate-400 text-sm leading-relaxed mb-6 line-clamp-3 font-light">
                     {project.challenge}
                   </p>
+                  
+                  {project.languageBadge && language === project.languageBadge && (
+                    <div className="mb-4">
+                      <span className="text-[10px] font-mono bg-primary/10 text-primary px-2 py-1 rounded-sm border border-primary/30 uppercase tracking-tight">
+                        {language === 'pl' ? 'Polski' : 'English'}
+                      </span>
+                    </div>
+                  )}
 
                   <div className="mt-auto pt-6 border-t border-slate-800 flex flex-wrap gap-2">
                     {project.tech.slice(0, 3).map(t => (

@@ -8,8 +8,10 @@ export interface Project {
   solution: string;
   tech: string[];
   result: string;
-  iconName: 'Server' | 'Bot' | 'Shield' | 'Smartphone' | 'Brain' | 'Rocket' | 'Wifi' | 'Cloud';
+  iconName: 'Server' | 'Bot' | 'Shield' | 'Smartphone' | 'Brain' | 'Rocket' | 'Wifi' | 'Cloud' | 'FlaskConical';
   image?: string;
+  link?: string;
+  languageBadge?: 'en' | 'pl';
 }
 
 export interface TimelineItem {
@@ -105,6 +107,7 @@ export interface PortfolioContent {
       cv: string;
       linkedin: string;
       email: string;
+      tryLab: string;
     };
     linkedinUrl: string;
     emailUrl: string;

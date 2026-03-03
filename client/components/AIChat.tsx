@@ -1,14 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { X, Send, Loader2, Bot } from 'lucide-react';
+import { X, Send, Loader2, Bot, BookOpen } from 'lucide-react';
 import { ChatMessage, LoadingState } from '../types';
 import { useLanguage } from '../LanguageContext';
-import { io, Socket } from 'socket.io-client';
-
-// Initialize socket connection outside component to avoid reconnects on re-render
-// When no URL is provided, it defaults to window.location.origin
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
-const socket: Socket = io();
+// API base URL - same origin for main page chat
+const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+
+// Response from POST /chat endpoint
+interface ChatResponse {
+  response: string;
+  sources: { title: string }[];
+  language: 'pl' | 'en';
+}
 
 const AIChat: React.FC = () => {
   const { content, language } = useLanguage();
@@ -19,7 +23,15 @@ const AIChat: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState<LoadingState>(LoadingState.IDLE);
+  const [detectedLanguage, setDetectedLanguage] = useState<'pl' | 'en'>(language === 'pl' ? 'pl' : 'en');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Disclaimer text based on detected language
+  const getDisclaimer = (lang: 'pl' | 'en'): string => {
+    return lang === 'pl'
+      ? 'Odpowiadam z oficjalnej bazy wiedzy'
+      : 'Answering from official knowledge base';
+  };
 
   // Reset/Init messages when language changes or on first load
   useEffect(() => {
@@ -28,54 +40,8 @@ const AIChat: React.FC = () => {
       text: aiChat.initialMessage,
       timestamp: new Date()
     }]);
+    setDetectedLanguage(language === 'pl' ? 'pl' : 'en');
   }, [language, aiChat.initialMessage]);
-
-  // WebSocket Event Listeners
-  useEffect(() => {
-    socket.on('connect', () => {
-      console.log('Connected to WebSocket server');
-    });
-
-    socket.on('messageToClient', (payload: { sender: string, message: string, isChunk?: boolean }) => {
-      if (payload.isChunk) {
-        setMessages(prev => {
-          const lastMsg = prev[prev.length - 1];
-          if (lastMsg && lastMsg.role === 'model' && lastMsg.isStreaming) {
-            return [
-              ...prev.slice(0, -1),
-              { ...lastMsg, text: lastMsg.text + payload.message }
-            ];
-          } else {
-            return [...prev, { role: 'model', text: payload.message, timestamp: new Date(), isStreaming: true }];
-          }
-        });
-        setLoading(LoadingState.SUCCESS);
-      } else {
-        const modelMsg: ChatMessage = {
-          role: 'model',
-          text: payload.message,
-          timestamp: new Date()
-        };
-        setMessages(prev => [...prev, modelMsg]);
-        setLoading(LoadingState.SUCCESS);
-      }
-    });
-
-    socket.on('streamComplete', () => {
-      setMessages(prev => {
-        const lastMsg = prev[prev.length - 1];
-        if (lastMsg && lastMsg.isStreaming) {
-          return [...prev.slice(0, -1), { ...lastMsg, isStreaming: false }];
-        }
-        return prev;
-      });
-    });
-
-    return () => {
-      socket.off('connect');
-      socket.off('messageToClient');
-    };
-  }, []);
 
   const toggleChat = () => setIsOpen(!isOpen);
 
@@ -103,13 +69,44 @@ const AIChat: React.FC = () => {
 
     try {
       const token = await executeRecaptcha('chat_submit');
-      console.log('Recaptcha token generated:', token);
-      // Send message via WebSocket
-      socket.emit('messageToServer', { text: input, captcha: token });
+      
+      // Call POST /chat endpoint (admin-only knowledge, CAPTCHA protected)
+      const response = await fetch(`${API_BASE_URL}/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          message: input,
+          sessionId: `main_page_${Date.now()}`,
+          captcha: token,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data: ChatResponse = await response.json();
+      
+      // Update detected language from response
+      setDetectedLanguage(data.language);
+
+      const modelMsg: ChatMessage = {
+        role: 'model',
+        text: data.response,
+        timestamp: new Date()
+      };
+      
+      setMessages(prev => [...prev, modelMsg]);
+      setLoading(LoadingState.SUCCESS);
     } catch (error) {
-      console.error('Recaptcha execution failed', error);
+      console.error('Chat request failed', error);
       setLoading(LoadingState.ERROR);
-      setMessages(prev => [...prev, { role: 'model', text: 'Error verifying captcha. Please try again.', timestamp: new Date() }]);
+      const errorText = detectedLanguage === 'pl'
+        ? 'Przepraszam, wystąpił błąd. Spróbuj ponownie później.'
+        : 'Sorry, an error occurred. Please try again later.';
+      setMessages(prev => [...prev, { role: 'model', text: errorText, timestamp: new Date() }]);
     }
   };
 
@@ -144,6 +141,14 @@ const AIChat: React.FC = () => {
             <button onClick={toggleChat} className="text-slate-400 hover:text-white transition-colors">
               <X size={20} />
             </button>
+          </div>
+
+          {/* Disclaimer Banner */}
+          <div className="bg-primary/10 border-b border-primary/20 px-4 py-2 flex items-center gap-2">
+            <BookOpen size={14} className="text-primary flex-shrink-0" />
+            <span className="text-xs text-primary font-medium">
+              {getDisclaimer(detectedLanguage)}
+            </span>
           </div>
 
           {/* Messages */}
