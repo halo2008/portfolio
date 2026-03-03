@@ -12,6 +12,7 @@ import { CleanupController } from './infrastructure/delivery/cleanup.controller'
 import { EPHEMERAL_USER_REPO_PORT } from './domain/ports/ephemeral-user-repo.port';
 import { FirestoreEphemeralUserAdapter } from './infrastructure/adapters/firestore-ephemeral-user.adapter';
 import { IdentityCleanupService } from './application/services/identity-cleanup.service';
+import { FirestoreProvider } from '../../core/firestore/firestore.provider';
 
 /**
  * SecurityInterceptorProvider
@@ -34,6 +35,8 @@ const securityInterceptorProvider: Provider = {
     providers: [
         // Global security interceptor for zero-trust context injection
         securityInterceptorProvider,
+        // Firestore provider for ephemeral user persistence
+        FirestoreProvider,
         // Analysis adapter -> Port binding
         {
             provide: ANALYSIS_PORT,
