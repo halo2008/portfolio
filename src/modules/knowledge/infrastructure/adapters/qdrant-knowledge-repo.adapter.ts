@@ -28,11 +28,22 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
     private async ensureCollectionExists() {
         try {
             await this.qdrantClient.getCollection(this.COLLECTION_NAME);
-        } catch (e) {
-            await this.qdrantClient.createCollection(this.COLLECTION_NAME, {
-                vectors: { size: 768, distance: 'Cosine' }
-            });
-            this.logger.log(`Created Qdrant collection: ${this.COLLECTION_NAME}`);
+            this.logger.log(`Qdrant collection '${this.COLLECTION_NAME}' already exists.`);
+        } catch (e: any) {
+            // Only attempt to create if it's a "not found" error, not a network error
+            if (e?.status === 404 || e?.message?.includes('Not found') || e?.message?.includes('doesn\'t exist')) {
+                try {
+                    await this.qdrantClient.createCollection(this.COLLECTION_NAME, {
+                        vectors: { size: 768, distance: 'Cosine' }
+                    });
+                    this.logger.log(`Created Qdrant collection: ${this.COLLECTION_NAME}`);
+                } catch (createError) {
+                    this.logger.error(`Failed to create Qdrant collection: ${createError instanceof Error ? createError.message : createError}`);
+                }
+            } else {
+                // Network error or other issue — don't crash, just log
+                this.logger.warn(`Qdrant not reachable during startup, collection check skipped: ${e instanceof Error ? e.message : e}`);
+            }
         }
     }
 
