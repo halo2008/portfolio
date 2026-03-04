@@ -1,34 +1,55 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { AuthProvider } from './core/auth/AuthContext';
-import { AdminPage } from './pages/Admin';
-import './App.css';
+import React, { Suspense } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { LanguageProvider } from './LanguageContext';
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 
-// Tymczasowy komponent Homepage do testów nawigacji
-function HomePage() {
+// Pages
+import HomePage from './pages/HomePage';
+
+// Lazy loaded Lab routes
+const LabLayout = React.lazy(() => import('./pages/LabLayout'));
+const Lab = React.lazy(() => import('./pages/Lab'));
+const LabChat = React.lazy(() => import('./pages/LabChat'));
+
+const AppContent: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gray-950 flex flex-col items-center justify-center text-white">
-      <h1 className="text-4xl font-bold mb-4">Portfolio Konrad Sędkowski</h1>
-      <p className="text-gray-400 mb-8">Witaj na stronie głównej.</p>
-      <Link
-        to="/admin"
-        className="px-6 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-colors"
-      >
-        Przejdź do Panelu Admina
-      </Link>
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+
+        {/* Lab Routes with AuthProvider isolation */}
+        <Route path="/lab" element={
+          <Suspense fallback={<div className="min-h-screen bg-darker flex items-center justify-center text-primary">Loading...</div>}>
+            <LabLayout />
+          </Suspense>
+        }>
+          <Route index element={<Lab />} />
+          <Route path="chat" element={<LabChat />} />
+        </Route>
+
+        <Route path="/cv" element={<Navigate to="/" replace />} />
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/admin" element={<AdminPage />} />
-        </Routes>
-      </Router>
-    </AuthProvider>
+    <GoogleReCaptchaProvider
+      reCaptchaKey={import.meta.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "PLACEHOLDER_SITE_KEY"}
+      scriptProps={{
+        async: false,
+        defer: false,
+        appendTo: "head",
+        nonce: undefined,
+      }}
+    >
+      <LanguageProvider>
+        <AppContent />
+      </LanguageProvider>
+    </GoogleReCaptchaProvider>
   );
 }
 

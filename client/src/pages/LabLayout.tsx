@@ -1,6 +1,6 @@
 import React, { Suspense, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
-import { AuthProvider, useAuth, storeUserLanguagePreference } from '../../core/auth/AuthContext';
+import { AuthProvider, useAuth, storeUserLanguagePreference } from '../core/auth/AuthContext';
 import { useLanguage as useGlobalLanguage } from '../../LanguageContext';
 import { LanguageProvider as LabLanguageProvider } from '../LanguageContext';
 

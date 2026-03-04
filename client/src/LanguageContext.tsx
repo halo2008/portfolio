@@ -221,12 +221,24 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
     }
   };
 
-  // Sync with storage changes from other contexts
+  // Sync with storage changes and handle initial detection
   React.useEffect(() => {
+    const saved = localStorage.getItem('language');
+    if (!saved) {
+      fetch('https://get.geojs.io/v1/ip/country.json')
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.country === 'PL') {
+            setLanguage('pl');
+          }
+        })
+        .catch((err) => console.error('Geo-IP check failed:', err));
+    }
+
     const handleStorageChange = () => {
-      const saved = localStorage.getItem('language');
-      if (saved === 'en' || saved === 'pl') {
-        setLanguageState(saved);
+      const savedStorage = localStorage.getItem('language');
+      if (savedStorage === 'en' || savedStorage === 'pl') {
+        setLanguageState(savedStorage as Language);
       }
     };
 
