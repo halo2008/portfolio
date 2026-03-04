@@ -55,8 +55,16 @@ interface FirebaseDecodedToken {
 export class SecurityInterceptor implements NestInterceptor {
     private readonly logger = new Logger(SecurityInterceptor.name);
 
+    /** Routes that should bypass security context injection */
+    private readonly PUBLIC_ROUTES = ['/api/health', '/health', '/metrics', '/api', '/'];
+
     intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
         const request = context.switchToHttp().getRequest<RequestWithRagContext>();
+
+        // Skip security context injection for public/infra routes (health checks, metrics)
+        if (this.PUBLIC_ROUTES.includes(request.path)) {
+            return next.handle();
+        }
 
         // Extract decoded token from FirebaseAuthGuard
         const decodedToken = request.user as FirebaseDecodedToken | undefined;
