@@ -1,21 +1,32 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { LanguageProvider } from './LanguageContext';
-import { AuthProvider } from './core/auth/AuthContext';
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 
 // Pages
 import HomePage from './pages/HomePage';
-import Lab from './src/pages/Lab';
-import LabChat from './src/pages/LabChat';
+
+// Lazy loaded Lab routes
+const LabLayout = React.lazy(() => import('./src/pages/LabLayout'));
+const Lab = React.lazy(() => import('./src/pages/Lab'));
+const LabChat = React.lazy(() => import('./src/pages/LabChat'));
 
 const AppContent: React.FC = () => {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/lab" element={<Lab />} />
-        <Route path="/lab/chat" element={<LabChat />} />
+
+        {/* Lab Routes with AuthProvider isolation */}
+        <Route path="/lab" element={
+          <Suspense fallback={<div className="min-h-screen bg-darker flex items-center justify-center text-primary">Loading...</div>}>
+            <LabLayout />
+          </Suspense>
+        }>
+          <Route index element={<Lab />} />
+          <Route path="chat" element={<LabChat />} />
+        </Route>
+
         <Route path="/cv" element={<Navigate to="/" replace />} />
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
@@ -35,11 +46,9 @@ function App() {
         nonce: undefined,
       }}
     >
-      <AuthProvider>
-        <LanguageProvider>
-          <AppContent />
-        </LanguageProvider>
-      </AuthProvider>
+      <LanguageProvider>
+        <AppContent />
+      </LanguageProvider>
     </GoogleReCaptchaProvider>
   );
 }

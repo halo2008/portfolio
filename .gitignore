@@ -4,3 +4,6 @@
 .ralph-tui/*
 /tasks/*
 /tasks
+*.json
+*.log
+*.txt
