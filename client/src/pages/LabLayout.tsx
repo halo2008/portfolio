@@ -1,11 +1,12 @@
 import React, { Suspense, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import { AuthProvider, useAuth, storeUserLanguagePreference } from '../../core/auth/AuthContext';
-import { useLanguage } from '../../LanguageContext';
+import { useLanguage as useGlobalLanguage } from '../../LanguageContext';
+import { LanguageProvider as LabLanguageProvider } from '../LanguageContext';
 
 const LabLayoutInner: React.FC = () => {
     const { user, loading, login } = useAuth();
-    const { language } = useLanguage();
+    const { language } = useGlobalLanguage();
 
     useEffect(() => {
         if (!loading && !user) {
@@ -33,7 +34,9 @@ const LabLayoutInner: React.FC = () => {
 const LabLayout: React.FC = () => {
     return (
         <AuthProvider>
-            <LabLayoutInner />
+            <LabLanguageProvider>
+                <LabLayoutInner />
+            </LabLanguageProvider>
         </AuthProvider>
     );
 };
