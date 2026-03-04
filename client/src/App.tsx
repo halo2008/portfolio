@@ -27,7 +27,7 @@ const AppContent: React.FC = () => {
           <Route path="chat" element={<LabChat />} />
         </Route>
 
-        <Route path="/cv" element={<Navigate to="/" replace />} />
+
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
