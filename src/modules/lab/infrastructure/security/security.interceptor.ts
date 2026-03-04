@@ -56,7 +56,7 @@ export class SecurityInterceptor implements NestInterceptor {
     private readonly logger = new Logger(SecurityInterceptor.name);
 
     /** Routes that should bypass security context injection */
-    private readonly PUBLIC_ROUTES = ['/api/health', '/health', '/metrics', '/api', '/'];
+    private readonly PUBLIC_ROUTES = ['/api/health', '/health', '/metrics', '/api', '/', '/api/chat', '/api/slack/events'];
 
     intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
         const request = context.switchToHttp().getRequest<RequestWithRagContext>();
