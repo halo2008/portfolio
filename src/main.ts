@@ -21,7 +21,7 @@ async function bootstrap() {
                 fontSrc: ["'self'", "https://fonts.gstatic.com"],
                 imgSrc: ["'self'", "data:", "https://grainy-gradients.vercel.app"],
                 frameSrc: ["'self'", "https://www.google.com", "https://www.recaptcha.net", "https://ksedkowski.grafana.net"],
-                connectSrc: ["'self'", "ws:", "wss:", "https://www.google.com", "https://www.gstatic.com"],
+                connectSrc: ["'self'", "ws:", "wss:", "https://www.google.com", "https://www.gstatic.com", "https://identitytoolkit.googleapis.com", "https://securetoken.googleapis.com", "https://firestore.googleapis.com"],
             },
         },
     }));
