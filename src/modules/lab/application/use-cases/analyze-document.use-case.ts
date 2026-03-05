@@ -1,8 +1,7 @@
 import { Inject, Injectable, Logger, BadRequestException, PayloadTooLargeException } from '@nestjs/common';
-import * as pdfParseModule from 'pdf-parse';
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const pdfParse = (pdfParseModule as any).default || pdfParseModule;
+// pdf-parse v2 exports a PDFParse class, not a default function
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { PDFParse } = require('pdf-parse');
 import { UserId } from '../../domain/value-objects/user-id.vo';
 import {
     AnalysisPort,
@@ -167,12 +166,16 @@ export class AnalyzeDocumentUseCase {
 
         if (extension === '.pdf') {
             try {
-                const parsed = await pdfParse(file);
+                const parser = new PDFParse({ data: file, verbosity: 0 });
+                const result = await parser.getText();
+                const text = result.pages.map((p: any) => p.text).join('\n');
+                const info = await parser.getInfo();
                 this.logger.debug(
-                    { filename, pageCount: parsed.numpages },
+                    { filename, pageCount: info?.numPages ?? result.pages.length },
                     'PDF parsed successfully',
                 );
-                return parsed.text;
+                await parser.destroy();
+                return text;
             } catch (error) {
                 this.logger.error(
                     { filename, error: (error as Error).message },
