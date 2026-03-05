@@ -59,6 +59,8 @@ const securityInterceptorProvider: Provider = {
         AnalyzeDocumentUseCase,
         ConfirmIndexUseCase,
         ChatWithUserKnowledgeUseCase,
+        // Export AnalysisPort for admin chunking
+        ANALYSIS_PORT,
         // Export service for scheduling/cron jobs
         IdentityCleanupService,
     ],

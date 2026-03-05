@@ -1,10 +1,12 @@
-import { Controller, Post, Delete, Get, Body, Query, UseGuards } from '@nestjs/common';
+import { Controller, Post, Delete, Get, Body, Query, UseGuards, Inject } from '@nestjs/common';
 import { FirebaseAuthGuard } from '../../../../core/auth/firebase-auth.guard';
 import { Roles } from '../../../../core/auth/roles.decorator';
 import { KnowledgeAtom } from '../../domain/entities/knowledge-atom.entity';
 import { IngestBatchUseCase, IngestionResult } from '../../application/use-cases/ingest-batch.use-case';
 import { DeleteKnowledgeUseCase } from '../../application/use-cases/delete-knowledge.use-case';
 import { GetKnowledgeStatsUseCase } from '../../application/use-cases/get-knowledge-stats.use-case';
+import { ANALYSIS_PORT, AnalysisPort } from '../../../lab/domain/ports/analysis.port';
+import { ConfirmAdminIndexUseCase, ConfirmAdminIndexInput, AdminIndexResultDto } from '../../application/use-cases/confirm-admin-index.use-case';
 
 @Controller('internal/ingest')
 export class KnowledgeController {
@@ -12,7 +14,36 @@ export class KnowledgeController {
         private readonly ingestBatchUseCase: IngestBatchUseCase,
         private readonly deleteKnowledgeUseCase: DeleteKnowledgeUseCase,
         private readonly getKnowledgeStatsUseCase: GetKnowledgeStatsUseCase,
+        @Inject(ANALYSIS_PORT) private readonly analysisPort: AnalysisPort,
+        private readonly confirmAdminIndexUseCase: ConfirmAdminIndexUseCase,
     ) { }
+
+    @Post('analyze')
+    @UseGuards(FirebaseAuthGuard)
+    @Roles('admin')
+    async analyzeText(
+        @Body('text') text: string,
+        @Body('filename') filename: string = 'admin_input.txt',
+    ) {
+        const analysisResult = await this.analysisPort.analyzeDocument(text, filename);
+        return {
+            detectedLanguage: analysisResult.detectedLanguage,
+            chunks: analysisResult.chunks.map((chunk) => ({
+                content: chunk.content,
+                startLine: chunk.startLine,
+                endLine: chunk.endLine,
+            })),
+        };
+    }
+
+    @Post('confirm-index')
+    @UseGuards(FirebaseAuthGuard)
+    @Roles('admin')
+    async confirmIndex(
+        @Body() data: ConfirmAdminIndexInput,
+    ): Promise<AdminIndexResultDto> {
+        return await this.confirmAdminIndexUseCase.execute(data);
+    }
 
     @Post('batch')
     @UseGuards(FirebaseAuthGuard)

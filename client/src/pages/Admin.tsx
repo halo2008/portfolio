@@ -91,7 +91,7 @@ export const AdminPage: React.FC = () => {
         );
     }
 
-    if (!user) {
+    if (!user || user.isAnonymous) {
         return <AdminLogin />;
     }
 

@@ -1,5 +1,6 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { QdrantModule } from '../qdrant/qdrant.module';
+import { LabModule } from '../lab/lab.module';
 import { KnowledgeController } from './infrastructure/delivery/knowledge.controller';
 import { IngestBatchUseCase } from './application/use-cases/ingest-batch.use-case';
 import { DeleteKnowledgeUseCase } from './application/use-cases/delete-knowledge.use-case';
@@ -8,9 +9,10 @@ import { KNOWLEDGE_REPO_PORT } from './domain/ports/knowledge-repo.port';
 import { QdrantKnowledgeRepoAdapter } from './infrastructure/adapters/qdrant-knowledge-repo.adapter';
 import { EMBEDDING_PROVIDER_PORT } from './domain/ports/embedding-provider.port';
 import { GoogleEmbeddingAdapter } from './infrastructure/adapters/google-embedding.adapter';
+import { ConfirmAdminIndexUseCase } from './application/use-cases/confirm-admin-index.use-case';
 
 @Module({
-    imports: [QdrantModule],
+    imports: [QdrantModule, forwardRef(() => LabModule)],
     controllers: [KnowledgeController],
     providers: [
         // Adapters -> Ports
@@ -25,7 +27,8 @@ import { GoogleEmbeddingAdapter } from './infrastructure/adapters/google-embeddi
         // Use Cases
         IngestBatchUseCase,
         DeleteKnowledgeUseCase,
-        GetKnowledgeStatsUseCase
+        GetKnowledgeStatsUseCase,
+        ConfirmAdminIndexUseCase
     ],
     exports: [
         KNOWLEDGE_REPO_PORT,
