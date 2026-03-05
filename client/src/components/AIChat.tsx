@@ -5,7 +5,7 @@ import { useLanguage } from '../LanguageContext';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 // API base URL - same origin for main page chat
-const API_BASE_URL = import.meta.env.VITE_API_URL || '';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 // Response from POST /chat endpoint
 interface ChatResponse {
@@ -69,7 +69,7 @@ const AIChat: React.FC = () => {
 
     try {
       const token = await executeRecaptcha('chat_submit');
-      
+
       // Call POST /chat endpoint (admin-only knowledge, CAPTCHA protected)
       const response = await fetch(`${API_BASE_URL}/chat`, {
         method: 'POST',
@@ -88,7 +88,7 @@ const AIChat: React.FC = () => {
       }
 
       const data: ChatResponse = await response.json();
-      
+
       // Update detected language from response
       setDetectedLanguage(data.language);
 
@@ -97,7 +97,7 @@ const AIChat: React.FC = () => {
         text: data.response,
         timestamp: new Date()
       };
-      
+
       setMessages(prev => [...prev, modelMsg]);
       setLoading(LoadingState.SUCCESS);
     } catch (error) {

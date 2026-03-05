@@ -14,6 +14,7 @@ const clientDistPath = resolve(__dirname, '..', 'dist', 'static');
 import { AppController } from './app.controller';
 import { HttpMetricsMiddleware, METRIC_HTTP_DURATION } from './core/metrics/http-metrics.middleware';
 import { MiddlewareConsumer, NestModule } from '@nestjs/common';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
     imports: [
@@ -23,6 +24,15 @@ import { MiddlewareConsumer, NestModule } from '@nestjs/common';
             rootPath: clientDistPath,
             exclude: ['/api/{*path}', '/metrics'],
         }),
+        ThrottlerModule.forRoot([{
+            name: 'short',
+            ttl: 60000,
+            limit: 10,
+        }, {
+            name: 'demo',
+            ttl: 60000,
+            limit: 3,
+        }]),
         PrometheusModule.register(),
         ChatModule,
         KnowledgeModule,

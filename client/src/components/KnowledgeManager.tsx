@@ -29,7 +29,7 @@ export const KnowledgeManager: React.FC = () => {
     const [detectedLanguage, setDetectedLanguage] = useState<'pl' | 'en'>('pl');
     const [chunks, setChunks] = useState<SemanticChunk[]>([]);
 
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+    const API_URL = import.meta.env.VITE_API_URL || '/api';
 
     const fetchStats = async () => {
         if (!user) return;

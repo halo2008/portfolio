@@ -1,4 +1,5 @@
-import { Controller, Post, Delete, Get, Body, Query, UseGuards, Inject } from '@nestjs/common';
+import { Controller, Post, Delete, Get, Body, Query, UseGuards, Inject, Req, BadRequestException } from '@nestjs/common';
+import { Request } from 'express';
 import { FirebaseAuthGuard } from '../../../../core/auth/firebase-auth.guard';
 import { Roles } from '../../../../core/auth/roles.decorator';
 import { KnowledgeAtom } from '../../domain/entities/knowledge-atom.entity';
@@ -7,6 +8,16 @@ import { DeleteKnowledgeUseCase } from '../../application/use-cases/delete-knowl
 import { GetKnowledgeStatsUseCase } from '../../application/use-cases/get-knowledge-stats.use-case';
 import { ANALYSIS_PORT, AnalysisPort } from '../../../lab/domain/ports/analysis.port';
 import { ConfirmAdminIndexUseCase, ConfirmAdminIndexInput, AdminIndexResultDto } from '../../application/use-cases/confirm-admin-index.use-case';
+import { ConfirmIndexUseCase } from '../../../lab/application/use-cases/confirm-index.use-case';
+import { ThrottlerGuard, Throttle } from '@nestjs/throttler';
+import { RagSecurityContext, KNOWLEDGE_REPO_PORT, KnowledgeRepoPort } from '../../domain/ports/knowledge-repo.port';
+import { SecurityInterceptor } from '../../../lab/infrastructure/security/security.interceptor';
+import { UseInterceptors, forwardRef } from '@nestjs/common';
+import { UserId } from '../../../lab/domain/value-objects/user-id.vo';
+
+interface RequestWithRagContext extends Request {
+    RAG_CONTEXT?: RagSecurityContext;
+}
 
 @Controller('internal/ingest')
 export class KnowledgeController {
@@ -16,10 +27,14 @@ export class KnowledgeController {
         private readonly getKnowledgeStatsUseCase: GetKnowledgeStatsUseCase,
         @Inject(ANALYSIS_PORT) private readonly analysisPort: AnalysisPort,
         private readonly confirmAdminIndexUseCase: ConfirmAdminIndexUseCase,
+        @Inject(forwardRef(() => ConfirmIndexUseCase))
+        private readonly confirmIndexUseCase: ConfirmIndexUseCase,
+        @Inject(KNOWLEDGE_REPO_PORT) private readonly knowledgeRepo: KnowledgeRepoPort,
     ) { }
 
     @Post('analyze')
-    @UseGuards(FirebaseAuthGuard)
+    @UseGuards(FirebaseAuthGuard, ThrottlerGuard)
+    @Throttle({ demo: { limit: 5, ttl: 60000 } }) // 5 requests per minute for demo users
     @Roles('admin')
     async analyzeText(
         @Body('text') text: string,
@@ -55,17 +70,37 @@ export class KnowledgeController {
     }
 
     @Post('demo-batch')
-    @UseGuards(FirebaseAuthGuard)
-    // No specific role required - anyone authenticated can call this
+    @UseGuards(FirebaseAuthGuard, ThrottlerGuard)
+    @UseInterceptors(SecurityInterceptor)
+    @Throttle({ demo: { limit: 5, ttl: 60000 } })
     async ingestDemoBatch(
-        @Body() data: KnowledgeAtom[],
-    ): Promise<IngestionResult> {
-        // Mock successful ingestion without actually touching Qdrant
+        @Body() body: any,
+        @Req() req: RequestWithRagContext,
+    ): Promise<any> {
+        const context = req.RAG_CONTEXT;
+        if (!context?.userId) {
+            throw new BadRequestException('Security context missing');
+        }
+
+        const userId = UserId.create(context.userId);
+
+        // This expects the format sent by the frontend's KnowledgeManager.tsx 
+        // which sends { chunks: [...], category: '...', tags: [...], language: 'pl' }
+        const chunks = body.chunks.map((c: any) => ({ content: c.content, title: c.title || '' }));
+        const language = body.language || 'pl';
+
+        const result = await this.confirmIndexUseCase.execute({
+            chunks,
+            userId,
+            language,
+        });
+
+        // Match expected format for DemoBatch on frontend
         return {
-            inserted: data.length,
+            inserted: result.chunkCount,
             duplicates: 0,
             errors: 0,
-            ids: data.map((_, i) => `mock-id-${i}`),
+            ids: result.vectorIds,
         };
     }
 
@@ -92,8 +127,22 @@ export class KnowledgeController {
 
     @Get('stats')
     @UseGuards(FirebaseAuthGuard)
-    // No specific role required - view basic stats
-    async getStats() {
+    @UseInterceptors(SecurityInterceptor)
+    // Both admin and demo can access this endpoint, but demo gets isolated stats
+    async getStats(@Req() req: RequestWithRagContext) {
+        const context = req.RAG_CONTEXT;
+
+        // If user is not an admin, they are in demo mode. Return isolated stats.
+        if (context?.role !== 'admin') {
+            if (!context) throw new BadRequestException('Context missing');
+            const demoChunksCount = await this.knowledgeRepo.count(context);
+            return {
+                categories: { 'Demo Data (Ephemeral)': demoChunksCount },
+                total: demoChunksCount,
+            };
+        }
+
+        // Admin sees total system stats
         const stats = await this.getKnowledgeStatsUseCase.execute();
         return {
             categories: stats,
