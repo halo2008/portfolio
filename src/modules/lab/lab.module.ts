@@ -1,4 +1,4 @@
-import { Module, Provider } from '@nestjs/common';
+import { Module, Provider, forwardRef } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { KnowledgeModule } from '../knowledge/knowledge.module';
 import { SecurityInterceptor } from './infrastructure/security/security.interceptor';
@@ -30,7 +30,7 @@ const securityInterceptorProvider: Provider = {
  * and RAG query security context. Provides global security interceptor.
  */
 @Module({
-    imports: [KnowledgeModule],
+    imports: [forwardRef(() => KnowledgeModule)],
     controllers: [LabController, CleanupController],
     providers: [
         // Global security interceptor for zero-trust context injection
