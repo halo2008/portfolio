@@ -74,19 +74,21 @@ export class KnowledgeController {
     @UseInterceptors(SecurityInterceptor)
     @Throttle({ demo: { limit: 5, ttl: 60000 } })
     async ingestDemoBatch(
-        @Body() body: any,
+        @Body() body: { chunks: { content: string; title?: string }[]; language?: 'pl' | 'en'; category?: string; tags?: string[] },
         @Req() req: RequestWithRagContext,
-    ): Promise<any> {
+    ) {
         const context = req.RAG_CONTEXT;
         if (!context?.userId) {
             throw new BadRequestException('Security context missing');
         }
 
+        if (!body.chunks || !Array.isArray(body.chunks) || body.chunks.length === 0) {
+            throw new BadRequestException('Chunks array is required and must not be empty');
+        }
+
         const userId = UserId.create(context.userId);
 
-        // This expects the format sent by the frontend's KnowledgeManager.tsx 
-        // which sends { chunks: [...], category: '...', tags: [...], language: 'pl' }
-        const chunks = body.chunks.map((c: any) => ({ content: c.content, title: c.title || '' }));
+        const chunks = body.chunks.map((c) => ({ content: c.content, title: c.title || '' }));
         const language = body.language || 'pl';
 
         const result = await this.confirmIndexUseCase.execute({
@@ -95,7 +97,6 @@ export class KnowledgeController {
             language,
         });
 
-        // Match expected format for DemoBatch on frontend
         return {
             inserted: result.chunkCount,
             duplicates: 0,

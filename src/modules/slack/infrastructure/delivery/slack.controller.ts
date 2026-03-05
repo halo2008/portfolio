@@ -1,7 +1,23 @@
-import { Controller, Post, Body, HttpCode, HttpStatus, Logger, Inject } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, Logger, UseGuards } from '@nestjs/common';
 import { RelayHumanResponseUseCase } from '../../../chat/application/relay-human-response.use-case';
 import { SlackService } from '../../slack.service';
-import { Firestore } from '@google-cloud/firestore';
+import { FirestorePersistenceAdapter } from '../../../chat/infrastructure/adapters/firestore-persistence.adapter';
+import { SlackSignatureGuard } from '../guards/slack-signature.guard';
+
+/**
+ * SlackEventDto
+ * Typed DTO for Slack Event API payloads.
+ */
+class SlackEventPayload {
+    type?: string;
+    challenge?: string;
+    event?: {
+        bot_id?: string;
+        text?: string;
+        thread_ts?: string;
+        ts?: string;
+    };
+}
 
 @Controller('slack')
 export class SlackController {
@@ -10,12 +26,13 @@ export class SlackController {
     constructor(
         private readonly relayHumanResponse: RelayHumanResponseUseCase,
         private readonly slackService: SlackService,
-        @Inject('FIRESTORE_CLIENT') private readonly firestore: Firestore,
-    ) {}
+        private readonly persistence: FirestorePersistenceAdapter,
+    ) { }
 
     @Post('events')
+    @UseGuards(SlackSignatureGuard)
     @HttpCode(HttpStatus.OK)
-    async handleEvent(@Body() body: any) {
+    async handleEvent(@Body() body: SlackEventPayload) {
         // Explaining: Slack URL verification challenge.
         if (body.type === 'url_verification') return { challenge: body.challenge };
 
@@ -58,18 +75,15 @@ export class SlackController {
         const threadTs = event.thread_ts || event.ts;
 
         try {
-            // Get socketId from thread mapping
-            const socketId = await this.getSocketId(threadTs);
+            const socketId = await this.persistence.getSocketId(threadTs);
 
             if (!socketId) {
                 await this.slackService.logSystemEvent(threadTs, '❌ Takeover failed: No active session found');
                 return;
             }
 
-            // Enable human mode
-            await this.setHumanMode(socketId, true);
+            await this.persistence.setHumanMode(socketId, true);
 
-            // Notify in Slack
             await this.slackService.logSystemEvent(threadTs,
                 '👤 **Konrad has taken over!**\n' +
                 'AI responses are now paused.\n' +
@@ -87,15 +101,14 @@ export class SlackController {
         const threadTs = event.thread_ts || event.ts;
 
         try {
-            const socketId = await this.getSocketId(threadTs);
+            const socketId = await this.persistence.getSocketId(threadTs);
 
             if (!socketId) {
                 await this.slackService.logSystemEvent(threadTs, '❌ Release failed: No active session found');
                 return;
             }
 
-            // Disable human mode
-            await this.setHumanMode(socketId, false);
+            await this.persistence.setHumanMode(socketId, false);
 
             await this.slackService.logSystemEvent(threadTs,
                 '🤖 **AI is back online!**\n' +
@@ -108,16 +121,5 @@ export class SlackController {
             await this.slackService.logSystemEvent(threadTs, `❌ Release error: ${error.message}`);
         }
     }
-
-    private async getSocketId(threadTs: string): Promise<string | null> {
-        const doc = await this.firestore.collection('threads').doc(threadTs).get();
-        return doc.data()?.socketId || null;
-    }
-
-    private async setHumanMode(sessionId: string, enabled: boolean): Promise<void> {
-        await this.firestore.collection('chats').doc(sessionId).set(
-            { humanMode: enabled, humanModeUpdatedAt: new Date() },
-            { merge: true }
-        );
-    }
 }
+

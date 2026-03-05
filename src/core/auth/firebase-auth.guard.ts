@@ -1,19 +1,15 @@
-import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable, UnauthorizedException, Logger } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import * as admin from 'firebase-admin';
 import { ROLES_KEY } from './roles.decorator';
 
-// Initialize Firebase Admin (only once)
-if (!admin.apps.length) {
-    admin.initializeApp({
-        // Uses Application Default Credentials (ADC) in Google Cloud Run.
-        // In local development, you need the GOOGLE_APPLICATION_CREDENTIALS env var,
-        // or passing explicit keys. For simplicity here, ADC is preferred.
-    });
-}
+// firebase-admin is initialized by the global FirestoreModule.
+// No need to call admin.initializeApp() here.
 
 @Injectable()
 export class FirebaseAuthGuard implements CanActivate {
+    private readonly logger = new Logger(FirebaseAuthGuard.name);
+
     constructor(private reflector: Reflector) { }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -50,8 +46,13 @@ export class FirebaseAuthGuard implements CanActivate {
 
             return true;
         } catch (error) {
-            console.error('Firebase Auth Error:', error);
+            this.logger.warn({
+                msg: 'Firebase token verification failed',
+                error: (error as Error).message,
+                ip: request.ip,
+            });
             throw new UnauthorizedException('Invalid or expired token');
         }
     }
 }
+

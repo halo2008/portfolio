@@ -1,4 +1,7 @@
-import { Controller, Get, Inject } from '@nestjs/common';
+import { Controller, Get, Inject, ForbiddenException, Headers } from '@nestjs/common';
+import { ChatProviderPort } from './modules/chat/domain/ports/chat-provider.port';
+import { PersistencePort } from './modules/chat/domain/ports/persistence.port';
+import { VectorDbPort } from './modules/chat/domain/ports/vector-db.port';
 import { GeminiAiAdapter } from './modules/chat/infrastructure/adapters/gemini-ai.adapter';
 import { FirestorePersistenceAdapter } from './modules/chat/infrastructure/adapters/firestore-persistence.adapter';
 import { QdrantVectorDbAdapter } from './modules/chat/infrastructure/adapters/qdrant-vector-db.adapter';
@@ -7,16 +10,16 @@ import { QdrantVectorDbAdapter } from './modules/chat/infrastructure/adapters/qd
 export class AppController {
 
     constructor(
-        @Inject(GeminiAiAdapter) private readonly ai: GeminiAiAdapter,
-        @Inject(FirestorePersistenceAdapter) private readonly repo: FirestorePersistenceAdapter,
-        @Inject(QdrantVectorDbAdapter) private readonly qdrant: QdrantVectorDbAdapter,
+        @Inject(GeminiAiAdapter) private readonly ai: ChatProviderPort,
+        @Inject(FirestorePersistenceAdapter) private readonly repo: PersistencePort,
+        @Inject(QdrantVectorDbAdapter) private readonly qdrant: VectorDbPort,
     ) { }
 
     @Get()
     root() {
         return {
             message: 'API is running',
-            docs: '/api/docs', // Placeholder if swagger is added later
+            docs: '/api/docs',
             version: process.env.npm_package_version || '0.0.1'
         };
     }
@@ -36,8 +39,17 @@ export class AppController {
         };
     }
 
+    /**
+     * Debug endpoint — only accessible with ADMIN_SECRET header.
+     * Returns diagnostic info about connectivity to Firestore, Gemini, Qdrant.
+     */
     @Get('debug-chat')
-    async debugChat() {
+    async debugChat(@Headers('x-admin-secret') adminSecret: string) {
+        const expectedSecret = process.env.ADMIN_SECRET;
+        if (!expectedSecret || adminSecret !== expectedSecret) {
+            throw new ForbiddenException('Unauthorized');
+        }
+
         const results: Record<string, string> = {};
         const testMessage = 'test';
         const testSessionId = 'debug-session';
@@ -84,14 +96,7 @@ export class AppController {
             results['step4_gemini_stream'] = `FAILED: ${e.message}`;
         }
 
-        // Step 5: Firestore save
-        try {
-            await this.repo.saveMessage(testSessionId, 'user', testMessage);
-            results['step5_firestore_save'] = 'OK';
-        } catch (e) {
-            results['step5_firestore_save'] = `FAILED: ${e.message}`;
-        }
-
         return results;
     }
 }
+
