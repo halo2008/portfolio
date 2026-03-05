@@ -30,14 +30,9 @@ import { QdrantModule } from '../../modules/qdrant/qdrant.module';
 import { SlackModule } from '../../modules/slack/slack.module';
 import { KnowledgeModule } from '../../modules/knowledge/knowledge.module';
 import { LabModule } from '../../modules/lab/lab.module';
-import { Firestore } from '@google-cloud/firestore';
+
 import { makeCounterProvider, makeGaugeProvider, makeHistogramProvider } from '@willsoto/nestjs-prometheus';
 import { KNOWLEDGE_REPO_PORT } from '../knowledge/domain/ports/knowledge-repo.port';
-
-const firestoreProvider = {
-  provide: 'FIRESTORE_CLIENT',
-  useFactory: () => new Firestore(),
-};
 
 @Module({
   imports: [
@@ -70,7 +65,6 @@ const firestoreProvider = {
     }),
 
     // Explaining: We register all adapters as providers.
-    firestoreProvider,
     GeminiAiAdapter,
     FirestorePersistenceAdapter,
     QdrantVectorDbAdapter,

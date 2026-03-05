@@ -1,18 +1,15 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Inject } from '@nestjs/common';
 import { EmbeddingProviderPort } from '../../domain/ports/embedding-provider.port';
 import { GoogleGenAI } from '@google/genai';
+import { GOOGLE_GENAI } from '../../../../core/genai/genai.module';
 
 @Injectable()
 export class GoogleEmbeddingAdapter implements EmbeddingProviderPort {
     private readonly logger = new Logger(GoogleEmbeddingAdapter.name);
-    private ai: GoogleGenAI;
 
-    constructor() {
-        this.ai = new GoogleGenAI({
-            apiKey: process.env.GEMINI_API_KEY,
-            httpOptions: { apiVersion: 'v1beta' }
-        });
-    }
+    constructor(
+        @Inject(GOOGLE_GENAI) private readonly ai: GoogleGenAI,
+    ) { }
 
     async generateEmbeddings(chunks: string[]): Promise<number[][]> {
         try {

@@ -15,9 +15,13 @@ import { AppController } from './app.controller';
 import { HttpMetricsMiddleware, METRIC_HTTP_DURATION } from './core/metrics/http-metrics.middleware';
 import { MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { FirestoreModule } from './core/firestore/firestore.module';
+import { GenAiModule } from './core/genai/genai.module';
 
 @Module({
     imports: [
+        FirestoreModule,
+        GenAiModule,
         LoggerModule,
         ConfigModule.forRoot({ isGlobal: true }),
         ServeStaticModule.forRoot({

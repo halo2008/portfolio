@@ -1,9 +1,10 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Inject } from '@nestjs/common';
 import { GoogleGenAI, Type } from '@google/genai';
 import {
     AnalysisPort,
     SemanticAnalysisResult,
 } from '../../domain/ports/analysis.port';
+import { GOOGLE_GENAI } from '../../../../core/genai/genai.module';
 
 /**
  * VertexAiAnalysisAdapter
@@ -14,16 +15,12 @@ import {
 @Injectable()
 export class VertexAiAnalysisAdapter implements AnalysisPort {
     private readonly logger = new Logger(VertexAiAnalysisAdapter.name);
-    private ai: GoogleGenAI;
     private readonly MAX_RETRIES = 3;
     private readonly RETRY_DELAY_MS = 1000;
 
-    constructor() {
-        this.ai = new GoogleGenAI({
-            apiKey: process.env.GEMINI_API_KEY,
-            httpOptions: { apiVersion: 'v1beta' },
-        });
-    }
+    constructor(
+        @Inject(GOOGLE_GENAI) private readonly ai: GoogleGenAI,
+    ) { }
 
     /**
      * Analyze a document with automatic language detection.

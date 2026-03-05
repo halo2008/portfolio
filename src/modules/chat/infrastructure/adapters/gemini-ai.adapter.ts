@@ -1,22 +1,18 @@
 import { ChatProviderPort } from '../../domain/ports/chat-provider.port';
 import { ChatMessage } from '../../domain/entities/chat-message.entity';
-// Explaining: Using the new, recommended @google/genai SDK (v1.x).
 import { GoogleGenAI } from '@google/genai';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
+import { GOOGLE_GENAI } from '../../../../core/genai/genai.module';
 
 @Injectable()
 export class GeminiAiAdapter implements ChatProviderPort {
-    private ai: GoogleGenAI;
 
-    constructor(private readonly logger: PinoLogger) {
+    constructor(
+        @Inject(GOOGLE_GENAI) private readonly ai: GoogleGenAI,
+        private readonly logger: PinoLogger,
+    ) {
         this.logger.setContext(GeminiAiAdapter.name);
-        // Explaining: Initialization using the new GoogleGenAI constructor.
-        const apiKey = process.env.GEMINI_API_KEY;
-        if (!apiKey) {
-            throw new Error('CRITICAL: GEMINI_API_KEY is missing. AI infrastructure failure.');
-        }
-        this.ai = new GoogleGenAI({ apiKey });
     }
 
     /**
