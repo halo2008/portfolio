@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 
 // API base URL
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 // Types
 interface SemanticChunk {
@@ -73,9 +73,8 @@ const Toast: React.FC<{
 
   return (
     <div
-      className={`fixed bottom-4 right-4 z-50 flex items-center gap-3 px-4 py-3 rounded-sm shadow-lg animate-fade-in-up ${
-        type === 'error' ? 'bg-red-900/90 border border-red-700' : 'bg-green-900/90 border border-green-700'
-      }`}
+      className={`fixed bottom-4 right-4 z-50 flex items-center gap-3 px-4 py-3 rounded-sm shadow-lg animate-fade-in-up ${type === 'error' ? 'bg-red-900/90 border border-red-700' : 'bg-green-900/90 border border-green-700'
+        }`}
     >
       {type === 'error' ? <AlertCircle size={20} className="text-red-400" /> : <CheckCircle size={20} className="text-green-400" />}
       <span className="text-white text-sm">{message}</span>
@@ -351,11 +350,10 @@ const Lab: React.FC = () => {
               onDragLeave={handleDragLeave}
               onDragOver={handleDragOver}
               onDrop={handleDrop}
-              className={`border-2 border-dashed rounded-sm p-12 text-center transition-all duration-200 ${
-                isDragActive
+              className={`border-2 border-dashed rounded-sm p-12 text-center transition-all duration-200 ${isDragActive
                   ? 'border-primary bg-primary/5'
                   : 'border-slate-600 hover:border-primary/50'
-              }`}
+                }`}
             >
               <div className="max-w-md mx-auto">
                 <Upload

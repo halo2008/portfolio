@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 
 // API base URL
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 // Types
 interface Message {
@@ -64,9 +64,8 @@ const Toast: React.FC<{
 
   return (
     <div
-      className={`fixed bottom-4 right-4 z-50 flex items-center gap-3 px-4 py-3 rounded-sm shadow-lg animate-fade-in-up ${
-        type === 'error' ? 'bg-red-900/90 border border-red-700' : 'bg-green-900/90 border border-green-700'
-      }`}
+      className={`fixed bottom-4 right-4 z-50 flex items-center gap-3 px-4 py-3 rounded-sm shadow-lg animate-fade-in-up ${type === 'error' ? 'bg-red-900/90 border border-red-700' : 'bg-green-900/90 border border-green-700'
+        }`}
     >
       {type === 'error' ? <AlertCircle size={20} className="text-red-400" /> : <CheckCircle size={20} className="text-green-400" />}
       <span className="text-white text-sm">{message}</span>
@@ -384,17 +383,15 @@ const LabChat: React.FC = () => {
                     className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
                   >
                     <div
-                      className={`max-w-[80%] rounded-sm px-4 py-3 ${
-                        message.role === 'user'
+                      className={`max-w-[80%] rounded-sm px-4 py-3 ${message.role === 'user'
                           ? 'bg-primary text-darker'
                           : 'bg-surface border border-slate-700 text-white'
-                      }`}
+                        }`}
                     >
                       <div className="text-sm whitespace-pre-wrap">{message.content}</div>
                       <div
-                        className={`text-xs mt-2 ${
-                          message.role === 'user' ? 'text-darker/60' : 'text-slate-500'
-                        }`}
+                        className={`text-xs mt-2 ${message.role === 'user' ? 'text-darker/60' : 'text-slate-500'
+                          }`}
                       >
                         {message.timestamp.toLocaleTimeString(language === 'pl' ? 'pl-PL' : 'en-US', {
                           hour: '2-digit',
@@ -457,9 +454,8 @@ const LabChat: React.FC = () => {
 
         {/* Sidebar - Retrieved Chunks */}
         <div
-          className={`fixed right-0 top-16 bottom-0 w-80 bg-darker/90 border-l border-slate-800 transform transition-transform duration-300 z-20 overflow-hidden ${
-            sidebarOpen ? 'translate-x-0' : 'translate-x-full'
-          }`}
+          className={`fixed right-0 top-16 bottom-0 w-80 bg-darker/90 border-l border-slate-800 transform transition-transform duration-300 z-20 overflow-hidden ${sidebarOpen ? 'translate-x-0' : 'translate-x-full'
+            }`}
         >
           <div className="h-full flex flex-col">
             {/* Sidebar Header */}

@@ -18,7 +18,7 @@ export const KnowledgeManager: React.FC = () => {
     const [category, setCategory] = useState('Experience');
     const [tags, setTags] = useState('');
 
-    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+    const API_URL = import.meta.env.VITE_API_URL || '/api';
 
     const fetchStats = async () => {
         if (!user) return;
