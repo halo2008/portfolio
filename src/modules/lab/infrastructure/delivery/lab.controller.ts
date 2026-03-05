@@ -66,7 +66,7 @@ const ERROR_MESSAGES = {
     pl: {
         fileRequired: 'Plik jest wymagany',
         invalidFileType: 'Nieprawidłowy typ pliku. Dozwolone: .txt, .md, .pdf',
-        fileTooLarge: 'Plik przekracza maksymalny rozmiar 10MB',
+        fileTooLarge: 'Plik przekracza maksymalny rozmiar 1MB',
         chunksRequired: 'Chunks są wymagane',
         invalidLanguage: 'Nieprawidłowy język. Dozwolone: pl, en',
         invalidPayload: 'Nieprawidłowa zawartość żądania',
@@ -75,7 +75,7 @@ const ERROR_MESSAGES = {
     en: {
         fileRequired: 'File is required',
         invalidFileType: 'Invalid file type. Allowed: .txt, .md, .pdf',
-        fileTooLarge: 'File exceeds maximum size of 10MB',
+        fileTooLarge: 'File exceeds maximum size of 1MB',
         chunksRequired: 'Chunks are required',
         invalidLanguage: 'Invalid language. Allowed: pl, en',
         invalidPayload: 'Invalid request payload',
@@ -89,9 +89,9 @@ const ERROR_MESSAGES = {
 const VALID_FILE_EXTENSIONS = ['.txt', '.md', '.pdf'];
 
 /**
- * Maximum file size in bytes (10MB).
+ * Maximum file size in bytes (1MB).
  */
-const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
+const MAX_FILE_SIZE_BYTES = 1 * 1024 * 1024;
 
 /**
  * LabController

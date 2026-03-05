@@ -9,7 +9,12 @@ import HomePage from './pages/HomePage';
 // Lazy loaded Lab routes
 const LabLayout = React.lazy(() => import('./pages/LabLayout'));
 const Lab = React.lazy(() => import('./pages/Lab'));
-const LabChat = React.lazy(() => import('./pages/LabChat'));
+
+// Lazy loaded Admin
+const AdminPageLazy = React.lazy(() => import('./pages/Admin').then(m => ({ default: m.AdminPage })));
+
+// Auth provider for admin route
+const AuthProvider = React.lazy(() => import('./core/auth/AuthContext').then(m => ({ default: m.AuthProvider })));
 
 const AppContent: React.FC = () => {
   return (
@@ -17,16 +22,23 @@ const AppContent: React.FC = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
 
-        {/* Lab Routes with AuthProvider isolation */}
+        {/* Lab Route with AuthProvider isolation */}
         <Route path="/lab" element={
           <Suspense fallback={<div className="min-h-screen bg-darker flex items-center justify-center text-primary">Loading...</div>}>
             <LabLayout />
           </Suspense>
         }>
           <Route index element={<Lab />} />
-          <Route path="chat" element={<LabChat />} />
         </Route>
 
+        {/* Admin Route */}
+        <Route path="/admin" element={
+          <Suspense fallback={<div className="min-h-screen bg-gray-950 flex items-center justify-center text-blue-500">Loading...</div>}>
+            <AuthProvider>
+              <AdminPageLazy />
+            </AuthProvider>
+          </Suspense>
+        } />
 
         {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
