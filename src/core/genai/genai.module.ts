@@ -21,7 +21,10 @@ export const GOOGLE_GENAI = 'GOOGLE_GENAI';
                 if (!apiKey) {
                     throw new Error('CRITICAL: GEMINI_API_KEY is missing.');
                 }
-                return new GoogleGenAI({ apiKey });
+                return new GoogleGenAI({
+                    apiKey,
+                    httpOptions: { apiVersion: 'v1beta' }
+                });
             },
         },
     ],

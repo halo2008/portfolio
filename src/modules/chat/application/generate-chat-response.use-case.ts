@@ -4,8 +4,11 @@ import { VectorDbPort } from '../domain/ports/vector-db.port';
 import { NotificationPort } from '../domain/ports/notification.port';
 import { TelemetryPort } from '../domain/ports/telemetry.port';
 import { KONRAD_SYSTEM_PROMPT } from '../domain/chat.constants';
+import { Logger } from '@nestjs/common';
 
 export class GenerateChatResponseUseCase {
+  private readonly logger = new Logger(GenerateChatResponseUseCase.name);
+
   constructor(
     private readonly ai: ChatProviderPort,
     private readonly repository: PersistencePort,
@@ -26,7 +29,9 @@ export class GenerateChatResponseUseCase {
     if (slackThread) {
       try {
         await this.notifier.logUserMessage(slackThread, message);
-      } catch (_) { /* Slack logging is non-critical */ }
+      } catch (error) {
+        this.logger.warn(`Slack logging failed for user message: ${(error as Error).message}`);
+      }
     }
 
     // 2. Start Slack thread if new conversation
@@ -37,14 +42,18 @@ export class GenerateChatResponseUseCase {
         if (threadTs) {
           await this.repository.linkThread(threadTs, sessionId);
         }
-      } catch (_) { /* Slack logging is non-critical */ }
+      } catch (error) {
+        this.logger.warn(`Slack start conversation logging failed: ${(error as Error).message}`);
+      }
     }
 
     // 3. Fetch history
     let history = [];
     try {
       history = await this.repository.getHistory(sessionId, 6);
-    } catch (_) { /* History fetch failure is non-critical */ }
+    } catch (error) {
+      this.logger.warn(`History fetch failed: ${(error as Error).message}`);
+    }
 
     // 4. Generate embedding
     const embedding = await this.ai.generateEmbedding(message);
@@ -54,7 +63,9 @@ export class GenerateChatResponseUseCase {
     const vectorSearchStart = performance.now();
     try {
       context = await this.vectorDb.search(embedding, 0.6);
-    } catch (_) { /* Vector search failure is non-critical */ }
+    } catch (error) {
+      this.logger.error(`Vector search failed: ${(error as Error).message}`, (error as Error).stack);
+    }
     finally {
       this.telemetry.observeVectorSearchLatency(performance.now() - vectorSearchStart);
     }
@@ -64,7 +75,9 @@ export class GenerateChatResponseUseCase {
     // 6. Save User message
     try {
       await this.repository.saveMessage(sessionId, 'user', message);
-    } catch (_) { /* Save failure is non-critical */ }
+    } catch (error) {
+      this.logger.warn(`Save user message failed: ${(error as Error).message}`);
+    }
 
     // 7. Stream and accumulate response
     let fullResponse = "";
@@ -82,12 +95,16 @@ export class GenerateChatResponseUseCase {
     // 8. Final sync: save to DB and log to Slack
     try {
       await this.repository.saveMessage(sessionId, 'model', fullResponse);
-    } catch (_) { /* Save failure is non-critical */ }
+    } catch (error) {
+      this.logger.warn(`Save model message failed: ${(error as Error).message}`);
+    }
 
     try {
       if (threadTs) {
         await this.notifier.logAiResponse(threadTs, fullResponse);
       }
-    } catch (_) { /* Slack logging is non-critical */ }
+    } catch (error) {
+      this.logger.warn(`Slack AI response logging failed: ${(error as Error).message}`);
+    }
   }
 }

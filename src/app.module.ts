@@ -14,7 +14,8 @@ const clientDistPath = resolve(__dirname, '..', 'dist', 'static');
 import { AppController } from './app.controller';
 import { HttpMetricsMiddleware, METRIC_HTTP_DURATION } from './core/metrics/http-metrics.middleware';
 import { MiddlewareConsumer, NestModule } from '@nestjs/common';
-import { ThrottlerModule } from '@nestjs/throttler';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 import { FirestoreModule } from './core/firestore/firestore.module';
 import { GenAiModule } from './core/genai/genai.module';
 
@@ -44,6 +45,10 @@ import { GenAiModule } from './core/genai/genai.module';
     ],
     controllers: [AppController],
     providers: [
+        {
+            provide: APP_GUARD,
+            useClass: ThrottlerGuard,
+        },
         makeHistogramProvider({
             name: METRIC_HTTP_DURATION,
             help: 'Duration of HTTP requests in seconds',
