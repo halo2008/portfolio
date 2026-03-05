@@ -26,8 +26,8 @@ async function bootstrap(): Promise<void> {
             contentSecurityPolicy: {
                 directives: {
                     defaultSrc: ["'self'"],
-                    scriptSrc: ["'self'", "https://www.google.com", "https://www.gstatic.com"],
-                    styleSrc: ["'self'", "https://fonts.googleapis.com"],
+                    scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://www.google.com", "https://www.gstatic.com"],
+                    styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
                     fontSrc: ["'self'", "https://fonts.gstatic.com"],
                     imgSrc: ["'self'", "data:", "https://grainy-gradients.vercel.app"],
                     frameSrc: ["'self'", "https://www.google.com", "https://www.recaptcha.net"],
