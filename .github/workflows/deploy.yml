@@ -45,6 +45,7 @@ jobs:
           --build-arg VITE_FIREBASE_AUTH_DOMAIN="${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}" \
           --build-arg VITE_FIREBASE_PROJECT_ID="${{ secrets.VITE_FIREBASE_PROJECT_ID }}" \
           --build-arg VITE_FIREBASE_APP_ID="${{ secrets.VITE_FIREBASE_APP_ID }}" \
+          --build-arg VITE_API_URL="/api" \
           -t $DOCKER_TAG .
         docker push $DOCKER_TAG
 
