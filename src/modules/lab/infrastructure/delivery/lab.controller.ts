@@ -300,6 +300,32 @@ export class LabController {
     }
 
     /**
+     * POST /lab/language
+     * Explaining: Sets user's preferred language. Called from frontend instead of
+     * direct Firestore write (which gets blocked by ad blockers).
+     * Does NOT reset expiresAt - only updates preferredLanguage field.
+     */
+    @Post('language')
+    async setLanguage(
+        @Body() body: { language: string },
+        @Req() req: RequestWithRagContext,
+    ) {
+        const context = req.RAG_CONTEXT;
+        if (!context?.userId) {
+            throw new BadRequestException('Security context missing');
+        }
+
+        const lang = body.language;
+        if (lang !== 'pl' && lang !== 'en') {
+            throw new BadRequestException('Invalid language. Allowed: pl, en');
+        }
+
+        await this.labUsageService.updateLanguagePreference(context.userId, lang);
+
+        return { status: 'ok', language: lang };
+    }
+
+    /**
      * GET /lab/stats
      * Explaining: Returns user's chunk count, session expiry, and detected language.
      * 
@@ -328,8 +354,8 @@ export class LabController {
             // Get chunk count from knowledge repo using the count method
             const chunkCount = await this.knowledgeRepo.count(context);
 
-            // Session expires in 24 hours from now (ephemeral user session)
-            const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+            // Read real expiresAt from Firestore (not hardcoded 24h)
+            const expiresAt = await this.labUsageService.getSessionExpiresAt(context.userId);
 
             const detectedLanguage = context.language === 'pl' ? 'pl' : 'en';
 

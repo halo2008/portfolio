@@ -109,6 +109,52 @@ export class LabUsageService {
         }
     }
 
+    /**
+     * Get the real expiresAt timestamp from ephemeral_users collection.
+     * Returns the stored value instead of always computing now+24h.
+     */
+    async getSessionExpiresAt(userId: string): Promise<string> {
+        try {
+            const doc = await this.firestore.collection('ephemeral_users').doc(userId).get();
+            if (doc.exists) {
+                const data = doc.data();
+                if (data?.expiresAt) {
+                    const expiresAt = data.expiresAt.toDate
+                        ? data.expiresAt.toDate()
+                        : new Date(data.expiresAt);
+                    return expiresAt.toISOString();
+                }
+            }
+        } catch (error) {
+            this.logger.error({ userId, error: (error as Error).message }, 'Failed to get session expiresAt');
+        }
+        // Fallback: 24h from now (first visit, no doc yet)
+        return new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+    }
+
+    /**
+     * Update preferred language in ephemeral_users collection.
+     * Does NOT overwrite expiresAt or createdAt - only sets preferredLanguage.
+     */
+    async updateLanguagePreference(userId: string, language: 'pl' | 'en'): Promise<void> {
+        try {
+            await this.firestore.collection('ephemeral_users').doc(userId).set(
+                {
+                    uid: userId,
+                    preferredLanguage: language,
+                    role: 'demo',
+                },
+                { merge: true },
+            );
+            this.logger.debug({ userId, language }, 'Updated language preference');
+        } catch (error) {
+            this.logger.error(
+                { userId, error: (error as Error).message },
+                'Failed to update language preference',
+            );
+        }
+    }
+
     private async incrementUsage(userId: string, increments: Partial<LabUsageStats>): Promise<void> {
         try {
             const updates: Record<string, any> = {};

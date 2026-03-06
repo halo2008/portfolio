@@ -7,6 +7,7 @@ import { PrometheusModule, makeHistogramProvider } from '@willsoto/nestjs-promet
 import { ChatModule } from './modules/chat/chat.module';
 import { KnowledgeModule } from './modules/knowledge/knowledge.module';
 import { LabModule } from './modules/lab/lab.module';
+import { UsemeModule } from './modules/useme/useme.module';
 
 const clientDistPath = resolve(__dirname, '..', 'dist', 'static');
 // Logger.log(`Serving static files from: ${clientDistPath}`, 'AppModule');
@@ -42,6 +43,7 @@ import { GenAiModule } from './core/genai/genai.module';
         ChatModule,
         KnowledgeModule,
         LabModule,
+        UsemeModule,
     ],
     controllers: [AppController],
     providers: [

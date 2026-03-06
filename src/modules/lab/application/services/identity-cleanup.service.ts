@@ -10,6 +10,7 @@ import {
     RagSecurityContext,
 } from '../../../knowledge/domain/ports/knowledge-repo.port';
 import { EphemeralUser } from '../../domain/entities/ephemeral-user.entity';
+import { LabUsageService } from '../services/lab-usage.service';
 
 /**
  * CleanupReport
@@ -43,6 +44,7 @@ export class IdentityCleanupService {
         private readonly ephemeralUserRepo: EphemeralUserRepoPort,
         @Inject(KNOWLEDGE_REPO_PORT)
         private readonly knowledgeRepo: KnowledgeRepoPort,
+        private readonly labUsageService: LabUsageService,
     ) {}
 
     /**
@@ -150,9 +152,13 @@ export class IdentityCleanupService {
         // Explaining: Only executes if Step 1 succeeded
         await this.deleteFirebaseAuthUser(userId);
 
-        // Step 3: Delete Firestore document
+        // Step 3: Delete Firestore ephemeral_users document
         // Explaining: Final cleanup step
         await this.deleteFirestoreDocument(user.uid);
+
+        // Step 4: Delete lab_usage document
+        // Explaining: Prevents orphaned usage tracking documents from accumulating
+        await this.labUsageService.cleanupUserData(userId);
 
         this.logger.debug(
             { userId },
