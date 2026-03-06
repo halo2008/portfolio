@@ -60,6 +60,16 @@ export interface LabTranslations {
   expand: string;
   startChat: string;
   aiAssistant: string;
+  statsTitle: string;
+  sessionRequests: string;
+  remaining: string;
+  analysis: string;
+  indexing: string;
+  chat: string;
+  tokens: string;
+  ops: string;
+  nearLimitReached: string;
+  limitReached: string;
 }
 
 interface LabContent {
@@ -125,6 +135,16 @@ const LAB_CONTENT: Record<Language, LabContent> = {
       expand: 'Expand',
       startChat: 'Start Chatting',
       aiAssistant: 'AI Assistant',
+      statsTitle: 'Token & Usage Statistics',
+      sessionRequests: 'Session Requests',
+      remaining: 'remaining',
+      analysis: 'Analysis',
+      indexing: 'Indexing',
+      chat: 'Chat',
+      tokens: 'tks',
+      ops: 'ops',
+      nearLimitReached: 'You are approaching the request limit for this demo session.',
+      limitReached: 'Session limit reached. Please wait for the session to expire or contact the administrator.',
     },
   },
   pl: {
@@ -185,6 +205,16 @@ const LAB_CONTENT: Record<Language, LabContent> = {
       expand: 'Rozwiń',
       startChat: 'Rozpocznij czat',
       aiAssistant: 'Asystent AI',
+      statsTitle: 'Statystyki Zużycia i Tokenów',
+      sessionRequests: 'Zapytania w Sesji',
+      remaining: 'pozostało',
+      analysis: 'Analiza',
+      indexing: 'Indeksowanie',
+      chat: 'Czat',
+      tokens: 'tks',
+      ops: 'ops',
+      nearLimitReached: 'Zbliżasz się do limitu zapytań dla tej sesji demonstracyjnej.',
+      limitReached: 'Osiągnięto limit sesji. Poczekaj na wygaśnięcie sesji lub skontaktuj się z administratorem.',
     },
   },
 };

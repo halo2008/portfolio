@@ -56,7 +56,7 @@ class ConfirmIndexDto {
  */
 interface LabStatsResponse {
     chunkCount: number;
-    sessionExpiry: string;
+    expiresAt: string;
     detectedLanguage: 'pl' | 'en';
     usage: LabUsageStats;
     maxRequests: number;
@@ -316,7 +316,7 @@ export class LabController {
             const chunkCount = await this.knowledgeRepo.count(context);
 
             // Session expires in 24 hours from now (ephemeral user session)
-            const sessionExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+            const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
 
             const detectedLanguage = context.language === 'pl' ? 'pl' : 'en';
 
@@ -330,7 +330,7 @@ export class LabController {
 
             return {
                 chunkCount,
-                sessionExpiry,
+                expiresAt,
                 detectedLanguage,
                 usage,
                 maxRequests: this.labUsageService.MAX_REQUESTS_PER_SESSION,
