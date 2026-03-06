@@ -169,7 +169,7 @@ export class ChatWithUserKnowledgeUseCase {
             const result = await this.ai.models.embedContent({
                 model: 'gemini-embedding-001',
                 contents: [{ text }],
-                config: { taskType: 'RETRIEVAL_QUERY' },
+                config: { taskType: 'RETRIEVAL_QUERY', outputDimensionality: 768 },
             });
 
             const embedding = result.embeddings?.[0]?.values;
