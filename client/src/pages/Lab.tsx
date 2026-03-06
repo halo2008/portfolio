@@ -482,15 +482,16 @@ const Lab: React.FC = () => {
            ╚══════════════════════════════════════════════╝ */}
         <div className="lg:w-1/2 w-full overflow-y-auto border-r border-slate-800/50 p-6 lg:p-8 flex flex-col gap-6">
 
-          {/* Stats Panel (if we have session info) */}
-          {sessionInfo?.usage && sessionInfo.maxRequests !== undefined && (
-            <LabStatsPanel
-              stats={{
-                ...sessionInfo.usage,
-                maxRequests: sessionInfo.maxRequests
-              }}
-            />
-          )}
+          {/* Stats Panel */}
+          <LabStatsPanel
+            stats={{
+              requestCount: sessionInfo?.usage?.requestCount ?? 0,
+              analysisTokens: sessionInfo?.usage?.analysisTokens ?? 0,
+              indexingOps: sessionInfo?.usage?.indexingOps ?? 0,
+              chatTokens: sessionInfo?.usage?.chatTokens ?? 0,
+              maxRequests: sessionInfo?.maxRequests ?? 50
+            }}
+          />
 
           {/* Info Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
