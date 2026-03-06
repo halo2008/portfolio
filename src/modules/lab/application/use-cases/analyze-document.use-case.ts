@@ -8,6 +8,7 @@ import {
     ANALYSIS_PORT,
     SemanticAnalysisResult,
 } from '../../domain/ports/analysis.port';
+import { LabUsageService } from '../services/lab-usage.service';
 
 /**
  * AnalysisResultChunk DTO
@@ -61,6 +62,7 @@ export class AnalyzeDocumentUseCase {
 
     constructor(
         @Inject(ANALYSIS_PORT) private readonly analysisPort: AnalysisPort,
+        private readonly labUsageService: LabUsageService,
     ) { }
 
     /**
@@ -92,6 +94,11 @@ export class AnalyzeDocumentUseCase {
             content,
             filename,
         );
+
+        // Record token usage (estimate based on content length + generated chunks)
+        // A rough estimate: 1 token ≈ 4 characters
+        const estimatedTokens = Math.ceil(content.length / 4) + 500; // 500 estimated output tokens
+        await this.labUsageService.recordAnalysis(userId.toString(), estimatedTokens);
 
         // Convert to DTO format
         const result: AnalysisResultDto = {

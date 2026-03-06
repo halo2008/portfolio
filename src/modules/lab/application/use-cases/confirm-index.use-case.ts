@@ -6,6 +6,7 @@ import {
     KnowledgeRepoPort,
     RagSecurityContext,
 } from '../../../knowledge/domain/ports/knowledge-repo.port';
+import { LabUsageService } from '../services/lab-usage.service';
 
 /**
  * SemanticChunk
@@ -56,6 +57,7 @@ export class ConfirmIndexUseCase {
         private readonly embeddingProvider: EmbeddingProviderPort,
         @Inject(KNOWLEDGE_REPO_PORT)
         private readonly knowledgeRepo: KnowledgeRepoPort,
+        private readonly labUsageService: LabUsageService,
     ) { }
 
     /**
@@ -91,6 +93,9 @@ export class ConfirmIndexUseCase {
 
         // Store in Qdrant via knowledge repo
         await this.knowledgeRepo.upsertPoints(points);
+
+        // Record indexing operation usage
+        await this.labUsageService.recordIndexing(userId.toString(), points.length);
 
         // Extract vector IDs from points
         const vectorIds = points.map((point) => String(point.id));

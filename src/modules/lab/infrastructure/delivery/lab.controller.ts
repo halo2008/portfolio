@@ -14,10 +14,12 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
 import { FirebaseAuthGuard } from '../../../../core/auth/firebase-auth.guard';
+import { LabRateLimitGuard } from '../security/lab-rate-limit.guard';
 import { RagSecurityContext } from '../../../knowledge/domain/ports/knowledge-repo.port';
 import { AnalyzeDocumentUseCase, AnalysisResultDto } from '../../application/use-cases/analyze-document.use-case';
 import { ConfirmIndexUseCase, IndexResultDto, SemanticChunk } from '../../application/use-cases/confirm-index.use-case';
 import { KnowledgeRepoPort, KNOWLEDGE_REPO_PORT } from '../../../knowledge/domain/ports/knowledge-repo.port';
+import { LabUsageService, LabUsageStats } from '../../application/services/lab-usage.service';
 import { Inject } from '@nestjs/common';
 import { UserId } from '../../domain/value-objects/user-id.vo';
 
@@ -56,6 +58,8 @@ interface LabStatsResponse {
     chunkCount: number;
     sessionExpiry: string;
     detectedLanguage: 'pl' | 'en';
+    usage: LabUsageStats;
+    maxRequests: number;
 }
 
 /**
@@ -107,7 +111,7 @@ const MAX_FILE_SIZE_BYTES = 1 * 1024 * 1024;
  * - Bilingual error messages based on user's preferred language
  */
 @Controller('lab')
-@UseGuards(FirebaseAuthGuard)
+@UseGuards(FirebaseAuthGuard, LabRateLimitGuard)
 export class LabController {
     private readonly logger = new Logger(LabController.name);
 
@@ -115,6 +119,7 @@ export class LabController {
         private readonly analyzeDocumentUseCase: AnalyzeDocumentUseCase,
         private readonly confirmIndexUseCase: ConfirmIndexUseCase,
         @Inject(KNOWLEDGE_REPO_PORT) private readonly knowledgeRepo: KnowledgeRepoPort,
+        private readonly labUsageService: LabUsageService,
     ) { }
 
     /**
@@ -315,6 +320,8 @@ export class LabController {
 
             const detectedLanguage = context.language === 'pl' ? 'pl' : 'en';
 
+            const usage = await this.labUsageService.getUsageStats(context.userId);
+
             this.logger.log({
                 userId: context.userId,
                 chunkCount,
@@ -325,6 +332,8 @@ export class LabController {
                 chunkCount,
                 sessionExpiry,
                 detectedLanguage,
+                usage,
+                maxRequests: this.labUsageService.MAX_REQUESTS_PER_SESSION,
             };
         } catch (error) {
             this.logger.error({

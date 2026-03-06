@@ -18,6 +18,7 @@ import { ChatWithUserKnowledgeUseCase } from '../../../lab/application/use-cases
 import { CaptchaGuard } from '../guards/captcha.guard';
 import { FirebaseAuthGuard } from '../../../../core/auth/firebase-auth.guard';
 import { SecurityInterceptor, RagSecurityContext } from '../../../lab/infrastructure/security/security.interceptor';
+import { LabRateLimitGuard } from '../../../lab/infrastructure/security/lab-rate-limit.guard';
 
 /**
  * Request with RAG_CONTEXT
@@ -77,7 +78,7 @@ export class ChatController {
         private readonly chatWithAdminKnowledge: ChatWithAdminKnowledgeUseCase,
         @Inject(ChatWithUserKnowledgeUseCase)
         private readonly chatWithUserKnowledge: ChatWithUserKnowledgeUseCase,
-    ) {}
+    ) { }
 
     /**
      * POST /chat
@@ -160,7 +161,7 @@ export class ChatController {
      * @returns ChatResponseDto with response, sources, and detected language
      */
     @Post('lab/chat')
-    @UseGuards(FirebaseAuthGuard)
+    @UseGuards(FirebaseAuthGuard, LabRateLimitGuard)
     @UseInterceptors(SecurityInterceptor)
     @HttpCode(HttpStatus.OK)
     async chatLab(

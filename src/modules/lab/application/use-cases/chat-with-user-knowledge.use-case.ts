@@ -5,6 +5,7 @@ import {
     KnowledgeRepoPort,
     RagSecurityContext,
 } from '../../../knowledge/domain/ports/knowledge-repo.port';
+import { LabUsageService } from '../services/lab-usage.service';
 
 /**
  * Source citation from retrieved knowledge chunk
@@ -53,6 +54,7 @@ export class ChatWithUserKnowledgeUseCase {
     constructor(
         @Inject(KNOWLEDGE_REPO_PORT)
         private readonly knowledgeRepo: KnowledgeRepoPort,
+        private readonly labUsageService: LabUsageService,
     ) {
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey) {
@@ -111,6 +113,12 @@ export class ChatWithUserKnowledgeUseCase {
             detectedLanguage,
             sources,
         );
+
+        // Record token usage (estimate)
+        // 1 token ≈ 4 chars for prompt + context + response
+        const totalChars = message.length + knowledgeContext.length + response.length;
+        const estimatedTokens = Math.ceil(totalChars / 4) + 100; // 100 base tokens
+        await this.labUsageService.recordChat(context.userId, estimatedTokens);
 
         return {
             response,

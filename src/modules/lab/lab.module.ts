@@ -12,6 +12,9 @@ import { CleanupController } from './infrastructure/delivery/cleanup.controller'
 import { EPHEMERAL_USER_REPO_PORT } from './domain/ports/ephemeral-user-repo.port';
 import { FirestoreEphemeralUserAdapter } from './infrastructure/adapters/firestore-ephemeral-user.adapter';
 import { IdentityCleanupService } from './application/services/identity-cleanup.service';
+import { FirestoreProvider } from '../../core/firestore/firestore.provider';
+import { LabUsageService } from './application/services/lab-usage.service';
+import { LabRateLimitGuard } from './infrastructure/security/lab-rate-limit.guard';
 
 /**
  * SecurityInterceptorProvider
@@ -50,6 +53,8 @@ const securityInterceptorProvider: Provider = {
         ChatWithUserKnowledgeUseCase,
         // Services
         IdentityCleanupService,
+        LabUsageService,
+        LabRateLimitGuard,
     ],
     exports: [
         // Export use case for controllers
@@ -60,6 +65,8 @@ const securityInterceptorProvider: Provider = {
         ANALYSIS_PORT,
         // Export service for scheduling/cron jobs
         IdentityCleanupService,
+        LabUsageService,
+        LabRateLimitGuard,
     ],
 })
 export class LabModule { }

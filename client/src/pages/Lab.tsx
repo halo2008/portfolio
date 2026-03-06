@@ -24,6 +24,7 @@ import {
   ChevronDown,
   ChevronUp,
 } from 'lucide-react';
+import { LabStatsPanel } from '../components/LabStatsPanel';
 
 // API base URL
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
@@ -80,6 +81,13 @@ interface SessionInfo {
   chunkCount: number;
   expiresAt: string;
   detectedLanguage: 'pl' | 'en';
+  usage?: {
+    requestCount: number;
+    analysisTokens: number;
+    indexingOps: number;
+    chatTokens: number;
+  };
+  maxRequests?: number;
 }
 
 // ── Small reusable components ─────────────────────────
@@ -472,9 +480,20 @@ const Lab: React.FC = () => {
         {/* ╔══════════════════════════════════════════════╗
            ║  LEFT PANEL — Upload / Analyze / Index       ║
            ╚══════════════════════════════════════════════╝ */}
-        <div className="lg:w-1/2 w-full overflow-y-auto border-r border-slate-800/50 p-6 lg:p-8">
+        <div className="lg:w-1/2 w-full overflow-y-auto border-r border-slate-800/50 p-6 lg:p-8 flex flex-col gap-6">
+
+          {/* Stats Panel (if we have session info) */}
+          {sessionInfo?.usage && sessionInfo.maxRequests !== undefined && (
+            <LabStatsPanel
+              stats={{
+                ...sessionInfo.usage,
+                maxRequests: sessionInfo.maxRequests
+              }}
+            />
+          )}
+
           {/* Info Cards */}
-          <div className="grid grid-cols-3 gap-3 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="bg-surface/50 border border-slate-700 p-4 rounded-sm">
               <Clock className="text-primary mb-2" size={20} />
               <h3 className="text-white font-bold text-sm mb-1">{t.session24h}</h3>
