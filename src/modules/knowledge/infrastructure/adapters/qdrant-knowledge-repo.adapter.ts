@@ -23,6 +23,7 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
 
     async onModuleInit() {
         await this.ensureCollectionExists();
+        await this.ensurePayloadIndexes();
     }
 
     private async ensureCollectionExists() {
@@ -43,6 +44,25 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
             } else {
                 // Network error or other issue — don't crash, just log
                 this.logger.warn(`Qdrant not reachable during startup, collection check skipped: ${e instanceof Error ? e.message : e}`);
+            }
+        }
+    }
+
+    private async ensurePayloadIndexes() {
+        const indexes = [
+            { field_name: 'user_id', field_schema: 'keyword' as const },
+            { field_name: 'role', field_schema: 'keyword' as const },
+        ];
+
+        for (const index of indexes) {
+            try {
+                await this.qdrantClient.createPayloadIndex(this.COLLECTION_NAME, index);
+                this.logger.log(`Ensured payload index: ${index.field_name}`);
+            } catch (e: any) {
+                // Index already exists — safe to ignore
+                if (!e?.message?.includes('already exists')) {
+                    this.logger.warn(`Failed to create index ${index.field_name}: ${e?.message}`);
+                }
             }
         }
     }
