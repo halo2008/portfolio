@@ -117,6 +117,11 @@ export class LabUsageService {
             if (increments.indexingOps !== undefined) updates.indexingOps = FieldValue.increment(increments.indexingOps);
             if (increments.chatTokens !== undefined) updates.chatTokens = FieldValue.increment(increments.chatTokens);
 
+            // TTL: set expiresAt to 24h from now (refreshed on every write)
+            updates.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+            // Track last activity time
+            updates.lastActivityAt = FieldValue.serverTimestamp();
+
             await this.firestore.collection(this.COLLECTION_NAME).doc(userId).set(updates, { merge: true });
 
             this.logger.debug(

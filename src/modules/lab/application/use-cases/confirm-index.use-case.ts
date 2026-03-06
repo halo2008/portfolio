@@ -1,4 +1,5 @@
 import { Inject, Injectable, Logger, ForbiddenException, BadRequestException } from '@nestjs/common';
+import { v4 as uuidv4 } from 'uuid';
 import { UserId } from '../../domain/value-objects/user-id.vo';
 import { EMBEDDING_PROVIDER_PORT, EmbeddingProviderPort } from '../../../knowledge/domain/ports/embedding-provider.port';
 import {
@@ -195,8 +196,8 @@ export class ConfirmIndexUseCase {
                 throw new Error(`Missing embedding for chunk at index ${index}`);
             }
 
-            // Generate unique ID combining userId and timestamp with index
-            const id = `${userIdStr}_${Date.now()}_${index}`;
+            // Qdrant strictly requires valid UUID v4 or 64-bit unsigned int for point IDs
+            const id = uuidv4();
 
             return {
                 id,
