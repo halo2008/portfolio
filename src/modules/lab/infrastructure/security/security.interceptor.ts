@@ -84,9 +84,13 @@ export class SecurityInterceptor implements NestInterceptor {
         const preferredLanguage = this.parsePreferredLanguage(acceptLanguage as string);
 
         // Build and inject RAG_CONTEXT
+        // For lab routes, default to 'demo' role (ephemeral users don't have custom claims)
+        const isLabRoute = request.path.startsWith('/lab') || request.path.startsWith('/api/lab');
+        const defaultRole = isLabRoute ? 'demo' : 'user';
+
         const ragContext: RagSecurityContext = {
             userId: decodedToken.uid,
-            role: decodedToken.role || 'user',
+            role: decodedToken.role || defaultRole,
             language: preferredLanguage,
         };
 
