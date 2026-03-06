@@ -11,6 +11,7 @@ import {
     Logger,
     Inject,
 } from '@nestjs/common';
+import { IsString } from 'class-validator';
 import { Request } from 'express';
 import { GenerateChatResponseUseCase } from '../../application/generate-chat-response.use-case';
 import { ChatWithAdminKnowledgeUseCase } from '../../application/use-cases/chat-with-admin-knowledge.use-case';
@@ -20,21 +21,16 @@ import { FirebaseAuthGuard } from '../../../../core/auth/firebase-auth.guard';
 import { SecurityInterceptor, RagSecurityContext } from '../../../lab/infrastructure/security/security.interceptor';
 import { LabRateLimitGuard } from '../../../lab/infrastructure/security/lab-rate-limit.guard';
 
-/**
- * Request with RAG_CONTEXT
- * Explaining: Extended Express Request with injected security context.
- */
 interface RequestWithRagContext extends Request {
     RAG_CONTEXT?: RagSecurityContext;
     user?: unknown;
 }
 
-/**
- * ChatRequestDto
- * Explaining: Data Transfer Object for chat requests.
- */
 class ChatRequestDto {
+    @IsString()
     message!: string;
+
+    @IsString()
     sessionId!: string;
 }
 

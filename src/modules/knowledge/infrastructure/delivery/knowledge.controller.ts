@@ -1,8 +1,9 @@
-import { Controller, Post, Delete, Get, Body, Query, UseGuards, Inject, Req, BadRequestException } from '@nestjs/common';
+import { Controller, Post, Delete, Get, Body, Query, UseGuards, Inject, Req, BadRequestException, UsePipes, ValidationPipe } from '@nestjs/common';
+import { IsString, IsOptional, IsArray, IsIn, ValidateNested, ArrayMinSize } from 'class-validator';
+import { Type } from 'class-transformer';
 import { Request } from 'express';
 import { FirebaseAuthGuard } from '../../../../core/auth/firebase-auth.guard';
 import { Roles } from '../../../../core/auth/roles.decorator';
-import { KnowledgeAtom } from '../../domain/entities/knowledge-atom.entity';
 import { IngestBatchUseCase, IngestionResult } from '../../application/use-cases/ingest-batch.use-case';
 import { DeleteKnowledgeUseCase } from '../../application/use-cases/delete-knowledge.use-case';
 import { GetKnowledgeStatsUseCase } from '../../application/use-cases/get-knowledge-stats.use-case';
@@ -14,6 +15,50 @@ import { RagSecurityContext, KNOWLEDGE_REPO_PORT, KnowledgeRepoPort } from '../.
 import { SecurityInterceptor } from '../../../lab/infrastructure/security/security.interceptor';
 import { UseInterceptors, forwardRef } from '@nestjs/common';
 import { UserId } from '../../../lab/domain/value-objects/user-id.vo';
+
+class KnowledgeAtomDto {
+    @IsString()
+    text!: string;
+
+    @IsString()
+    @IsIn(['Cloud', 'AI', 'IoT', 'Experience', 'Philosophy'])
+    category!: 'Cloud' | 'AI' | 'IoT' | 'Experience' | 'Philosophy';
+
+    @IsArray()
+    @IsString({ each: true })
+    tags!: string[];
+}
+
+class DemoBatchChunkDto {
+    @IsString()
+    content!: string;
+
+    @IsOptional()
+    @IsString()
+    title?: string;
+}
+
+class DemoBatchDto {
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => DemoBatchChunkDto)
+    @ArrayMinSize(1)
+    chunks!: DemoBatchChunkDto[];
+
+    @IsOptional()
+    @IsString()
+    @IsIn(['pl', 'en'])
+    language?: 'pl' | 'en';
+
+    @IsOptional()
+    @IsString()
+    category?: string;
+
+    @IsOptional()
+    @IsArray()
+    @IsString({ each: true })
+    tags?: string[];
+}
 
 interface RequestWithRagContext extends Request {
     RAG_CONTEXT?: RagSecurityContext;
@@ -62,9 +107,9 @@ export class KnowledgeController {
 
     @Post('batch')
     @UseGuards(FirebaseAuthGuard)
-    @Roles('admin') // Only 'admin' role can actually ingest
+    @Roles('admin')
     async ingestBatch(
-        @Body() data: KnowledgeAtom[],
+        @Body() data: KnowledgeAtomDto[],
     ): Promise<IngestionResult> {
         return await this.ingestBatchUseCase.execute(data);
     }
@@ -74,7 +119,7 @@ export class KnowledgeController {
     @UseInterceptors(SecurityInterceptor)
     @Throttle({ demo: { limit: 5, ttl: 60000 } })
     async ingestDemoBatch(
-        @Body() body: { chunks: { content: string; title?: string }[]; language?: 'pl' | 'en'; category?: string; tags?: string[] },
+        @Body() body: DemoBatchDto,
         @Req() req: RequestWithRagContext,
     ) {
         const context = req.RAG_CONTEXT;

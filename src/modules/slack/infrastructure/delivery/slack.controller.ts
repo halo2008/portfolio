@@ -1,14 +1,10 @@
-import { Controller, Post, Body, HttpCode, HttpStatus, Logger, UseGuards } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, HttpStatus, Logger, UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { RelayHumanResponseUseCase } from '../../../chat/application/relay-human-response.use-case';
 import { SlackService } from '../../slack.service';
 import { FirestorePersistenceAdapter } from '../../../chat/infrastructure/adapters/firestore-persistence.adapter';
 import { SlackSignatureGuard } from '../guards/slack-signature.guard';
 
-/**
- * SlackEventDto
- * Typed DTO for Slack Event API payloads.
- */
-class SlackEventPayload {
+interface SlackEventPayload {
     type?: string;
     challenge?: string;
     event?: {
@@ -32,6 +28,7 @@ export class SlackController {
     @Post('events')
     @UseGuards(SlackSignatureGuard)
     @HttpCode(HttpStatus.OK)
+    @UsePipes(new ValidationPipe({ transform: false, whitelist: false, forbidNonWhitelisted: false }))
     async handleEvent(@Body() body: SlackEventPayload) {
         // Explaining: Slack URL verification challenge.
         if (body.type === 'url_verification') return { challenge: body.challenge };

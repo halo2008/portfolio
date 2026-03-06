@@ -63,6 +63,12 @@ class ConfirmIndexDto {
     language!: 'pl' | 'en';
 }
 
+class SetLanguageDto {
+    @IsString()
+    @IsIn(['pl', 'en'])
+    language!: 'pl' | 'en';
+}
+
 /**
  * LabStatsResponse
  * Explaining: Response DTO for lab stats endpoint.
@@ -307,7 +313,7 @@ export class LabController {
      */
     @Post('language')
     async setLanguage(
-        @Body() body: { language: string },
+        @Body() body: SetLanguageDto,
         @Req() req: RequestWithRagContext,
     ) {
         const context = req.RAG_CONTEXT;
@@ -316,9 +322,6 @@ export class LabController {
         }
 
         const lang = body.language;
-        if (lang !== 'pl' && lang !== 'en') {
-            throw new BadRequestException('Invalid language. Allowed: pl, en');
-        }
 
         await this.labUsageService.updateLanguagePreference(context.userId, lang);
 
