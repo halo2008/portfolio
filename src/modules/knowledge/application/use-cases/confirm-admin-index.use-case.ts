@@ -1,26 +1,43 @@
 import { Inject, Injectable, Logger, BadRequestException } from '@nestjs/common';
+import { IsArray, IsString, IsOptional, IsIn, ValidateNested, ArrayMinSize } from 'class-validator';
+import { Type } from 'class-transformer';
 import { v4 as uuidv4 } from 'uuid';
 import { EMBEDDING_PROVIDER_PORT, EmbeddingProviderPort } from '../../domain/ports/embedding-provider.port';
 import { KNOWLEDGE_REPO_PORT, KnowledgeRepoPort } from '../../domain/ports/knowledge-repo.port';
 
-/**
- * SemanticChunk
- * Explaining: A semantic chunk ready for indexing with title, content.
- */
-export interface SemanticChunk {
-    content: string;
+class AdminChunkDto {
+    @IsString()
+    content!: string;
+
+    @IsOptional()
+    @IsString()
     title?: string;
 }
 
-/**
- * ConfirmAdminIndexInput
- * Explaining: Input parameters for confirming and indexing admin chunks.
- */
-export interface ConfirmAdminIndexInput {
-    chunks: SemanticChunk[];
-    category: 'Cloud' | 'AI' | 'IoT' | 'Experience' | 'Philosophy';
+export class ConfirmAdminIndexInput {
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => AdminChunkDto)
+    @ArrayMinSize(1)
+    chunks!: AdminChunkDto[];
+
+    @IsString()
+    @IsIn(['Cloud', 'AI', 'IoT', 'Experience', 'Philosophy'])
+    category!: 'Cloud' | 'AI' | 'IoT' | 'Experience' | 'Philosophy';
+
+    @IsOptional()
+    @IsArray()
+    @IsString({ each: true })
     tags?: string[];
-    language: 'pl' | 'en';
+
+    @IsString()
+    @IsIn(['pl', 'en'])
+    language!: 'pl' | 'en';
+}
+
+export interface SemanticChunk {
+    content: string;
+    title?: string;
 }
 
 export interface AdminIndexResultDto {

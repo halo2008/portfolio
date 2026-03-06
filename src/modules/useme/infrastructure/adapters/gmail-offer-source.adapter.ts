@@ -9,18 +9,23 @@ export class GmailOfferSourceAdapter implements OfferSourcePort {
   private readonly logger = new Logger(GmailOfferSourceAdapter.name);
 
   private getGmailClient() {
-    const auth = new google.auth.GoogleAuth({
-      scopes: ['https://www.googleapis.com/auth/gmail.readonly'],
+    const oauth2 = new google.auth.OAuth2(
+      process.env.GMAIL_CLIENT_ID,
+      process.env.GMAIL_CLIENT_SECRET,
+    );
+    oauth2.setCredentials({
+      refresh_token: process.env.GMAIL_REFRESH_TOKEN,
     });
-    return google.gmail({ version: 'v1', auth });
+    return google.gmail({ version: 'v1', auth: oauth2 });
   }
 
   async fetchNewOffers(): Promise<JobOffer[]> {
     const gmail = this.getGmailClient();
 
+    // Search for Useme notification emails (unread, last 1 day)
     const res = await gmail.users.messages.list({
       userId: 'me',
-      q: 'from:useme.com subject:zlecenie is:unread newer_than:1d',
+      q: 'from:useme.com is:unread newer_than:1d',
       maxResults: 20,
     });
 
@@ -87,26 +92,21 @@ export class GmailOfferSourceAdapter implements OfferSourcePort {
   private extractBody(payload: any): string {
     if (!payload) return '';
 
-    // Plain text part
     if (payload.mimeType === 'text/plain' && payload.body?.data) {
       return Buffer.from(payload.body.data, 'base64').toString('utf-8');
     }
 
-    // HTML part - strip tags
     if (payload.mimeType === 'text/html' && payload.body?.data) {
       const html = Buffer.from(payload.body.data, 'base64').toString('utf-8');
       return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
     }
 
-    // Multipart - recurse
     if (payload.parts) {
-      // Prefer plain text
       for (const part of payload.parts) {
         if (part.mimeType === 'text/plain' && part.body?.data) {
           return Buffer.from(part.body.data, 'base64').toString('utf-8');
         }
       }
-      // Fallback to HTML
       for (const part of payload.parts) {
         const result = this.extractBody(part);
         if (result) return result;

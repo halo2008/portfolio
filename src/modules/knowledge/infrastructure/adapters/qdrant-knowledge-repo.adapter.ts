@@ -87,7 +87,7 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
     private buildAdminFilter(): QdrantFilter {
         return {
             must: [
-                { key: 'role', match: { value: 'ADMIN' } }
+                { key: 'role', match: { value: 'admin' } }
             ]
         };
     }

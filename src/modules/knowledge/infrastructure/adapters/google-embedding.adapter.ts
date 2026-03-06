@@ -22,7 +22,7 @@ export class GoogleEmbeddingAdapter implements EmbeddingProviderPort {
                 const response = await this.ai.models.embedContent({
                     model: 'gemini-embedding-001',
                     contents: chunk,
-                    config: { taskType: 'RETRIEVAL_DOCUMENT' }
+                    config: { taskType: 'RETRIEVAL_DOCUMENT', outputDimensionality: 768 }
                 });
 
                 const values = response.embeddings?.[0]?.values;
