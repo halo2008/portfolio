@@ -15,6 +15,15 @@ import { IdentityCleanupService } from './application/services/identity-cleanup.
 import { FirestoreProvider } from '../../core/firestore/firestore.provider';
 import { LabUsageService } from './application/services/lab-usage.service';
 import { LabRateLimitGuard } from './infrastructure/security/lab-rate-limit.guard';
+import { makeCounterProvider, makeHistogramProvider } from '@willsoto/nestjs-prometheus';
+import {
+    LabMetricsService,
+    METRIC_LAB_ANALYSIS_TOTAL,
+    METRIC_LAB_INDEXING_TOTAL,
+    METRIC_LAB_CHAT_TOTAL,
+    METRIC_LAB_EMBEDDING_DURATION,
+    METRIC_LAB_CHUNKS_INDEXED,
+} from './infrastructure/metrics/lab-metrics.service';
 
 /**
  * SecurityInterceptorProvider
@@ -37,6 +46,34 @@ const securityInterceptorProvider: Provider = {
     providers: [
         // Global security interceptor for zero-trust context injection
         securityInterceptorProvider,
+        // Prometheus metrics for lab
+        makeCounterProvider({
+            name: METRIC_LAB_ANALYSIS_TOTAL,
+            help: 'Total lab document analyses',
+            labelNames: ['user_id', 'language'],
+        }),
+        makeCounterProvider({
+            name: METRIC_LAB_INDEXING_TOTAL,
+            help: 'Total lab indexing operations',
+            labelNames: ['user_id'],
+        }),
+        makeCounterProvider({
+            name: METRIC_LAB_CHAT_TOTAL,
+            help: 'Total lab chat requests',
+            labelNames: ['user_id', 'language'],
+        }),
+        makeHistogramProvider({
+            name: METRIC_LAB_EMBEDDING_DURATION,
+            help: 'Duration of embedding generation in ms',
+            labelNames: ['operation'],
+            buckets: [50, 100, 250, 500, 1000, 2000, 5000],
+        }),
+        makeCounterProvider({
+            name: METRIC_LAB_CHUNKS_INDEXED,
+            help: 'Total chunks indexed in lab',
+            labelNames: ['user_id'],
+        }),
+        LabMetricsService,
         // Analysis adapter -> Port binding
         {
             provide: ANALYSIS_PORT,
@@ -57,16 +94,14 @@ const securityInterceptorProvider: Provider = {
         LabRateLimitGuard,
     ],
     exports: [
-        // Export use case for controllers
         AnalyzeDocumentUseCase,
         ConfirmIndexUseCase,
         ChatWithUserKnowledgeUseCase,
-        // Export AnalysisPort for admin chunking
         ANALYSIS_PORT,
-        // Export service for scheduling/cron jobs
         IdentityCleanupService,
         LabUsageService,
         LabRateLimitGuard,
+        LabMetricsService,
     ],
 })
 export class LabModule { }

@@ -20,6 +20,7 @@ import { CaptchaGuard } from '../guards/captcha.guard';
 import { FirebaseAuthGuard } from '../../../../core/auth/firebase-auth.guard';
 import { SecurityInterceptor, RagSecurityContext } from '../../../lab/infrastructure/security/security.interceptor';
 import { LabRateLimitGuard } from '../../../lab/infrastructure/security/lab-rate-limit.guard';
+import { LabMetricsService } from '../../../lab/infrastructure/metrics/lab-metrics.service';
 
 interface RequestWithRagContext extends Request {
     RAG_CONTEXT?: RagSecurityContext;
@@ -74,6 +75,7 @@ export class ChatController {
         private readonly chatWithAdminKnowledge: ChatWithAdminKnowledgeUseCase,
         @Inject(ChatWithUserKnowledgeUseCase)
         private readonly chatWithUserKnowledge: ChatWithUserKnowledgeUseCase,
+        private readonly labMetrics: LabMetricsService,
     ) { }
 
     /**
@@ -212,6 +214,8 @@ export class ChatController {
                 },
                 context,
             );
+
+            this.labMetrics.recordChat(context.userId, result.detectedLanguage);
 
             return {
                 response: result.response,

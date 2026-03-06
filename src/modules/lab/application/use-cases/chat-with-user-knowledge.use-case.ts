@@ -6,6 +6,7 @@ import {
     RagSecurityContext,
 } from '../../../knowledge/domain/ports/knowledge-repo.port';
 import { LabUsageService } from '../services/lab-usage.service';
+import { GOOGLE_GENAI } from '../../../../core/genai/genai.module';
 
 /**
  * Source citation from retrieved knowledge chunk
@@ -48,20 +49,14 @@ export interface ChatWithUserKnowledgeOutput {
 @Injectable()
 export class ChatWithUserKnowledgeUseCase {
     private readonly logger = new Logger(ChatWithUserKnowledgeUseCase.name);
-    private readonly ai: GoogleGenAI;
     private readonly MODEL_NAME = 'gemini-3-flash-preview';
 
     constructor(
         @Inject(KNOWLEDGE_REPO_PORT)
         private readonly knowledgeRepo: KnowledgeRepoPort,
         private readonly labUsageService: LabUsageService,
-    ) {
-        const apiKey = process.env.GEMINI_API_KEY;
-        if (!apiKey) {
-            throw new Error('CRITICAL: GEMINI_API_KEY is missing. AI infrastructure failure.');
-        }
-        this.ai = new GoogleGenAI({ apiKey });
-    }
+        @Inject(GOOGLE_GENAI) private readonly ai: GoogleGenAI,
+    ) { }
 
     /**
      * Execute the chat use case with user-only knowledge.

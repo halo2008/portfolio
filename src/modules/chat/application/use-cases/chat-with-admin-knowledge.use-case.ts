@@ -5,6 +5,7 @@ import {
     KnowledgeRepoPort,
     RagSecurityContext,
 } from '../../../knowledge/domain/ports/knowledge-repo.port';
+import { GOOGLE_GENAI } from '../../../../core/genai/genai.module';
 
 /**
  * Input for chat with admin knowledge use case
@@ -35,19 +36,13 @@ export interface ChatWithAdminKnowledgeOutput {
 @Injectable()
 export class ChatWithAdminKnowledgeUseCase {
     private readonly logger = new Logger(ChatWithAdminKnowledgeUseCase.name);
-    private readonly ai: GoogleGenAI;
     private readonly MODEL_NAME = 'gemini-3-flash-preview';
 
     constructor(
         @Inject(KNOWLEDGE_REPO_PORT)
         private readonly knowledgeRepo: KnowledgeRepoPort,
-    ) {
-        const apiKey = process.env.GEMINI_API_KEY;
-        if (!apiKey) {
-            throw new Error('CRITICAL: GEMINI_API_KEY is missing. AI infrastructure failure.');
-        }
-        this.ai = new GoogleGenAI({ apiKey });
-    }
+        @Inject(GOOGLE_GENAI) private readonly ai: GoogleGenAI,
+    ) { }
 
     /**
      * Execute the chat use case with admin-only knowledge.

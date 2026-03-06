@@ -22,6 +22,7 @@ import { AnalyzeDocumentUseCase, AnalysisResultDto } from '../../application/use
 import { ConfirmIndexUseCase, IndexResultDto, SemanticChunk } from '../../application/use-cases/confirm-index.use-case';
 import { KnowledgeRepoPort, KNOWLEDGE_REPO_PORT } from '../../../knowledge/domain/ports/knowledge-repo.port';
 import { LabUsageService, LabUsageStats } from '../../application/services/lab-usage.service';
+import { LabMetricsService } from '../metrics/lab-metrics.service';
 import { Inject } from '@nestjs/common';
 import { UserId } from '../../domain/value-objects/user-id.vo';
 
@@ -139,6 +140,7 @@ export class LabController {
         private readonly confirmIndexUseCase: ConfirmIndexUseCase,
         @Inject(KNOWLEDGE_REPO_PORT) private readonly knowledgeRepo: KnowledgeRepoPort,
         private readonly labUsageService: LabUsageService,
+        private readonly labMetrics: LabMetricsService,
     ) { }
 
     /**
@@ -220,6 +222,8 @@ export class LabController {
                 chunkCount: result.chunks.length,
             }, 'Document analysis completed');
 
+            this.labMetrics.recordAnalysis(context.userId, result.detectedLanguage);
+
             return result;
         } catch (error) {
             this.logger.error({
@@ -293,6 +297,8 @@ export class LabController {
                 language: result.language,
                 vectorIdsCount: result.vectorIds.length,
             }, 'Chunk indexing completed');
+
+            this.labMetrics.recordIndexing(context.userId, result.chunkCount);
 
             return result;
         } catch (error) {

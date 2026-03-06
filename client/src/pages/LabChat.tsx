@@ -252,6 +252,9 @@ const LabChat: React.FC = () => {
       if (data.language && sessionInfo) {
         setSessionInfo((prev) => (prev ? { ...prev, detectedLanguage: data.language } : null));
       }
+
+      // Refresh stats after successful chat (updates token count, request count)
+      fetchSessionInfo();
     } catch (error) {
       setChatState({
         isLoading: false,

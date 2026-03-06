@@ -246,6 +246,8 @@ const Lab: React.FC = () => {
       setAnalysisResult(result);
       setChunks(result.chunks.map((chunk) => ({ ...chunk })));
       setUploadState({ status: 'success', progress: 100 });
+      // Refresh stats after analysis (updates token count)
+      fetchSessionInfo();
     } catch (error) {
       setUploadState({
         status: 'error',
