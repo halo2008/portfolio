@@ -16,6 +16,8 @@ import { LabUsageService } from '../services/lab-usage.service';
  */
 export interface AnalysisResultChunkDto {
     content: string;
+    title?: string;
+    rationale?: string;
     startLine: number;
     endLine: number;
 }
@@ -95,16 +97,17 @@ export class AnalyzeDocumentUseCase {
             filename,
         );
 
-        // Record token usage (estimate based on content length + generated chunks)
-        // A rough estimate: 1 token ≈ 4 characters
-        const estimatedTokens = Math.ceil(content.length / 4) + 500; // 500 estimated output tokens
-        await this.labUsageService.recordAnalysis(userId.toString(), estimatedTokens);
+        // Use real token count from Gemini API response
+        const tokenCount = analysisResult.tokenCount;
+        await this.labUsageService.recordAnalysis(userId.toString(), tokenCount);
 
         // Convert to DTO format
         const result: AnalysisResultDto = {
             detectedLanguage: analysisResult.detectedLanguage,
             chunks: analysisResult.chunks.map((chunk) => ({
                 content: chunk.content,
+                title: chunk.title,
+                rationale: chunk.rationale,
                 startLine: chunk.startLine,
                 endLine: chunk.endLine,
             })),

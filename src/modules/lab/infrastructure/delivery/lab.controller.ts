@@ -11,6 +11,8 @@ import {
     PayloadTooLargeException,
     Logger,
 } from '@nestjs/common';
+import { IsString, IsOptional, IsArray, ValidateNested, IsIn, ArrayMinSize } from 'class-validator';
+import { Type as TransformType } from 'class-transformer';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
 import { FirebaseAuthGuard } from '../../../../core/auth/firebase-auth.guard';
@@ -37,7 +39,11 @@ interface RequestWithRagContext extends Request {
  * Explaining: Data Transfer Object for a semantic chunk in confirm-index request.
  */
 class ChunkDto {
+    @IsString()
     content!: string;
+
+    @IsOptional()
+    @IsString()
     title?: string;
 }
 
@@ -46,7 +52,14 @@ class ChunkDto {
  * Explaining: Data Transfer Object for confirm-index endpoint.
  */
 class ConfirmIndexDto {
+    @IsArray()
+    @ValidateNested({ each: true })
+    @TransformType(() => ChunkDto)
+    @ArrayMinSize(1)
     chunks!: ChunkDto[];
+
+    @IsString()
+    @IsIn(['pl', 'en'])
     language!: 'pl' | 'en';
 }
 

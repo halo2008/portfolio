@@ -4,6 +4,8 @@
  */
 export interface AnalysisResultChunk {
     content: string;
+    title?: string;
+    rationale?: string;
     startLine: number;
     endLine: number;
 }
@@ -11,11 +13,12 @@ export interface AnalysisResultChunk {
 /**
  * SemanticAnalysisResult
  * Explaining: Structured result from document analysis including
- * detected language and semantic chunks.
+ * detected language, semantic chunks, and token usage.
  */
 export interface SemanticAnalysisResult {
     detectedLanguage: 'pl' | 'en';
     chunks: AnalysisResultChunk[];
+    tokenCount: number;
 }
 
 /**

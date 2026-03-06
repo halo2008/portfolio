@@ -54,7 +54,9 @@ Instructions:
 1. Detect the primary language of the document (Polish or English)
 2. Split the content into semantic chunks (logical sections)
 3. For each chunk, provide:
+   - A short descriptive title (in the same language as the document)
    - The chunk content
+   - A brief rationale explaining why this section was chunked this way
    - Start line number (approximate)
    - End line number (approximate)
 
@@ -90,6 +92,14 @@ Return ONLY valid JSON matching the specified schema.`;
                                         type: Type.STRING,
                                         description: 'The semantic chunk content',
                                     },
+                                    title: {
+                                        type: Type.STRING,
+                                        description: 'Short descriptive title for this chunk (in document language)',
+                                    },
+                                    rationale: {
+                                        type: Type.STRING,
+                                        description: 'Brief explanation of why this section was chunked this way',
+                                    },
                                     startLine: {
                                         type: Type.INTEGER,
                                         description: 'Starting line number',
@@ -99,7 +109,7 @@ Return ONLY valid JSON matching the specified schema.`;
                                         description: 'Ending line number',
                                     },
                                 },
-                                required: ['content', 'startLine', 'endLine'],
+                                required: ['content', 'title', 'startLine', 'endLine'],
                             },
                         },
                     },
@@ -113,18 +123,25 @@ Return ONLY valid JSON matching the specified schema.`;
             throw new Error('Empty response from Gemini model');
         }
 
-        const result = JSON.parse(text) as SemanticAnalysisResult;
+        // Extract real token usage from Gemini API response
+        const tokenCount = (response as any).usageMetadata?.totalTokenCount ?? 0;
+
+        const parsed = JSON.parse(text) as Omit<SemanticAnalysisResult, 'tokenCount'>;
 
         // Log detected language for monitoring
         this.logger.log(
             {
-                detectedLanguage: result.detectedLanguage,
-                chunkCount: result.chunks.length,
+                detectedLanguage: parsed.detectedLanguage,
+                chunkCount: parsed.chunks.length,
+                tokenCount,
             },
             'Document language detected',
         );
 
-        return result;
+        return {
+            ...parsed,
+            tokenCount,
+        };
     }
 
     /**

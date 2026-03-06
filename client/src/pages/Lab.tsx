@@ -622,7 +622,7 @@ const Lab: React.FC = () => {
                   </button>
                 </div>
 
-                <div className="space-y-3 max-h-[350px] overflow-y-auto pr-2">
+                <div className="space-y-3 max-h-[500px] overflow-y-auto pr-2">
                   {chunks.map((chunk, index) => (
                     <div key={index} className="bg-surface/50 border border-slate-700 rounded-sm p-3 space-y-2">
                       <div>
@@ -639,9 +639,21 @@ const Lab: React.FC = () => {
                         <label className="block text-xs text-slate-500 mb-1">{t.contentLabel}</label>
                         <textarea
                           value={chunk.content}
-                          onChange={(e) => updateChunk(index, 'content', e.target.value)}
+                          onChange={(e) => {
+                            updateChunk(index, 'content', e.target.value);
+                            // Auto-resize textarea
+                            e.target.style.height = 'auto';
+                            e.target.style.height = e.target.scrollHeight + 'px';
+                          }}
+                          ref={(el) => {
+                            // Initial auto-resize
+                            if (el) {
+                              el.style.height = 'auto';
+                              el.style.height = el.scrollHeight + 'px';
+                            }
+                          }}
                           rows={2}
-                          className="w-full bg-darker border border-slate-700 rounded-sm px-3 py-1.5 text-white text-sm focus:border-primary focus:outline-none transition-colors resize-none"
+                          className="w-full bg-darker border border-slate-700 rounded-sm px-3 py-1.5 text-white text-sm focus:border-primary focus:outline-none transition-colors resize-y min-h-[40px]"
                         />
                       </div>
                       {chunk.rationale && (
