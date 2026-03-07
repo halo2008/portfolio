@@ -22,6 +22,7 @@ import { FirebaseAuthGuard } from '../../../../core/auth/firebase-auth.guard';
 import { SecurityInterceptor, RagSecurityContext } from '../../../lab/infrastructure/security/security.interceptor';
 import { LabRateLimitGuard } from '../../../lab/infrastructure/security/lab-rate-limit.guard';
 import { LabMetricsService } from '../../../lab/infrastructure/metrics/lab-metrics.service';
+import { TELEMETRY_PORT, TelemetryPort } from '../../domain/ports/telemetry.port';
 
 interface RequestWithRagContext extends Request {
     RAG_CONTEXT?: RagSecurityContext;
@@ -82,6 +83,7 @@ export class ChatController {
         @Inject(ChatWithUserKnowledgeUseCase)
         private readonly chatWithUserKnowledge: ChatWithUserKnowledgeUseCase,
         private readonly labMetrics: LabMetricsService,
+        @Inject(TELEMETRY_PORT) private readonly telemetry: TelemetryPort,
     ) { }
 
     @Post('chat')
@@ -197,6 +199,10 @@ export class ChatController {
 
             this.labMetrics.recordChat(context.userId, result.detectedLanguage);
             this.labMetrics.recordChatTimings(result.timings);
+
+            this.telemetry.observeVectorSearchLatency(result.timings.searchMs);
+            this.telemetry.observeLlmLatency(result.timings.llmMs);
+            this.telemetry.incrementLlmRequests();
 
             return {
                 response: result.response,
