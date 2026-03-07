@@ -23,6 +23,10 @@ import {
   PanelLeftClose,
   ChevronDown,
   ChevronUp,
+  SlidersHorizontal,
+  BrainCircuit,
+  Scissors,
+  Sparkles,
 } from 'lucide-react';
 import { LabStatsPanel } from '../components/LabStatsPanel';
 
@@ -150,6 +154,22 @@ const Lab: React.FC = () => {
   // ── Shared state ────────────────────────────────────
   const [toast, setToast] = useState<{ message: string; type: 'error' | 'success' } | null>(null);
 
+  // ── Search & AI settings (persisted in sessionStorage) ──
+  const [scoreThreshold, setScoreThreshold] = useState(() => {
+    const saved = sessionStorage.getItem('lab_scoreThreshold');
+    return saved ? parseFloat(saved) : 0.4;
+  });
+  const [systemContext, setSystemContext] = useState(() => {
+    return sessionStorage.getItem('lab_systemContext') || '';
+  });
+  const [chunkingStrategy, setChunkingStrategy] = useState<'llm' | 'heuristic'>(() => {
+    return (sessionStorage.getItem('lab_chunkingStrategy') as 'llm' | 'heuristic') || 'llm';
+  });
+
+  useEffect(() => { sessionStorage.setItem('lab_scoreThreshold', String(scoreThreshold)); }, [scoreThreshold]);
+  useEffect(() => { sessionStorage.setItem('lab_systemContext', systemContext); }, [systemContext]);
+  useEffect(() => { sessionStorage.setItem('lab_chunkingStrategy', chunkingStrategy); }, [chunkingStrategy]);
+
   // ── Refs ────────────────────────────────────────────
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -219,6 +239,7 @@ const Lab: React.FC = () => {
       const token = await getAuthToken();
       const formData = new FormData();
       formData.append('file', file);
+      formData.append('chunkingStrategy', chunkingStrategy);
 
       const progressInterval = setInterval(() => {
         setUploadState((prev) => ({
@@ -375,6 +396,8 @@ const Lab: React.FC = () => {
         body: JSON.stringify({
           message: userMessage.content,
           sessionId: user?.uid || 'unknown',
+          scoreThreshold,
+          ...(systemContext.trim() && { systemContext: systemContext.trim() }),
         }),
       });
 
@@ -511,6 +534,84 @@ const Lab: React.FC = () => {
               <Brain className="text-primary mb-2" size={20} />
               <h3 className="text-white font-bold text-sm mb-1">{t.geminiAI}</h3>
               <p className="text-slate-400 text-xs">{t.geminiAIDesc}</p>
+            </div>
+          </div>
+
+          {/* AI Settings */}
+          <div className="bg-surface border border-slate-700 rounded-sm p-6 space-y-4">
+            <div className="flex items-center gap-3 mb-2">
+              <SlidersHorizontal className="text-primary" size={20} />
+              <h2 className="text-lg font-bold text-white">{language === 'pl' ? 'Ustawienia' : 'Settings'}</h2>
+            </div>
+
+            {/* Chunking Strategy Toggle */}
+            <div>
+              <label className="block text-xs text-slate-400 mb-2">{t.chunkingStrategy}</label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => setChunkingStrategy('llm')}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-sm border text-xs transition-colors ${chunkingStrategy === 'llm'
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-slate-700 text-slate-400 hover:border-slate-500'
+                    }`}
+                >
+                  <Sparkles size={14} />
+                  <div className="text-left">
+                    <div className="font-bold">{t.chunkingLlm}</div>
+                    <div className="text-[10px] opacity-70">{t.chunkingLlmDesc}</div>
+                  </div>
+                </button>
+                <button
+                  onClick={() => setChunkingStrategy('heuristic')}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-sm border text-xs transition-colors ${chunkingStrategy === 'heuristic'
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-slate-700 text-slate-400 hover:border-slate-500'
+                    }`}
+                >
+                  <Scissors size={14} />
+                  <div className="text-left">
+                    <div className="font-bold">{t.chunkingHeuristic}</div>
+                    <div className="text-[10px] opacity-70">{t.chunkingHeuristicDesc}</div>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            {/* Search Precision */}
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-xs text-slate-400">{t.searchPrecision}</span>
+                <span className="text-xs font-mono text-primary ml-auto">{scoreThreshold.toFixed(2)}</span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.05"
+                value={scoreThreshold}
+                onChange={(e) => setScoreThreshold(parseFloat(e.target.value))}
+                className="w-full h-1.5 bg-slate-700 rounded-sm appearance-none cursor-pointer accent-primary"
+              />
+              <div className="flex justify-between text-[10px] text-slate-500 mt-1">
+                <span>{t.precisionLow}</span>
+                <span>{t.precisionHigh}</span>
+              </div>
+            </div>
+
+            {/* System Context */}
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <BrainCircuit size={14} className="text-primary" />
+                <span className="text-xs text-slate-400">{t.systemContext}</span>
+                <span className="text-[10px] text-slate-600 ml-auto">{systemContext.length}/500</span>
+              </div>
+              <textarea
+                value={systemContext}
+                onChange={(e) => setSystemContext(e.target.value.slice(0, 500))}
+                placeholder={language === 'pl' ? t.systemContextPlaceholderPl : t.systemContextPlaceholderEn}
+                rows={2}
+                className="w-full bg-darker border border-slate-700 rounded-sm px-3 py-2 text-xs text-white placeholder-slate-500 focus:border-primary focus:outline-none transition-colors resize-none"
+              />
             </div>
           </div>
 

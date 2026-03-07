@@ -2,7 +2,9 @@ import { Injectable, Logger, Inject } from '@nestjs/common';
 import { GoogleGenAI, Type } from '@google/genai';
 import {
     AnalysisPort,
+    ChunkingStrategy,
     SemanticAnalysisResult,
+    AnalysisResultChunk,
 } from '../../domain/ports/analysis.port';
 import { GOOGLE_GENAI } from '../../../../core/genai/genai.module';
 
@@ -24,16 +26,181 @@ export class VertexAiAnalysisAdapter implements AnalysisPort {
 
     /**
      * Analyze a document with automatic language detection.
-     * Explaining: Sends content to Gemini model with structured output schema.
+     * Explaining: Routes to LLM or heuristic chunking based on strategy.
      * Detects if document is Polish or English and returns semantic chunks.
      */
     async analyzeDocument(
         content: string,
         filename: string,
+        strategy: ChunkingStrategy = 'llm',
     ): Promise<SemanticAnalysisResult> {
-        const prompt = this.buildPrompt(content, filename);
+        this.logger.log({ filename, strategy }, 'Analyzing document');
 
+        if (strategy === 'heuristic') {
+            return this.analyzeHeuristic(content);
+        }
+
+        const prompt = this.buildPrompt(content, filename);
         return this.executeWithRetry(() => this.callModel(prompt), filename);
+    }
+
+    /**
+     * Heuristic document analysis.
+     * Explaining: Rule-based splitting by headings, blank lines, and paragraphs.
+     * Detects language using simple character/word heuristics.
+     * Free and fast - no API calls, no token cost.
+     */
+    private analyzeHeuristic(content: string): SemanticAnalysisResult {
+        const detectedLanguage = this.detectLanguageHeuristic(content);
+        const chunks = this.splitHeuristic(content);
+
+        this.logger.log({
+            detectedLanguage,
+            chunkCount: chunks.length,
+            strategy: 'heuristic',
+        }, 'Heuristic analysis completed');
+
+        return { detectedLanguage, chunks, tokenCount: 0 };
+    }
+
+    /**
+     * Detect language using character and word heuristics.
+     */
+    private detectLanguageHeuristic(text: string): 'pl' | 'en' {
+        const lower = text.toLowerCase();
+        const polishChars = /[ąćęłńóśźż]/;
+        const polishWords = /\b(jak|co|gdzie|kiedy|dlaczego|czy|jest|są|tego|tym|dla|nie|tak)\b/;
+        return (polishChars.test(lower) || polishWords.test(lower)) ? 'pl' : 'en';
+    }
+
+    /**
+     * Split text into chunks using headings, blank lines, and size limits.
+     * Explaining: Splits on markdown headings (# ...) and double newlines.
+     * Merges small sections, splits oversized ones by sentences.
+     */
+    private splitHeuristic(content: string): AnalysisResultChunk[] {
+        const lines = content.split('\n');
+        const sections: { title: string; lines: string[]; startLine: number }[] = [];
+
+        let currentTitle = '';
+        let currentLines: string[] = [];
+        let currentStart = 1;
+
+        for (let i = 0; i < lines.length; i++) {
+            const line = lines[i];
+            const headingMatch = line.match(/^(#{1,3})\s+(.+)/);
+
+            if (headingMatch) {
+                // Save previous section
+                if (currentLines.length > 0) {
+                    sections.push({ title: currentTitle, lines: currentLines, startLine: currentStart });
+                }
+                currentTitle = headingMatch[2].trim();
+                currentLines = [];
+                currentStart = i + 1;
+                continue;
+            }
+
+            // Split on double blank lines (paragraph boundary)
+            if (line.trim() === '' && currentLines.length > 0 && currentLines[currentLines.length - 1]?.trim() === '') {
+                sections.push({ title: currentTitle, lines: currentLines, startLine: currentStart });
+                currentTitle = '';
+                currentLines = [];
+                currentStart = i + 2;
+                continue;
+            }
+
+            currentLines.push(line);
+        }
+
+        // Push remaining
+        if (currentLines.length > 0) {
+            sections.push({ title: currentTitle, lines: currentLines, startLine: currentStart });
+        }
+
+        // Merge small sections (< 100 chars) with next, split large ones (> 2000 chars)
+        const MIN_CHUNK_CHARS = 100;
+        const MAX_CHUNK_CHARS = 2000;
+        const result: AnalysisResultChunk[] = [];
+        let buffer: typeof sections[0] | null = null;
+
+        for (const section of sections) {
+            const text = section.lines.join('\n').trim();
+            if (!text) continue;
+
+            if (buffer) {
+                const bufferText = buffer.lines.join('\n').trim();
+                if (bufferText.length + text.length < MAX_CHUNK_CHARS) {
+                    buffer.lines.push(...section.lines);
+                    if (!buffer.title && section.title) buffer.title = section.title;
+                    continue;
+                }
+                // Flush buffer
+                this.pushChunk(result, buffer);
+                buffer = null;
+            }
+
+            if (text.length < MIN_CHUNK_CHARS) {
+                buffer = { ...section };
+                continue;
+            }
+
+            if (text.length > MAX_CHUNK_CHARS) {
+                // Split by sentences
+                const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+                let subChunk = '';
+                let subStart = section.startLine;
+                for (const sentence of sentences) {
+                    if (subChunk.length + sentence.length > MAX_CHUNK_CHARS && subChunk.length > 0) {
+                        result.push({
+                            content: subChunk.trim(),
+                            title: section.title || undefined,
+                            startLine: subStart,
+                            endLine: subStart + subChunk.split('\n').length - 1,
+                        });
+                        subStart += subChunk.split('\n').length;
+                        subChunk = '';
+                    }
+                    subChunk += sentence;
+                }
+                if (subChunk.trim()) {
+                    result.push({
+                        content: subChunk.trim(),
+                        title: section.title || undefined,
+                        startLine: subStart,
+                        endLine: section.startLine + section.lines.length - 1,
+                    });
+                }
+                continue;
+            }
+
+            this.pushChunk(result, section);
+        }
+
+        // Flush remaining buffer
+        if (buffer) {
+            this.pushChunk(result, buffer);
+        }
+
+        // Generate titles for untitled chunks
+        return result.map((chunk, i) => ({
+            ...chunk,
+            title: chunk.title || `Section ${i + 1}`,
+        }));
+    }
+
+    private pushChunk(
+        result: AnalysisResultChunk[],
+        section: { title: string; lines: string[]; startLine: number },
+    ): void {
+        const text = section.lines.join('\n').trim();
+        if (!text) return;
+        result.push({
+            content: text,
+            title: section.title || undefined,
+            startLine: section.startLine,
+            endLine: section.startLine + section.lines.length - 1,
+        });
     }
 
     /**

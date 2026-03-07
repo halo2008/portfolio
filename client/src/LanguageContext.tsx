@@ -76,6 +76,11 @@ export interface LabTranslations {
   systemContext: string;
   systemContextPlaceholderPl: string;
   systemContextPlaceholderEn: string;
+  chunkingStrategy: string;
+  chunkingLlm: string;
+  chunkingHeuristic: string;
+  chunkingLlmDesc: string;
+  chunkingHeuristicDesc: string;
 }
 
 interface LabContent {
@@ -157,6 +162,11 @@ const LAB_CONTENT: Record<Language, LabContent> = {
       systemContext: 'AI Instructions',
       systemContextPlaceholderPl: 'Jesteś ekspertem w dziedzinie... Odpowiadaj zwięźle i konkretnie.',
       systemContextPlaceholderEn: 'You are an expert in... Answer concisely and specifically.',
+      chunkingStrategy: 'Chunking strategy',
+      chunkingLlm: 'AI (Gemini)',
+      chunkingHeuristic: 'Heuristic',
+      chunkingLlmDesc: 'AI analyzes content semantically — best quality, costs tokens',
+      chunkingHeuristicDesc: 'Rule-based splitting by headings and paragraphs — free, fast',
     },
   },
   pl: {
@@ -233,6 +243,11 @@ const LAB_CONTENT: Record<Language, LabContent> = {
       systemContext: 'Instrukcje dla AI',
       systemContextPlaceholderPl: 'Jesteś ekspertem w dziedzinie... Odpowiadaj zwięźle i konkretnie.',
       systemContextPlaceholderEn: 'You are an expert in... Answer concisely and specifically.',
+      chunkingStrategy: 'Strategia podziału',
+      chunkingLlm: 'AI (Gemini)',
+      chunkingHeuristic: 'Heurystyczny',
+      chunkingLlmDesc: 'AI analizuje treść semantycznie — najlepsza jakość, kosztuje tokeny',
+      chunkingHeuristicDesc: 'Podział regułowy po nagłówkach i akapitach — darmowy, szybki',
     },
   },
 };

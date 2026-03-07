@@ -6,6 +6,7 @@ import { UserId } from '../../domain/value-objects/user-id.vo';
 import {
     AnalysisPort,
     ANALYSIS_PORT,
+    ChunkingStrategy,
     SemanticAnalysisResult,
 } from '../../domain/ports/analysis.port';
 import { LabUsageService } from '../services/lab-usage.service';
@@ -40,6 +41,7 @@ export interface AnalyzeDocumentInput {
     file: Buffer;
     filename: string;
     userId: UserId;
+    chunkingStrategy?: ChunkingStrategy;
 }
 
 /**
@@ -75,7 +77,7 @@ export class AnalyzeDocumentUseCase {
      * @returns Promise with analysis result including language and chunks
      */
     async execute(input: AnalyzeDocumentInput): Promise<AnalysisResultDto> {
-        const { file, filename, userId } = input;
+        const { file, filename, userId, chunkingStrategy } = input;
 
         this.logger.log(
             { filename, userId: userId.toString(), fileSize: file.length },
@@ -91,10 +93,11 @@ export class AnalyzeDocumentUseCase {
         // Extract text content from file
         const content = await this.extractText(file, filename);
 
-        // Call AI analysis for language detection and chunking
+        // Call analysis for language detection and chunking (LLM or heuristic)
         const analysisResult = await this.analysisPort.analyzeDocument(
             content,
             filename,
+            chunkingStrategy,
         );
 
         // Use real token count from Gemini API response

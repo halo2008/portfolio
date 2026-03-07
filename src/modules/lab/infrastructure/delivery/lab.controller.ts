@@ -19,6 +19,7 @@ import { FirebaseAuthGuard } from '../../../../core/auth/firebase-auth.guard';
 import { LabRateLimitGuard } from '../security/lab-rate-limit.guard';
 import { RagSecurityContext } from '../../../knowledge/domain/ports/knowledge-repo.port';
 import { AnalyzeDocumentUseCase, AnalysisResultDto } from '../../application/use-cases/analyze-document.use-case';
+import { ChunkingStrategy } from '../../domain/ports/analysis.port';
 import { ConfirmIndexUseCase, IndexResultDto, SemanticChunk } from '../../application/use-cases/confirm-index.use-case';
 import { KnowledgeRepoPort, KNOWLEDGE_REPO_PORT } from '../../../knowledge/domain/ports/knowledge-repo.port';
 import { LabUsageService, LabUsageStats } from '../../application/services/lab-usage.service';
@@ -208,11 +209,17 @@ export class LabController {
             fileSize: file.size,
         }, 'Processing document analysis');
 
+        // Extract chunking strategy from multipart form body
+        const rawStrategy = (req as any).body?.chunkingStrategy;
+        const strategy: ChunkingStrategy =
+            rawStrategy === 'heuristic' ? 'heuristic' : 'llm';
+
         try {
             const result = await this.analyzeDocumentUseCase.execute({
                 file: file.buffer,
                 filename: file.originalname,
                 userId,
+                chunkingStrategy: strategy,
             });
 
             this.logger.log({
