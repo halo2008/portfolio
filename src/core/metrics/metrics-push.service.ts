@@ -87,9 +87,12 @@ export class MetricsPushService implements OnModuleInit, OnModuleDestroy {
                     labels.__name__ = value.metricName;
                 }
 
+                const numValue = Number(value.value);
+                if (!Number.isFinite(numValue)) continue;
+
                 series.push({
                     labels,
-                    samples: [{ value: Number(value.value), timestamp: now }],
+                    samples: [{ value: numValue, timestamp: now }],
                 });
             }
         }
