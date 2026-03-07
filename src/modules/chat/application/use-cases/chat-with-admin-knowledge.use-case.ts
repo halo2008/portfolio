@@ -27,7 +27,7 @@ export interface ChatWithAdminKnowledgeOutput {
 @Injectable()
 export class ChatWithAdminKnowledgeUseCase {
     private readonly logger = new Logger(ChatWithAdminKnowledgeUseCase.name);
-    private readonly FALLBACK_MODEL = 'gemini-3-flash-preview';
+    private readonly FALLBACK_MODEL = 'gemini-3.1-flash-lite-preview';
 
     constructor(
         @Inject(KNOWLEDGE_REPO_PORT)

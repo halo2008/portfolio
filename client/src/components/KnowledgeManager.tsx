@@ -60,7 +60,7 @@ export const KnowledgeManager: React.FC = () => {
 
     // Admin settings state
     const [systemPrompt, setSystemPrompt] = useState('');
-    const [modelName, setModelName] = useState('gemini-3-flash-preview');
+    const [modelName, setModelName] = useState('gemini-3.1-flash-lite-preview');
     const [scoreThreshold, setScoreThreshold] = useState(0.7);
     const [settingsLoading, setSettingsLoading] = useState(false);
     const [settingsSaved, setSettingsSaved] = useState(false);
@@ -96,7 +96,7 @@ export const KnowledgeManager: React.FC = () => {
             if (res.ok) {
                 const data = await res.json();
                 setSystemPrompt(data.systemPrompt || '');
-                setModelName(data.modelName || 'gemini-3-flash-preview');
+                setModelName(data.modelName || 'gemini-3.1-flash-lite-preview');
                 setScoreThreshold(data.scoreThreshold ?? 0.7);
             }
         } catch (err) {
@@ -348,11 +348,11 @@ export const KnowledgeManager: React.FC = () => {
                                 type="text"
                                 value={modelName}
                                 onChange={(e) => setModelName(e.target.value)}
-                                placeholder="gemini-3-flash-preview"
+                                placeholder="gemini-3.1-flash-lite-preview"
                                 className="w-full bg-darker border border-slate-700 rounded-sm px-3 py-2 text-white text-sm font-mono focus:border-primary focus:outline-none transition-colors"
                             />
                             <p className="text-[10px] text-slate-600 mt-1">
-                                Nazwa modelu Gemini API (np. gemini-3-flash-preview, gemini-2.5-pro-preview-06-05)
+                                Nazwa modelu Gemini API (np. gemini-3.1-flash-lite-preview, gemini-3.1-pro-preview)
                             </p>
                         </div>
 

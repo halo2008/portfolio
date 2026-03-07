@@ -10,7 +10,7 @@ export interface AdminSettings {
 
 const DEFAULTS: AdminSettings = {
     systemPrompt: '',
-    modelName: 'gemini-3-flash-preview',
+    modelName: 'gemini-3.1-flash-lite-preview',
     scoreThreshold: 0.7,
 };
 
@@ -26,7 +26,7 @@ export class AdminSettingsService {
 
     constructor(
         @Inject(FIRESTORE_DB) private readonly db: admin.firestore.Firestore,
-    ) {}
+    ) { }
 
     async getSettings(): Promise<AdminSettings> {
         if (this.cache && Date.now() < this.cacheExpiry) {
