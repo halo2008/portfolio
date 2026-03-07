@@ -50,9 +50,9 @@ export interface AnalyzeDocumentInput {
 const VALID_FILE_EXTENSIONS = ['.txt', '.md', '.pdf'];
 
 /**
- * Maximum file size in bytes (10MB).
+ * Maximum file size in bytes (1MB) - must match controller limit.
  */
-const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
+const MAX_FILE_SIZE_BYTES = 1 * 1024 * 1024;
 
 /**
  * AnalyzeDocumentUseCase
@@ -93,6 +93,10 @@ export class AnalyzeDocumentUseCase {
         // Extract text content from file
         const content = await this.extractText(file, filename);
 
+        // Record usage BEFORE the Gemini call to prevent concurrent request bypass
+        // Token count is updated after the call with real usage data
+        await this.labUsageService.recordAnalysis(userId.toString(), 0);
+
         // Call analysis for language detection and chunking (LLM or heuristic)
         const analysisResult = await this.analysisPort.analyzeDocument(
             content,
@@ -100,9 +104,10 @@ export class AnalyzeDocumentUseCase {
             chunkingStrategy,
         );
 
-        // Use real token count from Gemini API response
-        const tokenCount = analysisResult.tokenCount;
-        await this.labUsageService.recordAnalysis(userId.toString(), tokenCount);
+        // Update with real token count from Gemini API response
+        if (analysisResult.tokenCount > 0) {
+            await this.labUsageService.recordAnalysisTokens(userId.toString(), analysisResult.tokenCount);
+        }
 
         // Convert to DTO format
         const result: AnalysisResultDto = {
@@ -151,7 +156,7 @@ export class AnalyzeDocumentUseCase {
 
     /**
      * Validate file size.
-     * Explaining: Ensures file size is within 10MB limit.
+     * Explaining: Ensures file size is within 1MB limit.
      * Throws PayloadTooLargeException (413) if file is too large.
      * @param file The file buffer
      */
@@ -162,7 +167,7 @@ export class AnalyzeDocumentUseCase {
                 'File too large rejected',
             );
             throw new PayloadTooLargeException(
-                `File size exceeds maximum allowed size of 10MB. Received: ${(file.length / 1024 / 1024).toFixed(2)}MB`,
+                `File size exceeds maximum allowed size of 1MB. Received: ${(file.length / 1024 / 1024).toFixed(2)}MB`,
             );
         }
     }

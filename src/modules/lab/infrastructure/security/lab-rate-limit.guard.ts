@@ -43,8 +43,8 @@ export class LabRateLimitGuard implements CanActivate {
                 throw error;
             }
             this.logger.error({ uid, error: (error as Error).message }, 'Error checking rate limit');
-            // Allow request to proceed if tracking fails (fail open)
-            return true;
+            // Fail closed: deny request if rate limit check fails
+            return false;
         }
     }
 }

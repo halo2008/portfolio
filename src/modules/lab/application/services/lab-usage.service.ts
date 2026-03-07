@@ -75,6 +75,16 @@ export class LabUsageService {
     }
 
     /**
+     * Update analysis token count without incrementing request count.
+     * Used when the actual token count is known after the Gemini API call.
+     */
+    async recordAnalysisTokens(userId: string, tokens: number): Promise<void> {
+        await this.incrementUsage(userId, {
+            analysisTokens: tokens,
+        });
+    }
+
+    /**
      * Record usage for document indexing (Qdrant).
      * Explaining: Atomically increments request count and indexing ops.
      */

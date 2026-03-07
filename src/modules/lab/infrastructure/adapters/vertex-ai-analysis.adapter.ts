@@ -182,8 +182,12 @@ export class VertexAiAnalysisAdapter implements AnalysisPort {
             this.pushChunk(result, buffer);
         }
 
+        // Cap at max 50 chunks to prevent abuse with crafted documents
+        const MAX_HEURISTIC_CHUNKS = 50;
+        const capped = result.slice(0, MAX_HEURISTIC_CHUNKS);
+
         // Generate titles for untitled chunks
-        return result.map((chunk, i) => ({
+        return capped.map((chunk, i) => ({
             ...chunk,
             title: chunk.title || `Section ${i + 1}`,
         }));

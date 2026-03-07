@@ -11,7 +11,8 @@ import {
     Logger,
     Inject,
 } from '@nestjs/common';
-import { IsString, IsOptional, IsNumber, Min, Max } from 'class-validator';
+import { Throttle } from '@nestjs/throttler';
+import { IsString, IsOptional, IsNumber, Min, Max, MaxLength } from 'class-validator';
 import { Request } from 'express';
 import { GenerateChatResponseUseCase } from '../../application/generate-chat-response.use-case';
 import { ChatWithAdminKnowledgeUseCase } from '../../application/use-cases/chat-with-admin-knowledge.use-case';
@@ -29,6 +30,7 @@ interface RequestWithRagContext extends Request {
 
 class ChatRequestDto {
     @IsString()
+    @MaxLength(5000)
     message!: string;
 
     @IsString()
@@ -42,6 +44,7 @@ class ChatRequestDto {
 
     @IsOptional()
     @IsString()
+    @MaxLength(500)
     systemContext?: string;
 }
 
@@ -98,6 +101,7 @@ export class ChatController {
      * @returns ChatResponseDto with response, sources (empty for admin), and detected language
      */
     @Post('chat')
+    @Throttle({ short: { ttl: 60000, limit: 5 } })
     @UseGuards(CaptchaGuard)
     @HttpCode(HttpStatus.OK)
     async chatMainPage(
