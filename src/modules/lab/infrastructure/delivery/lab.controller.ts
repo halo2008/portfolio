@@ -11,6 +11,7 @@ import {
     BadRequestException,
     PayloadTooLargeException,
     Logger,
+    InternalServerErrorException,
 } from '@nestjs/common';
 import { IsString, IsOptional, IsArray, ValidateNested, IsIn, ArrayMinSize } from 'class-validator';
 import { Type as TransformType } from 'class-transformer';
@@ -26,6 +27,7 @@ import { KnowledgeRepoPort, KNOWLEDGE_REPO_PORT } from '../../../knowledge/domai
 import { LabUsageService, LabUsageStats } from '../../application/services/lab-usage.service';
 import { LabMetricsService } from '../metrics/lab-metrics.service';
 import { Inject } from '@nestjs/common';
+import * as admin from 'firebase-admin';
 import { UserId } from '../../domain/value-objects/user-id.vo';
 
 interface RequestWithRagContext extends Request {
@@ -334,6 +336,30 @@ export class LabController {
                 error: (error as Error).message,
             }, 'Failed to fetch lab stats');
             throw error;
+        }
+    }
+
+    @Post('share-token')
+    async createShareToken(
+        @Req() req: RequestWithRagContext,
+    ): Promise<{ token: string }> {
+        const context = req.RAG_CONTEXT;
+        if (!context?.userId) {
+            throw new BadRequestException('Security context missing');
+        }
+
+        try {
+            const customToken = await admin.auth().createCustomToken(context.userId);
+
+            this.logger.log({ userId: context.userId }, 'Share token generated');
+
+            return { token: customToken };
+        } catch (error) {
+            this.logger.error({
+                userId: context.userId,
+                error: (error as Error).message,
+            }, 'Failed to generate share token');
+            throw new InternalServerErrorException('Failed to generate share token');
         }
     }
 }

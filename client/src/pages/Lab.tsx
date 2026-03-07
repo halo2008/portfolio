@@ -31,6 +31,9 @@ import {
   EyeOff,
   ChevronRight,
   Trash2,
+  Share2,
+  Copy,
+  Check,
 } from 'lucide-react';
 import { LabStatsPanel } from '../components/LabStatsPanel';
 
@@ -201,6 +204,11 @@ const Lab: React.FC = () => {
   const [expandedPointId, setExpandedPointId] = useState<string | null>(null);
   const [userPointsNextOffset, setUserPointsNextOffset] = useState<string | undefined>();
 
+  // ── Share session state ─────────────────────────────
+  const [shareLink, setShareLink] = useState<string | null>(null);
+  const [shareCopied, setShareCopied] = useState(false);
+  const [shareLoading, setShareLoading] = useState(false);
+
   // ── Refs ────────────────────────────────────────────
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -210,6 +218,38 @@ const Lab: React.FC = () => {
     if (!user) throw new Error('Not authenticated');
     return user.getIdToken();
   };
+
+  // ── Share session ──────────────────────────────────
+  const handleShareSession = useCallback(async () => {
+    if (shareLoading) return;
+    setShareLoading(true);
+    try {
+      const token = await getAuthToken();
+      const response = await fetch(`${API_BASE_URL}/lab/share-token`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!response.ok) throw new Error('Failed to generate share token');
+      const { token: sessionToken } = await response.json();
+      const url = `${window.location.origin}/lab?sessionToken=${encodeURIComponent(sessionToken)}`;
+      setShareLink(url);
+      await navigator.clipboard.writeText(url);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 3000);
+      setToast({
+        message: language === 'pl' ? 'Link skopiowany do schowka!' : 'Link copied to clipboard!',
+        type: 'success',
+      });
+    } catch (error) {
+      console.error('Failed to share session:', error);
+      setToast({
+        message: language === 'pl' ? 'Nie udało się wygenerować linku.' : 'Failed to generate share link.',
+        type: 'error',
+      });
+    } finally {
+      setShareLoading(false);
+    }
+  }, [shareLoading, language]);
 
   // ── Fetch session info ──────────────────────────────
   const fetchSessionInfo = useCallback(async () => {
@@ -549,6 +589,21 @@ const Lab: React.FC = () => {
               </span>
             </div>
           )}
+          <button
+            onClick={handleShareSession}
+            disabled={shareLoading}
+            className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-primary bg-surface/50 px-3 py-1.5 rounded-sm transition-colors disabled:opacity-50"
+            title={language === 'pl' ? 'Udostępnij sesję (np. do trybu prywatnego)' : 'Share session (e.g. for incognito mode)'}
+          >
+            {shareLoading ? (
+              <Loader2 size={14} className="animate-spin" />
+            ) : shareCopied ? (
+              <Check size={14} className="text-green-400" />
+            ) : (
+              <Share2 size={14} />
+            )}
+            <span className="hidden sm:inline">{language === 'pl' ? 'Udostępnij sesję' : 'Share session'}</span>
+          </button>
           <a href="/" className="text-sm text-slate-300 hover:text-primary transition-colors">
             {t.back}
           </a>

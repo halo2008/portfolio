@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { User, onAuthStateChanged, signInAnonymously, signOut as firebaseSignOut } from 'firebase/auth';
+import { User, onAuthStateChanged, signInAnonymously, signInWithCustomToken, signOut as firebaseSignOut } from 'firebase/auth';
 import { auth } from './firebase';
 
 interface AuthContextType {
@@ -7,6 +7,7 @@ interface AuthContextType {
     loading: boolean;
     isAdmin: boolean;
     login: () => Promise<User>;
+    loginWithToken: (token: string) => Promise<User>;
     logout: () => Promise<void>;
 }
 
@@ -15,6 +16,7 @@ const AuthContext = createContext<AuthContextType>({
     loading: true,
     isAdmin: false,
     login: async () => { throw new Error('AuthContext not initialized'); },
+    loginWithToken: async () => { throw new Error('AuthContext not initialized'); },
     logout: async () => { },
 });
 
@@ -57,12 +59,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     };
 
+    const loginWithToken = async (token: string) => {
+        try {
+            const result = await signInWithCustomToken(auth, token);
+            return result.user;
+        } catch (error) {
+            console.error('Custom token auth failed:', error);
+            throw error;
+        }
+    };
+
     const logout = async () => {
         await firebaseSignOut(auth);
     };
 
     return (
-        <AuthContext.Provider value={{ user, loading, isAdmin, login, logout }}>
+        <AuthContext.Provider value={{ user, loading, isAdmin, login, loginWithToken, logout }}>
             {!loading && children}
         </AuthContext.Provider>
     );

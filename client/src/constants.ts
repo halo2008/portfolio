@@ -202,6 +202,10 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
       error: "I encountered an error.",
       status: "Online (Gemini 2.5)"
     },
+    telemetry: {
+      title: "Real-time Telemetry Dashboard",
+      description: "Live data visualization from industrial edge devices and vehicle sensors."
+    },
     landing: {
       hero: {
         headline: "Enterprise AI Assistant",
@@ -435,6 +439,10 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
       thinking: "Myślę...",
       error: "Wystąpił błąd.",
       status: "Online (Gemini 2.5)"
+    },
+    telemetry: {
+      title: "Panel Telemetrii w Czasie Rzeczywistym",
+      description: "Wizualizacja danych na żywo z przemysłowych urządzeń edge i czujników pojazdów."
     },
     landing: {
       hero: {
