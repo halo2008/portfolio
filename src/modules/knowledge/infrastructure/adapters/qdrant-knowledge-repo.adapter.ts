@@ -299,6 +299,48 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
         }
     }
 
+    async browseUserPoints(userId: string, context: RagSecurityContext, limit = 20, offset?: string): Promise<{ points: KnowledgePoint[]; nextOffset?: string }> {
+        this.validateContext(context);
+
+        if (context.userId !== userId) {
+            throw new ForbiddenException('Cannot browse knowledge belonging to another user');
+        }
+
+        const filter = this.buildUserFilter(userId);
+
+        try {
+            const response = await this.qdrantClient.scroll(this.COLLECTION_NAME, {
+                limit,
+                with_payload: true,
+                with_vector: false,
+                filter,
+                ...(offset ? { offset } : {}),
+            });
+
+            const points: KnowledgePoint[] = response.points.map((p) => ({
+                id: String(p.id),
+                title: (p.payload?.title as string) || undefined,
+                content: (p.payload?.content as string) || '',
+                category: (p.payload?.category as string) || undefined,
+                technologies: (p.payload?.technologies as string[]) || undefined,
+                language: (p.payload?.language as string) || undefined,
+                createdAt: (p.payload?.created_at as string) || undefined,
+            }));
+
+            return {
+                points,
+                nextOffset: response.next_page_offset != null ? String(response.next_page_offset) : undefined,
+            };
+        } catch (error) {
+            this.logger.error({
+                msg: 'Failed to browse user points',
+                error: error instanceof Error ? error.message : 'Unknown error',
+                userId,
+            });
+            return { points: [] };
+        }
+    }
+
     async deleteByUserId(userId: string, context: RagSecurityContext): Promise<number> {
         this.validateContext(context);
 

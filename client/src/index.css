@@ -43,6 +43,11 @@
 
 @layer base {
 
+  /* Hide reCAPTCHA v3 badge — text attribution is shown inline instead */
+  .grecaptcha-badge {
+    visibility: hidden !important;
+  }
+
   /* Custom scrollbar for a tech feel */
   ::-webkit-scrollbar {
     width: 8px;

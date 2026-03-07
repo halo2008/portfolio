@@ -41,6 +41,9 @@ export interface KnowledgeRepoPort {
     /** Searches strictly user-owned vectors (isolated by userId). */
     searchUserKnowledge(query: number[], userId: string, context: RagSecurityContext, scoreThreshold?: number, chunkingStrategy?: 'llm' | 'heuristic' | 'all'): Promise<string>;
 
+    /** Browse user-owned knowledge points with pagination. */
+    browseUserPoints(userId: string, context: RagSecurityContext, limit?: number, offset?: string): Promise<{ points: KnowledgePoint[]; nextOffset?: string }>;
+
     deleteByUserId(userId: string, context: RagSecurityContext): Promise<number>;
     count(context: RagSecurityContext): Promise<number>;
 }

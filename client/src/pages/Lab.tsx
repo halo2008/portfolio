@@ -27,6 +27,10 @@ import {
   BrainCircuit,
   Scissors,
   Sparkles,
+  Eye,
+  EyeOff,
+  ChevronRight,
+  Trash2,
 } from 'lucide-react';
 import { LabStatsPanel } from '../components/LabStatsPanel';
 
@@ -100,6 +104,14 @@ interface SessionInfo {
     chatTokens: number;
   };
   maxRequests?: number;
+}
+
+interface UserKnowledgePoint {
+  id: string;
+  title?: string;
+  content: string;
+  language?: string;
+  createdAt?: string;
 }
 
 // ── Small reusable components ─────────────────────────
@@ -182,6 +194,13 @@ const Lab: React.FC = () => {
   useEffect(() => { sessionStorage.setItem('lab_uploadStrategy', uploadStrategy); }, [uploadStrategy]);
   useEffect(() => { sessionStorage.setItem('lab_searchStrategy', searchStrategy); }, [searchStrategy]);
 
+  // ── Knowledge browser state ────────────────────────
+  const [userPoints, setUserPoints] = useState<UserKnowledgePoint[]>([]);
+  const [userPointsLoading, setUserPointsLoading] = useState(false);
+  const [userPointsOpen, setUserPointsOpen] = useState(false);
+  const [expandedPointId, setExpandedPointId] = useState<string | null>(null);
+  const [userPointsNextOffset, setUserPointsNextOffset] = useState<string | undefined>();
+
   // ── Refs ────────────────────────────────────────────
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -212,6 +231,29 @@ const Lab: React.FC = () => {
   useEffect(() => {
     if (user) fetchSessionInfo();
   }, [user, fetchSessionInfo]);
+
+  // ── Fetch user knowledge points ───────────────────
+  const fetchUserKnowledge = useCallback(async (reset = false) => {
+    if (!user) return;
+    setUserPointsLoading(true);
+    try {
+      const token = await user.getIdToken();
+      const params = new URLSearchParams({ limit: '20' });
+      if (!reset && userPointsNextOffset) params.set('offset', userPointsNextOffset);
+      const response = await fetch(`${API_BASE_URL}/lab/knowledge?${params}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.ok) {
+        const data: { points: UserKnowledgePoint[]; nextOffset?: string } = await response.json();
+        setUserPoints(prev => reset ? data.points : [...prev, ...data.points]);
+        setUserPointsNextOffset(data.nextOffset);
+      }
+    } catch (error) {
+      console.error('Failed to fetch user knowledge:', error);
+    } finally {
+      setUserPointsLoading(false);
+    }
+  }, [user, userPointsNextOffset]);
 
   // ── Session countdown ───────────────────────────────
   useEffect(() => {
@@ -316,6 +358,7 @@ const Lab: React.FC = () => {
       setIndexState({ status: 'success' });
       setToast({ message: t.confirmSuccess, type: 'success' });
       fetchSessionInfo();
+      if (userPointsOpen) fetchUserKnowledge(true);
     } catch (error) {
       setIndexState({
         status: 'error',
@@ -842,6 +885,97 @@ const Lab: React.FC = () => {
                     <AlertCircle size={14} />
                     <span>{indexState.error || t.errorConfirm}</span>
                   </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* ── Knowledge browser ─────────────────────── */}
+          <div className="bg-surface border border-slate-700 rounded-sm">
+            <button
+              onClick={() => {
+                const willOpen = !userPointsOpen;
+                setUserPointsOpen(willOpen);
+                if (willOpen && userPoints.length === 0) fetchUserKnowledge(true);
+              }}
+              className="w-full flex items-center justify-between px-6 py-4 hover:bg-surface/80 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <Eye className="text-primary" size={20} />
+                <h2 className="text-lg font-bold text-white">
+                  {language === 'pl' ? 'Baza wiedzy' : 'Knowledge base'}
+                </h2>
+                {sessionInfo && (
+                  <span className="text-xs text-primary bg-primary/10 px-2 py-0.5 rounded-sm border border-primary/20">
+                    {sessionInfo.chunkCount}
+                  </span>
+                )}
+              </div>
+              {userPointsOpen ? <ChevronDown size={18} className="text-slate-400" /> : <ChevronRight size={18} className="text-slate-400" />}
+            </button>
+
+            {userPointsOpen && (
+              <div className="px-6 pb-4 space-y-2">
+                {userPoints.length === 0 && !userPointsLoading && (
+                  <p className="text-sm text-slate-500 py-4 text-center">
+                    {language === 'pl' ? 'Brak wektorów w bazie.' : 'No vectors in knowledge base.'}
+                  </p>
+                )}
+
+                {userPoints.map((point) => (
+                  <div key={point.id} className="bg-darker border border-slate-700 rounded-sm">
+                    <button
+                      onClick={() => setExpandedPointId(expandedPointId === point.id ? null : point.id)}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 text-left hover:bg-surface/30 transition-colors"
+                    >
+                      <ChevronRight
+                        size={14}
+                        className={`text-slate-500 transition-transform flex-shrink-0 ${expandedPointId === point.id ? 'rotate-90' : ''}`}
+                      />
+                      <span className="text-sm text-white truncate flex-1">
+                        {point.title || point.content.slice(0, 60) + (point.content.length > 60 ? '…' : '')}
+                      </span>
+                      {point.language && (
+                        <span className="text-[10px] text-slate-500 font-mono flex-shrink-0">{point.language.toUpperCase()}</span>
+                      )}
+                    </button>
+
+                    {expandedPointId === point.id && (
+                      <div className="px-3 pb-3 border-t border-slate-700/50">
+                        <p className="text-xs text-slate-300 whitespace-pre-wrap mt-2 max-h-40 overflow-y-auto">
+                          {point.content}
+                        </p>
+                        <div className="flex items-center gap-3 mt-2 text-[10px] text-slate-500 font-mono">
+                          <span>ID: {point.id.slice(0, 8)}…</span>
+                          {point.createdAt && <span>{new Date(point.createdAt).toLocaleDateString()}</span>}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+
+                {userPointsLoading && (
+                  <div className="flex items-center justify-center py-3">
+                    <Loader2 size={18} className="animate-spin text-primary" />
+                  </div>
+                )}
+
+                {userPointsNextOffset && !userPointsLoading && (
+                  <button
+                    onClick={() => fetchUserKnowledge(false)}
+                    className="w-full text-center py-2 text-xs text-primary hover:text-primary/80 transition-colors"
+                  >
+                    {language === 'pl' ? 'Załaduj więcej…' : 'Load more…'}
+                  </button>
+                )}
+
+                {userPoints.length > 0 && !userPointsLoading && (
+                  <button
+                    onClick={() => fetchUserKnowledge(true)}
+                    className="w-full text-center py-1.5 text-xs text-slate-500 hover:text-slate-300 transition-colors"
+                  >
+                    {language === 'pl' ? 'Odśwież' : 'Refresh'}
+                  </button>
                 )}
               </div>
             )}

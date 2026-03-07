@@ -2,6 +2,7 @@ import {
     Controller,
     Post,
     Get,
+    Query,
     UseGuards,
     UseInterceptors,
     UploadedFile,
@@ -272,6 +273,21 @@ export class LabController {
         await this.labUsageService.updateLanguagePreference(context.userId, lang);
 
         return { status: 'ok', language: lang };
+    }
+
+    @Get('knowledge')
+    async browseKnowledge(
+        @Req() req: RequestWithRagContext,
+        @Query('limit') limitStr?: string,
+        @Query('offset') offset?: string,
+    ) {
+        const context = req.RAG_CONTEXT;
+        if (!context?.userId) {
+            throw new BadRequestException('Security context missing');
+        }
+
+        const limit = limitStr ? Math.min(parseInt(limitStr, 10) || 20, 100) : 20;
+        return await this.knowledgeRepo.browseUserPoints(context.userId, context, limit, offset);
     }
 
     @Get('stats')
