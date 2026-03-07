@@ -26,6 +26,10 @@ export interface ChatWithUserKnowledgeInput {
     message: string;
     /** Session ID for tracking */
     sessionId: string;
+    /** Score threshold for vector search (0.0 - 1.0, default 0.7) */
+    scoreThreshold?: number;
+    /** Custom system context/instructions for the AI (max 500 chars) */
+    systemContext?: string;
 }
 
 /**
@@ -73,7 +77,7 @@ export class ChatWithUserKnowledgeUseCase {
         input: ChatWithUserKnowledgeInput,
         context: RagSecurityContext,
     ): Promise<ChatWithUserKnowledgeOutput> {
-        const { message, sessionId } = input;
+        const { message, sessionId, scoreThreshold, systemContext } = input;
 
         // Detect language from input
         const detectedLanguage = this.detectLanguage(message);
@@ -96,10 +100,14 @@ export class ChatWithUserKnowledgeUseCase {
             embedding,
             context.userId,
             context,
+            scoreThreshold,
         );
 
         // Parse search results to extract content and sources
         const { context: knowledgeContext, sources } = this.parseSearchResults(searchResults);
+
+        // Sanitize systemContext: trim and cap at 500 chars
+        const sanitizedSystemContext = systemContext?.trim().slice(0, 500);
 
         // Generate response using the user's knowledge context
         const response = await this.generateResponse(
@@ -107,6 +115,7 @@ export class ChatWithUserKnowledgeUseCase {
             knowledgeContext,
             detectedLanguage,
             sources,
+            sanitizedSystemContext,
         );
 
         // Record token usage (estimate)
@@ -240,8 +249,9 @@ export class ChatWithUserKnowledgeUseCase {
         context: string,
         language: 'pl' | 'en',
         sources: SourceCitation[],
+        systemContext?: string,
     ): Promise<string> {
-        const systemPrompt = this.buildSystemPrompt(context, language, sources);
+        const systemPrompt = this.buildSystemPrompt(context, language, sources, systemContext);
 
         try {
             this.logger.debug({
@@ -297,8 +307,11 @@ export class ChatWithUserKnowledgeUseCase {
         context: string,
         language: 'pl' | 'en',
         sources: SourceCitation[],
+        systemContext?: string,
     ): string {
-        const basePrompt = "You are answering from the user's personal knowledge base.";
+        const basePrompt = systemContext
+            ? `${systemContext}\n\nYou are answering from the user's personal knowledge base.`
+            : "You are answering from the user's personal knowledge base.";
 
         // Build sources section
         const sourcesSection = sources.length > 0

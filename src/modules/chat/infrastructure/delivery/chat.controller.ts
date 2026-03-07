@@ -11,7 +11,7 @@ import {
     Logger,
     Inject,
 } from '@nestjs/common';
-import { IsString } from 'class-validator';
+import { IsString, IsOptional, IsNumber, Min, Max } from 'class-validator';
 import { Request } from 'express';
 import { GenerateChatResponseUseCase } from '../../application/generate-chat-response.use-case';
 import { ChatWithAdminKnowledgeUseCase } from '../../application/use-cases/chat-with-admin-knowledge.use-case';
@@ -33,6 +33,16 @@ class ChatRequestDto {
 
     @IsString()
     sessionId!: string;
+
+    @IsOptional()
+    @IsNumber()
+    @Min(0)
+    @Max(1)
+    scoreThreshold?: number;
+
+    @IsOptional()
+    @IsString()
+    systemContext?: string;
 }
 
 /**
@@ -211,6 +221,8 @@ export class ChatController {
                 {
                     message: body.message,
                     sessionId: body.sessionId,
+                    scoreThreshold: body.scoreThreshold,
+                    systemContext: body.systemContext,
                 },
                 context,
             );

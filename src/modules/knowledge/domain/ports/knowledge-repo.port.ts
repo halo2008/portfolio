@@ -63,7 +63,7 @@ export interface KnowledgeRepoPort {
      * @param context - Security context for authorization
      * @throws ForbiddenException if context is missing or role is demo without user match
      */
-    searchUserKnowledge(query: number[], userId: string, context: RagSecurityContext): Promise<string>;
+    searchUserKnowledge(query: number[], userId: string, context: RagSecurityContext, scoreThreshold?: number): Promise<string>;
 
     /**
      * Delete all knowledge points for a specific user.

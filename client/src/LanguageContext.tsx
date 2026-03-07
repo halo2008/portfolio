@@ -70,6 +70,12 @@ export interface LabTranslations {
   ops: string;
   nearLimitReached: string;
   limitReached: string;
+  searchPrecision: string;
+  precisionLow: string;
+  precisionHigh: string;
+  systemContext: string;
+  systemContextPlaceholderPl: string;
+  systemContextPlaceholderEn: string;
 }
 
 interface LabContent {
@@ -145,6 +151,12 @@ const LAB_CONTENT: Record<Language, LabContent> = {
       ops: 'ops',
       nearLimitReached: 'You are approaching the request limit for this demo session.',
       limitReached: 'Session limit reached. Please wait for the session to expire or contact the administrator.',
+      searchPrecision: 'Search precision',
+      precisionLow: 'Broad',
+      precisionHigh: 'Strict',
+      systemContext: 'AI Instructions',
+      systemContextPlaceholderPl: 'Jesteś ekspertem w dziedzinie... Odpowiadaj zwięźle i konkretnie.',
+      systemContextPlaceholderEn: 'You are an expert in... Answer concisely and specifically.',
     },
   },
   pl: {
@@ -215,6 +227,12 @@ const LAB_CONTENT: Record<Language, LabContent> = {
       ops: 'ops',
       nearLimitReached: 'Zbliżasz się do limitu zapytań dla tej sesji demonstracyjnej.',
       limitReached: 'Osiągnięto limit sesji. Poczekaj na wygaśnięcie sesji lub skontaktuj się z administratorem.',
+      searchPrecision: 'Precyzja wyszukiwania',
+      precisionLow: 'Szeroko',
+      precisionHigh: 'Ściśle',
+      systemContext: 'Instrukcje dla AI',
+      systemContextPlaceholderPl: 'Jesteś ekspertem w dziedzinie... Odpowiadaj zwięźle i konkretnie.',
+      systemContextPlaceholderEn: 'You are an expert in... Answer concisely and specifically.',
     },
   },
 };

@@ -16,6 +16,8 @@ import {
   PanelLeftOpen,
   PanelLeftClose,
   Upload,
+  SlidersHorizontal,
+  BrainCircuit,
 } from 'lucide-react';
 
 // API base URL
@@ -127,6 +129,22 @@ const LabChat: React.FC = () => {
   const [retrievedChunks, setRetrievedChunks] = useState<ChunkSource[]>([]);
   const [toast, setToast] = useState<{ message: string; type: 'error' | 'success' } | null>(null);
   const [timeRemaining, setTimeRemaining] = useState<{ hours: number; minutes: number } | null>(null);
+  const [scoreThreshold, setScoreThreshold] = useState(() => {
+    const saved = sessionStorage.getItem('lab_scoreThreshold');
+    return saved ? parseFloat(saved) : 0.4;
+  });
+  const [systemContext, setSystemContext] = useState(() => {
+    return sessionStorage.getItem('lab_systemContext') || '';
+  });
+
+  // Persist settings to sessionStorage
+  useEffect(() => {
+    sessionStorage.setItem('lab_scoreThreshold', String(scoreThreshold));
+  }, [scoreThreshold]);
+
+  useEffect(() => {
+    sessionStorage.setItem('lab_systemContext', systemContext);
+  }, [systemContext]);
 
   // Refs
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -228,6 +246,8 @@ const LabChat: React.FC = () => {
         body: JSON.stringify({
           message: userMessage.content,
           sessionId: user?.uid || 'unknown',
+          scoreThreshold,
+          ...(systemContext.trim() && { systemContext: systemContext.trim() }),
         }),
       });
 
@@ -264,7 +284,7 @@ const LabChat: React.FC = () => {
     } finally {
       setChatState((prev) => ({ ...prev, isLoading: false }));
     }
-  }, [inputMessage, chatState.isLoading, user, t, sessionInfo]);
+  }, [inputMessage, chatState.isLoading, user, t, sessionInfo, scoreThreshold]);
 
   // Handle enter key
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -474,6 +494,44 @@ const LabChat: React.FC = () => {
               >
                 <PanelLeftClose size={18} />
               </button>
+            </div>
+
+            {/* Search Precision Slider */}
+            <div className="px-4 py-3 border-b border-slate-800">
+              <div className="flex items-center gap-2 mb-2">
+                <SlidersHorizontal size={14} className="text-primary" />
+                <span className="text-xs text-slate-400">{t.searchPrecision}</span>
+                <span className="text-xs font-mono text-primary ml-auto">{scoreThreshold.toFixed(2)}</span>
+              </div>
+              <input
+                type="range"
+                min="0"
+                max="1"
+                step="0.05"
+                value={scoreThreshold}
+                onChange={(e) => setScoreThreshold(parseFloat(e.target.value))}
+                className="w-full h-1.5 bg-slate-700 rounded-sm appearance-none cursor-pointer accent-primary"
+              />
+              <div className="flex justify-between text-[10px] text-slate-500 mt-1">
+                <span>{t.precisionLow}</span>
+                <span>{t.precisionHigh}</span>
+              </div>
+            </div>
+
+            {/* System Context */}
+            <div className="px-4 py-3 border-b border-slate-800">
+              <div className="flex items-center gap-2 mb-2">
+                <BrainCircuit size={14} className="text-primary" />
+                <span className="text-xs text-slate-400">{t.systemContext}</span>
+                <span className="text-[10px] text-slate-600 ml-auto">{systemContext.length}/500</span>
+              </div>
+              <textarea
+                value={systemContext}
+                onChange={(e) => setSystemContext(e.target.value.slice(0, 500))}
+                placeholder={language === 'pl' ? t.systemContextPlaceholderPl : t.systemContextPlaceholderEn}
+                rows={3}
+                className="w-full bg-surface border border-slate-700 rounded-sm px-3 py-2 text-xs text-white placeholder-slate-500 focus:border-primary focus:outline-none transition-colors resize-none"
+              />
             </div>
 
             {/* Sidebar Content */}

@@ -235,7 +235,8 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
     async searchUserKnowledge(
         query: number[],
         userId: string,
-        context: RagSecurityContext
+        context: RagSecurityContext,
+        scoreThreshold = 0.7,
     ): Promise<string> {
         this.validateContext(context);
 
@@ -265,7 +266,7 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
                 limit: 5,
                 with_payload: true,
                 with_vector: false,
-                score_threshold: 0.7,
+                score_threshold: scoreThreshold,
                 filter,
             });
 
