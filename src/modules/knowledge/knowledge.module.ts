@@ -10,9 +10,11 @@ import { QdrantKnowledgeRepoAdapter } from './infrastructure/adapters/qdrant-kno
 import { EMBEDDING_PROVIDER_PORT } from './domain/ports/embedding-provider.port';
 import { GoogleEmbeddingAdapter } from './infrastructure/adapters/google-embedding.adapter';
 import { ConfirmAdminIndexUseCase } from './application/use-cases/confirm-admin-index.use-case';
+import { AdminSettingsService } from './application/services/admin-settings.service';
+import { FirestoreModule } from '../../core/firestore/firestore.module';
 
 @Module({
-    imports: [QdrantModule, forwardRef(() => LabModule)],
+    imports: [QdrantModule, forwardRef(() => LabModule), FirestoreModule],
     controllers: [KnowledgeController],
     providers: [
         {
@@ -26,11 +28,13 @@ import { ConfirmAdminIndexUseCase } from './application/use-cases/confirm-admin-
         IngestBatchUseCase,
         DeleteKnowledgeUseCase,
         GetKnowledgeStatsUseCase,
-        ConfirmAdminIndexUseCase
+        ConfirmAdminIndexUseCase,
+        AdminSettingsService,
     ],
     exports: [
         KNOWLEDGE_REPO_PORT,
-        EMBEDDING_PROVIDER_PORT
+        EMBEDDING_PROVIDER_PORT,
+        AdminSettingsService,
     ]
 })
 export class KnowledgeModule { }

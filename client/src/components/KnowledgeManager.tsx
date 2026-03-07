@@ -3,7 +3,7 @@ import { useAuth } from '../core/auth/AuthContext';
 import {
     RefreshCw, Trash2, CheckCircle, AlertCircle, Loader2,
     Sparkles, X, Database, FileText, Languages, Save,
-    ChevronDown, ChevronRight, Eye, EyeOff
+    ChevronDown, ChevronRight, Eye, EyeOff, Settings, BrainCircuit, Cpu
 } from 'lucide-react';
 
 interface KnowledgeStats {
@@ -58,6 +58,12 @@ export const KnowledgeManager: React.FC = () => {
     const [browseOpen, setBrowseOpen] = useState(false);
     const [expandedPointId, setExpandedPointId] = useState<string | null>(null);
 
+    // Admin settings state
+    const [systemPrompt, setSystemPrompt] = useState('');
+    const [modelName, setModelName] = useState('gemini-3-flash-preview');
+    const [settingsLoading, setSettingsLoading] = useState(false);
+    const [settingsSaved, setSettingsSaved] = useState(false);
+
     const API_URL = import.meta.env.VITE_API_URL || '/api';
 
     const fetchStats = async () => {
@@ -79,8 +85,50 @@ export const KnowledgeManager: React.FC = () => {
         }
     };
 
+    const fetchSettings = async () => {
+        if (!user || !isAdmin) return;
+        try {
+            const token = await user.getIdToken();
+            const res = await fetch(`${API_URL}/internal/ingest/settings`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                setSystemPrompt(data.systemPrompt || '');
+                setModelName(data.modelName || 'gemini-3-flash-preview');
+            }
+        } catch (err) {
+            console.error('Failed to fetch settings:', err);
+        }
+    };
+
+    const saveSettings = async () => {
+        if (!user || !isAdmin) return;
+        setSettingsLoading(true);
+        setSettingsSaved(false);
+        try {
+            const token = await user.getIdToken();
+            const res = await fetch(`${API_URL}/internal/ingest/settings`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`,
+                },
+                body: JSON.stringify({ systemPrompt, modelName }),
+            });
+            if (!res.ok) throw new Error('Save failed');
+            setSettingsSaved(true);
+            setTimeout(() => setSettingsSaved(false), 3000);
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setSettingsLoading(false);
+        }
+    };
+
     useEffect(() => {
         fetchStats();
+        fetchSettings();
     }, [user]);
 
     const fetchBrowse = async (offset?: string) => {
@@ -277,6 +325,66 @@ export const KnowledgeManager: React.FC = () => {
                     <CheckCircle size={16} className="text-green-400 shrink-0" />
                     <span className="text-green-400 text-sm flex-1">{success}</span>
                     <button onClick={dismissSuccess} className="text-green-400/50 hover:text-green-400"><X size={14} /></button>
+                </div>
+            )}
+
+            {/* Admin Settings */}
+            {isAdmin && (
+                <div className="bg-surface border border-slate-700 rounded-sm p-6">
+                    <div className="flex items-center gap-3 mb-4">
+                        <Settings className="text-primary" size={20} />
+                        <h2 className="text-lg font-bold text-white">Ustawienia czatu</h2>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <div>
+                            <div className="flex items-center gap-2 mb-2">
+                                <Cpu size={14} className="text-primary" />
+                                <label className="text-xs text-slate-400">Model Gemini</label>
+                            </div>
+                            <input
+                                type="text"
+                                value={modelName}
+                                onChange={(e) => setModelName(e.target.value)}
+                                placeholder="gemini-3-flash-preview"
+                                className="w-full bg-darker border border-slate-700 rounded-sm px-3 py-2 text-white text-sm font-mono focus:border-primary focus:outline-none transition-colors"
+                            />
+                            <p className="text-[10px] text-slate-600 mt-1">
+                                Nazwa modelu Gemini API (np. gemini-3-flash-preview, gemini-2.5-pro-preview-06-05)
+                            </p>
+                        </div>
+
+                        <div>
+                            <div className="flex items-center gap-2 mb-2">
+                                <BrainCircuit size={14} className="text-primary" />
+                                <label className="text-xs text-slate-400">System prompt (ton i zachowanie)</label>
+                                <span className="text-[10px] text-slate-600 ml-auto">{systemPrompt.length}/2000</span>
+                            </div>
+                            <textarea
+                                value={systemPrompt}
+                                onChange={(e) => setSystemPrompt(e.target.value.slice(0, 2000))}
+                                rows={3}
+                                placeholder="Np. Odpowiadaj w pierwszej osobie jako Konrad. Bądź konkretny i profesjonalny. Unikaj zbędnych wstępów."
+                                className="w-full bg-darker border border-slate-700 rounded-sm px-3 py-2 text-white text-sm focus:border-primary focus:outline-none transition-colors resize-none"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 mt-4">
+                        <button
+                            onClick={saveSettings}
+                            disabled={settingsLoading}
+                            className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 disabled:bg-slate-700 disabled:cursor-not-allowed text-darker font-bold rounded-sm transition-colors text-sm"
+                        >
+                            {settingsLoading ? <Loader2 size={14} className="animate-spin" /> : <Save size={14} />}
+                            Zapisz ustawienia
+                        </button>
+                        {settingsSaved && (
+                            <span className="text-xs text-green-400 flex items-center gap-1">
+                                <CheckCircle size={12} /> Zapisano
+                            </span>
+                        )}
+                    </div>
                 </div>
             )}
 

@@ -30,6 +30,7 @@ import { LabModule } from '../../modules/lab/lab.module';
 import { makeCounterProvider, makeGaugeProvider, makeHistogramProvider } from '@willsoto/nestjs-prometheus';
 import { KNOWLEDGE_REPO_PORT } from '../knowledge/domain/ports/knowledge-repo.port';
 import { GOOGLE_GENAI } from '../../core/genai/genai.module';
+import { AdminSettingsService } from '../knowledge/application/services/admin-settings.service';
 
 @Module({
   imports: [
@@ -101,10 +102,10 @@ import { GOOGLE_GENAI } from '../../core/genai/genai.module';
     },
     {
       provide: ChatWithAdminKnowledgeUseCase,
-      useFactory: (knowledgeRepo: any, ai: any) => {
-        return new ChatWithAdminKnowledgeUseCase(knowledgeRepo, ai);
+      useFactory: (knowledgeRepo: any, ai: any, adminSettings: AdminSettingsService) => {
+        return new ChatWithAdminKnowledgeUseCase(knowledgeRepo, ai, adminSettings);
       },
-      inject: [KNOWLEDGE_REPO_PORT, GOOGLE_GENAI],
+      inject: [KNOWLEDGE_REPO_PORT, GOOGLE_GENAI, AdminSettingsService],
     },
     ChatWithUserKnowledgeUseCase,
   ],

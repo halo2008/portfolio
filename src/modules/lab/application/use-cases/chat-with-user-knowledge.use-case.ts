@@ -7,6 +7,7 @@ import {
 } from '../../../knowledge/domain/ports/knowledge-repo.port';
 import { LabUsageService } from '../services/lab-usage.service';
 import { GOOGLE_GENAI } from '../../../../core/genai/genai.module';
+import { AdminSettingsService } from '../../../knowledge/application/services/admin-settings.service';
 
 /**
  * Source citation from retrieved knowledge chunk
@@ -65,13 +66,14 @@ export interface ChatWithUserKnowledgeOutput {
 @Injectable()
 export class ChatWithUserKnowledgeUseCase {
     private readonly logger = new Logger(ChatWithUserKnowledgeUseCase.name);
-    private readonly MODEL_NAME = 'gemini-3-flash-preview';
+    private readonly FALLBACK_MODEL = 'gemini-3-flash-preview';
 
     constructor(
         @Inject(KNOWLEDGE_REPO_PORT)
         private readonly knowledgeRepo: KnowledgeRepoPort,
         private readonly labUsageService: LabUsageService,
         @Inject(GOOGLE_GENAI) private readonly ai: GoogleGenAI,
+        private readonly adminSettings: AdminSettingsService,
     ) { }
 
     async execute(
@@ -112,6 +114,8 @@ export class ChatWithUserKnowledgeUseCase {
 
         const sanitizedSystemContext = systemContext?.trim().slice(0, 500);
 
+        const settings = await this.adminSettings.getSettings();
+
         const llmStart = Date.now();
         const response = await this.generateResponse(
             message,
@@ -119,6 +123,7 @@ export class ChatWithUserKnowledgeUseCase {
             detectedLanguage,
             sources,
             sanitizedSystemContext,
+            settings.modelName,
         );
         const llmMs = Date.now() - llmStart;
 
@@ -211,20 +216,22 @@ export class ChatWithUserKnowledgeUseCase {
         language: 'pl' | 'en',
         sources: SourceCitation[],
         systemContext?: string,
+        modelName?: string,
     ): Promise<string> {
         const systemPrompt = this.buildSystemPrompt(context, language, sources, systemContext);
+        const model = modelName || this.FALLBACK_MODEL;
 
         try {
             this.logger.debug({
                 msg: 'Generating lab chat response',
-                model: this.MODEL_NAME,
+                model,
                 language,
                 contextLength: context.length,
                 sourceCount: sources.length,
             });
 
             const response = await this.ai.models.generateContent({
-                model: this.MODEL_NAME,
+                model,
                 contents: [{ role: 'user', parts: [{ text: message }] }],
                 config: {
                     systemInstruction: systemPrompt,

@@ -44,7 +44,7 @@ export const AdminDashboard: React.FC = () => {
                 </div>
             </nav>
 
-            <main className="flex-1 pt-16 p-6 lg:p-8">
+            <main className="flex-1 pt-20 px-6 pb-6 lg:px-8 lg:pb-8">
                 <div className="max-w-6xl mx-auto space-y-6">
                     {!isAdmin && (
                         <div className="bg-amber-500/5 border border-amber-500/20 rounded-sm p-4 flex items-center gap-3">

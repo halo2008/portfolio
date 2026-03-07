@@ -6,6 +6,7 @@ import {
     RagSecurityContext,
 } from '../../../knowledge/domain/ports/knowledge-repo.port';
 import { GOOGLE_GENAI } from '../../../../core/genai/genai.module';
+import { AdminSettingsService } from '../../../knowledge/application/services/admin-settings.service';
 
 export interface ChatWithAdminKnowledgeInput {
     message: string;
@@ -20,12 +21,13 @@ export interface ChatWithAdminKnowledgeOutput {
 @Injectable()
 export class ChatWithAdminKnowledgeUseCase {
     private readonly logger = new Logger(ChatWithAdminKnowledgeUseCase.name);
-    private readonly MODEL_NAME = 'gemini-3-flash-preview';
+    private readonly FALLBACK_MODEL = 'gemini-3-flash-preview';
 
     constructor(
         @Inject(KNOWLEDGE_REPO_PORT)
         private readonly knowledgeRepo: KnowledgeRepoPort,
         @Inject(GOOGLE_GENAI) private readonly ai: GoogleGenAI,
+        private readonly adminSettings: AdminSettingsService,
     ) { }
 
     async execute(
@@ -51,10 +53,14 @@ export class ChatWithAdminKnowledgeUseCase {
             context,
         );
 
+        const settings = await this.adminSettings.getSettings();
+
         const response = await this.generateResponse(
             message,
             knowledgeContext,
             detectedLanguage,
+            settings.systemPrompt,
+            settings.modelName,
         );
 
         return {
@@ -109,19 +115,22 @@ export class ChatWithAdminKnowledgeUseCase {
         message: string,
         context: string,
         language: 'pl' | 'en',
+        adminSystemPrompt?: string,
+        modelName?: string,
     ): Promise<string> {
-        const systemPrompt = this.buildSystemPrompt(context, language);
+        const systemPrompt = this.buildSystemPrompt(context, language, adminSystemPrompt);
+        const model = modelName || this.FALLBACK_MODEL;
 
         try {
             this.logger.debug({
                 msg: 'Generating chat response',
-                model: this.MODEL_NAME,
+                model,
                 language,
                 contextLength: context.length,
             });
 
             const response = await this.ai.models.generateContent({
-                model: this.MODEL_NAME,
+                model,
                 contents: [{ role: 'user', parts: [{ text: message }] }],
                 config: {
                     systemInstruction: systemPrompt,
@@ -149,8 +158,12 @@ export class ChatWithAdminKnowledgeUseCase {
         }
     }
 
-    private buildSystemPrompt(context: string, language: 'pl' | 'en'): string {
+    private buildSystemPrompt(context: string, language: 'pl' | 'en', adminSystemPrompt?: string): string {
         const basePrompt = `You are answering from the official ks-infra.dev knowledge base.`;
+
+        const adminInstructions = adminSystemPrompt?.trim()
+            ? `\n\nADMIN INSTRUCTIONS (tone & behavior):\n${adminSystemPrompt.trim()}`
+            : '';
 
         if (language === 'pl') {
             return `${basePrompt}
@@ -159,7 +172,7 @@ ZASADY:
 1. Odpowiadaj wyłącznie na podstawie poniższego KONTEKSTU.
 2. Jeśli odpowiedzi nie ma w KONTEKŚCIE, przyznaj to uprzejmie po polsku.
 3. Odpowiadaj zawsze po polsku.
-4. Bądź zwięzły i profesjonalny.
+4. Bądź zwięzły i profesjonalny.${adminInstructions}
 
 KONTEKST:
 ${context || 'Brak dostępnych informacji w bazie wiedzy.'}`;
@@ -171,7 +184,7 @@ RULES:
 1. Answer ONLY based on the CONTEXT below.
 2. If the answer is not in the CONTEXT, admit it politely.
 3. Always respond in English.
-4. Be concise and professional.
+4. Be concise and professional.${adminInstructions}
 
 CONTEXT:
 ${context || 'No specific information found in the knowledge base.'}`;

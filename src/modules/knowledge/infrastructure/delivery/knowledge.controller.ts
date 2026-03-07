@@ -1,5 +1,5 @@
-import { Controller, Post, Delete, Get, Body, Query, UseGuards, Inject, Req, BadRequestException } from '@nestjs/common';
-import { IsString, IsOptional, IsArray, IsIn, ValidateNested, ArrayMinSize } from 'class-validator';
+import { Controller, Post, Delete, Get, Put, Body, Query, UseGuards, Inject, Req, BadRequestException } from '@nestjs/common';
+import { IsString, IsOptional, IsArray, IsIn, ValidateNested, ArrayMinSize, MaxLength } from 'class-validator';
 import { Type } from 'class-transformer';
 import { Request } from 'express';
 import { FirebaseAuthGuard } from '../../../../core/auth/firebase-auth.guard';
@@ -15,6 +15,19 @@ import { RagSecurityContext, KNOWLEDGE_REPO_PORT, KnowledgeRepoPort } from '../.
 import { SecurityInterceptor } from '../../../lab/infrastructure/security/security.interceptor';
 import { UseInterceptors, forwardRef } from '@nestjs/common';
 import { UserId } from '../../../lab/domain/value-objects/user-id.vo';
+import { AdminSettingsService } from '../../application/services/admin-settings.service';
+
+class AdminSettingsDto {
+    @IsOptional()
+    @IsString()
+    @MaxLength(2000)
+    systemPrompt?: string;
+
+    @IsOptional()
+    @IsString()
+    @MaxLength(100)
+    modelName?: string;
+}
 
 class KnowledgeAtomDto {
     @IsString()
@@ -75,6 +88,7 @@ export class KnowledgeController {
         @Inject(forwardRef(() => ConfirmIndexUseCase))
         private readonly confirmIndexUseCase: ConfirmIndexUseCase,
         @Inject(KNOWLEDGE_REPO_PORT) private readonly knowledgeRepo: KnowledgeRepoPort,
+        private readonly adminSettingsService: AdminSettingsService,
     ) { }
 
     @Post('analyze')
@@ -181,6 +195,20 @@ export class KnowledgeController {
             deleted,
             filter: { category, contentHash, id },
         };
+    }
+
+    @Get('settings')
+    @UseGuards(FirebaseAuthGuard)
+    @Roles('admin')
+    async getSettings() {
+        return await this.adminSettingsService.getSettings();
+    }
+
+    @Put('settings')
+    @UseGuards(FirebaseAuthGuard)
+    @Roles('admin')
+    async updateSettings(@Body() body: AdminSettingsDto) {
+        return await this.adminSettingsService.updateSettings(body);
     }
 
     @Get('stats')

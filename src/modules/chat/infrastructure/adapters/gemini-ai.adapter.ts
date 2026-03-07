@@ -4,13 +4,16 @@ import { GoogleGenAI } from '@google/genai';
 import { Injectable, Inject } from '@nestjs/common';
 import { PinoLogger } from 'nestjs-pino';
 import { GOOGLE_GENAI } from '../../../../core/genai/genai.module';
+import { AdminSettingsService } from '../../../knowledge/application/services/admin-settings.service';
 
 @Injectable()
 export class GeminiAiAdapter implements ChatProviderPort {
+    private readonly FALLBACK_MODEL = 'gemini-3-flash-preview';
 
     constructor(
         @Inject(GOOGLE_GENAI) private readonly ai: GoogleGenAI,
         private readonly logger: PinoLogger,
+        private readonly adminSettings: AdminSettingsService,
     ) {
         this.logger.setContext(GeminiAiAdapter.name);
     }
@@ -37,8 +40,11 @@ export class GeminiAiAdapter implements ChatProviderPort {
                 inputLength: message.length
             });
 
+            const settings = await this.adminSettings.getSettings();
+            const model = settings.modelName || this.FALLBACK_MODEL;
+
             const response = await this.ai.models.generateContentStream({
-                model: 'gemini-3-flash-preview', // Explaining: Must be gemini-3-flash-preview, NOT 3.0
+                model,
                 contents,
                 config: {
                     systemInstruction: context,
@@ -49,7 +55,7 @@ export class GeminiAiAdapter implements ChatProviderPort {
 
             this.logger.info({
                 msg: 'Gemini stream started',
-                model: 'gemini-3.0-flash-preview',
+                model,
             });
 
             let tokenCount = 0;
