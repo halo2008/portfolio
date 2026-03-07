@@ -8,10 +8,12 @@ import {
 } from '@nestjs/websockets';
 import { Logger, Inject } from '@nestjs/common';
 import { Socket } from 'socket.io';
-import { GenerateChatResponseUseCase } from '../../application/generate-chat-response.use-case';
+import { ChatWithAdminKnowledgeUseCase } from '../../application/use-cases/chat-with-admin-knowledge.use-case';
 import { ChatGatewayPort } from '../../domain/ports/chat-gateway.port';
 import { FirestorePersistenceAdapter } from '../adapters/firestore-persistence.adapter';
+import { SlackNotificationAdapter } from '../adapters/slack-notification.adapter';
 import { TELEMETRY_PORT, TelemetryPort } from '../../domain/ports/telemetry.port';
+import { RagSecurityContext } from '../../../lab/infrastructure/security/security.interceptor';
 import { Server } from 'socket.io';
 import { WebSocketServer } from '@nestjs/websockets';
 
@@ -23,8 +25,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, Ch
   private readonly logger = new Logger(ChatGateway.name);
 
   constructor(
-    private readonly generateChatResponse: GenerateChatResponseUseCase,
+    @Inject(ChatWithAdminKnowledgeUseCase)
+    private readonly chatWithAdminKnowledge: ChatWithAdminKnowledgeUseCase,
     private readonly persistence: FirestorePersistenceAdapter,
+    private readonly notifier: SlackNotificationAdapter,
     @Inject(TELEMETRY_PORT) private readonly telemetry: TelemetryPort,
   ) { }
 
@@ -69,23 +73,89 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, Ch
         }
       }
 
-      // Explaining: Check if we already have a Slack thread for this session
+      // Human-in-the-loop: check if human mode is active
+      const isHumanMode = await this.persistence.isHumanMode(sessionId);
+      if (isHumanMode) {
+        client.emit('messageToClient', { sender: 'AI', message: '[Konrad has taken over the conversation. AI is paused.]', isChunk: false });
+        client.emit('streamComplete', { sender: 'AI' });
+        return;
+      }
+
+      // Slack notifications
       let slackThread = await this.persistence.getThreadBySocketId(sessionId);
       this.logger.log(`Using Slack thread: ${slackThread || 'NEW'} for session: ${sessionId}`);
 
-      // Explaining: Executing the hexagonal Use Case with thread info.
-      const stream = this.generateChatResponse.execute(payload.text, sessionId, slackThread);
-
-      for await (const chunk of stream) {
-        client.emit('messageToClient', { sender: 'AI', message: chunk, isChunk: true });
+      if (slackThread) {
+        try {
+          await this.notifier.logUserMessage(slackThread, payload.text);
+        } catch (err) {
+          this.logger.warn(`Slack logging failed for user message: ${(err as Error).message}`);
+        }
+      } else {
+        try {
+          slackThread = await this.notifier.logConversationStart(payload.text, sessionId);
+          if (slackThread) {
+            await this.persistence.linkThread(slackThread, sessionId);
+          }
+        } catch (err) {
+          this.logger.warn(`Slack start conversation logging failed: ${(err as Error).message}`);
+        }
       }
 
+      // Save user message to history
+      try {
+        await this.persistence.saveMessage(sessionId, 'user', payload.text);
+      } catch (err) {
+        this.logger.warn(`Save user message failed: ${(err as Error).message}`);
+      }
+
+      const context: RagSecurityContext = {
+        userId: 'system_main_page',
+        role: 'admin',
+        language: this.detectLanguage(payload.text),
+      };
+
+      const result = await this.chatWithAdminKnowledge.execute(
+        { message: payload.text, sessionId },
+        context,
+      );
+
+      this.telemetry.observeVectorSearchLatency(result.timings.searchMs);
+      this.telemetry.observeLlmLatency(result.timings.llmMs);
+      this.telemetry.incrementLlmRequests();
+
+      // Send response as a single chunk (admin knowledge is not streaming)
+      client.emit('messageToClient', { sender: 'AI', message: result.response, isChunk: true });
       client.emit('streamComplete', { sender: 'AI' });
+
+      // Save AI response to history
+      try {
+        await this.persistence.saveMessage(sessionId, 'model', result.response);
+      } catch (err) {
+        this.logger.warn(`Save model message failed: ${(err as Error).message}`);
+      }
+
+      // Log AI response to Slack
+      try {
+        if (slackThread) {
+          await this.notifier.logAiResponse(slackThread, result.response);
+        }
+      } catch (err) {
+        this.logger.warn(`Slack AI response logging failed: ${(err as Error).message}`);
+      }
     } catch (error) {
-      this.logger.error(`Chat error for socket ${client.id}:`, error.message);
-      this.logger.error(`Full stack:`, error.stack);
+      this.logger.error(`Chat error for socket ${client.id}:`, (error as Error).message);
+      this.logger.error(`Full stack:`, (error as Error).stack);
       this.logger.error(`Payload received: text="${payload.text?.substring(0, 50)}", sessionId=${payload.sessionId}, captcha=${!!payload.captcha}`);
       client.emit('messageToClient', { sender: 'System', message: 'Error processing your request.' });
     }
+  }
+
+  private detectLanguage(message: string): 'pl' | 'en' {
+    const lower = message.toLowerCase();
+    if (/[ąćęłńóśźż]/.test(lower) || /\b(jak|co|gdzie|kiedy|dlaczego|czy|jest|są|nie|tak)\b/.test(lower)) {
+      return 'pl';
+    }
+    return 'en';
   }
 }
