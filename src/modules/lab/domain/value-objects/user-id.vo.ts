@@ -1,14 +1,6 @@
-/**
- * UserId Value Object
- * Explaining: Encapsulates Firebase UID validation and guarantees type safety.
- */
 export class UserId {
     private constructor(private readonly value: string) {}
 
-    /**
-     * Factory method with validation.
-     * Firebase UIDs are 28-character strings.
-     */
     static create(uid: string): UserId {
         if (!uid || typeof uid !== 'string') {
             throw new Error('UserId cannot be empty');

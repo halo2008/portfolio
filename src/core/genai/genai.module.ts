@@ -3,14 +3,6 @@ import { GoogleGenAI } from '@google/genai';
 
 export const GOOGLE_GENAI = 'GOOGLE_GENAI';
 
-/**
- * GenAiModule
- * Global singleton module providing a single GoogleGenAI instance.
- * Replaces 3 separate `new GoogleGenAI()` calls in:
- * - GeminiAiAdapter (chat)
- * - VertexAiAnalysisAdapter (lab)
- * - GoogleEmbeddingAdapter (knowledge)
- */
 @Global()
 @Module({
     providers: [

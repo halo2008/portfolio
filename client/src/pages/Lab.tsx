@@ -30,7 +30,6 @@ import {
 } from 'lucide-react';
 import { LabStatsPanel } from '../components/LabStatsPanel';
 
-// API base URL
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 // ── Types ─────────────────────────────────────────────
@@ -276,7 +275,6 @@ const Lab: React.FC = () => {
       setAnalysisResult(result);
       setChunks(result.chunks.map((chunk) => ({ ...chunk })));
       setUploadState({ status: 'success', progress: 100 });
-      // Refresh stats after analysis (updates token count)
       fetchSessionInfo();
     } catch (error) {
       setUploadState({
@@ -312,7 +310,6 @@ const Lab: React.FC = () => {
 
       setIndexState({ status: 'success' });
       setToast({ message: t.confirmSuccess, type: 'success' });
-      // Refetch session info to update chunk count
       fetchSessionInfo();
     } catch (error) {
       setIndexState({
@@ -474,7 +471,6 @@ const Lab: React.FC = () => {
   // ══════════════════════════════════════════════════════
   return (
     <div className="min-h-screen bg-dark text-white flex flex-col">
-      {/* ── Header ─────────────────────────────────────── */}
       <nav className="fixed top-0 left-0 right-0 z-40 backdrop-blur-md bg-darker/80 border-b border-slate-800 h-16 flex items-center justify-between px-6 lg:px-12">
         <div className="flex items-center gap-4">
           <a href="/" className="font-mono font-bold text-xl text-white tracking-tighter hover:text-primary transition-colors">
@@ -510,14 +506,12 @@ const Lab: React.FC = () => {
         </div>
       </nav>
 
-      {/* ── Main two-panel layout ──────────────────────── */}
       <main className="flex-1 pt-16 flex flex-col lg:flex-row overflow-hidden">
         {/* ╔══════════════════════════════════════════════╗
            ║  LEFT PANEL — Upload / Analyze / Index       ║
            ╚══════════════════════════════════════════════╝ */}
         <div className="lg:w-1/2 w-full overflow-y-auto border-r border-slate-800/50 p-6 lg:p-8 flex flex-col gap-6">
 
-          {/* Stats Panel */}
           <LabStatsPanel
             stats={{
               requestCount: sessionInfo?.usage?.requestCount ?? 0,
@@ -528,7 +522,6 @@ const Lab: React.FC = () => {
             }}
           />
 
-          {/* Info Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="bg-surface/50 border border-slate-700 p-4 rounded-sm">
               <Clock className="text-primary mb-2" size={20} />
@@ -547,14 +540,12 @@ const Lab: React.FC = () => {
             </div>
           </div>
 
-          {/* AI Settings */}
           <div className="bg-surface border border-slate-700 rounded-sm p-6 space-y-4">
             <div className="flex items-center gap-3 mb-2">
               <SlidersHorizontal className="text-primary" size={20} />
               <h2 className="text-lg font-bold text-white">{language === 'pl' ? 'Ustawienia' : 'Settings'}</h2>
             </div>
 
-            {/* Chunking Strategy Toggle */}
             <div>
               <label className="block text-xs text-slate-400 mb-2">{t.chunkingStrategy}</label>
               <div className="grid grid-cols-2 gap-2">
@@ -587,7 +578,6 @@ const Lab: React.FC = () => {
               </div>
             </div>
 
-            {/* Search Precision */}
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <span className="text-xs text-slate-400">{t.searchPrecision}</span>
@@ -608,7 +598,6 @@ const Lab: React.FC = () => {
               </div>
             </div>
 
-            {/* System Context */}
             <div>
               <div className="flex items-center gap-2 mb-2">
                 <BrainCircuit size={14} className="text-primary" />
@@ -625,14 +614,12 @@ const Lab: React.FC = () => {
             </div>
           </div>
 
-          {/* Upload Section */}
           <div className="bg-surface border border-slate-700 rounded-sm p-6">
             <div className="flex items-center gap-3 mb-4">
               <FileText className="text-primary" size={20} />
               <h2 className="text-lg font-bold text-white">{t.uploadTitle}</h2>
             </div>
 
-            {/* Drag and Drop Zone */}
             {uploadState.status === 'idle' && (
               <div
                 onDragEnter={handleDragEnter}
@@ -671,7 +658,6 @@ const Lab: React.FC = () => {
               </div>
             )}
 
-            {/* Uploading Progress */}
             {(uploadState.status === 'uploading' || uploadState.status === 'processing') && (
               <div className="border-2 border-slate-600 rounded-sm p-8 text-center">
                 <Loader2 size={40} className="mx-auto mb-3 text-primary animate-spin" />
@@ -691,7 +677,6 @@ const Lab: React.FC = () => {
               </div>
             )}
 
-            {/* Error State */}
             {uploadState.status === 'error' && (
               <div className="border-2 border-red-700/50 bg-red-900/10 rounded-sm p-8 text-center">
                 <AlertCircle size={40} className="mx-auto mb-3 text-red-400" />
@@ -706,7 +691,6 @@ const Lab: React.FC = () => {
               </div>
             )}
 
-            {/* Success — Analysis Results */}
             {uploadState.status === 'success' && analysisResult && (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
@@ -754,12 +738,10 @@ const Lab: React.FC = () => {
                           value={chunk.content}
                           onChange={(e) => {
                             updateChunk(index, 'content', e.target.value);
-                            // Auto-resize textarea
                             e.target.style.height = 'auto';
                             e.target.style.height = e.target.scrollHeight + 'px';
                           }}
                           ref={(el) => {
-                            // Initial auto-resize
                             if (el) {
                               el.style.height = 'auto';
                               el.style.height = el.scrollHeight + 'px';
@@ -809,7 +791,6 @@ const Lab: React.FC = () => {
             )}
           </div>
 
-          {/* Session Info */}
           <div className="mt-6 p-3 bg-primary/5 border border-primary/20 rounded-sm">
             <div className="flex items-center gap-2 text-primary text-xs">
               <ArrowRight size={14} />
@@ -825,7 +806,6 @@ const Lab: React.FC = () => {
            ║  RIGHT PANEL — Chat                          ║
            ╚══════════════════════════════════════════════╝ */}
         <div className="lg:w-1/2 w-full flex flex-col bg-darker/30">
-          {/* Chat Header */}
           <div className="px-6 py-4 border-b border-slate-800 bg-darker/50 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <MessageSquare className="text-primary" size={22} />
@@ -841,7 +821,6 @@ const Lab: React.FC = () => {
             )}
           </div>
 
-          {/* Messages Area */}
           <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4 min-h-[300px]">
             {messages.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-slate-500 py-12">
@@ -897,7 +876,6 @@ const Lab: React.FC = () => {
             )}
           </div>
 
-          {/* Retrieved Chunks (collapsible) */}
           {retrievedChunks.length > 0 && (
             <div className="border-t border-slate-800">
               <button
@@ -926,7 +904,6 @@ const Lab: React.FC = () => {
             </div>
           )}
 
-          {/* Input Area */}
           <div className="px-6 py-4 border-t border-slate-800 bg-darker/50">
             <div className="flex gap-3">
               <input
@@ -952,7 +929,6 @@ const Lab: React.FC = () => {
         </div>
       </main>
 
-      {/* Toast */}
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
     </div>
   );

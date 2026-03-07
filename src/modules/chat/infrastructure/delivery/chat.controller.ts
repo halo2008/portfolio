@@ -48,18 +48,10 @@ class ChatRequestDto {
     systemContext?: string;
 }
 
-/**
- * SourceDto
- * Explaining: Data Transfer Object for source citations in responses.
- */
 class SourceDto {
     title!: string;
 }
 
-/**
- * ChatResponseDto
- * Explaining: Data Transfer Object for chat responses with bilingual support.
- */
 class TimingsDto {
     embeddingMs!: number;
     searchMs!: number;
@@ -74,18 +66,6 @@ class ChatResponseDto {
     timings?: TimingsDto;
 }
 
-/**
- * ChatController
- * Explaining: REST controller for bilingual chat endpoints with context isolation.
- * 
- * Endpoints:
- * - POST /chat - Main page chat (admin knowledge, CAPTCHA protected)
- * - POST /lab/chat - Lab chat (user knowledge, Firebase Auth + SecurityInterceptor)
- * 
- * Security:
- * - Context isolation enforced: admin-only vs user-only knowledge access
- * - Context isolation violations are logged as security events
- */
 @Controller()
 export class ChatController {
     private readonly logger = new Logger(ChatController.name);
@@ -99,15 +79,6 @@ export class ChatController {
         private readonly labMetrics: LabMetricsService,
     ) { }
 
-    /**
-     * POST /chat
-     * Explaining: Main page chat endpoint using admin knowledge base.
-     * Uses ChatWithAdminKnowledgeUseCase which queries ONLY admin vectors.
-     * Protected by CAPTCHA guard (no auth required for main page).
-     * 
-     * @param body ChatRequestDto with message and sessionId
-     * @returns ChatResponseDto with response, sources (empty for admin), and detected language
-     */
     @Post('chat')
     @Throttle({ short: { ttl: 60000, limit: 5 } })
     @UseGuards(CaptchaGuard)
@@ -115,11 +86,9 @@ export class ChatController {
     async chatMainPage(
         @Body() body: ChatRequestDto,
     ): Promise<ChatResponseDto> {
-        // Detect input language for bilingual response
         const detectedLanguage = this.detectLanguage(body.message);
 
-        // Create a synthetic admin context for the use case
-        // Main page is public (CAPTCHA-protected), so we use a system admin context
+        // Main page is public, so we use a synthetic admin context
         const context: RagSecurityContext = {
             userId: 'system_main_page',
             role: 'admin',
@@ -153,7 +122,6 @@ export class ChatController {
                 error: error instanceof Error ? error.message : 'Unknown error',
             });
 
-            // Return error in detected language
             return {
                 response: detectedLanguage === 'pl'
                     ? 'Przepraszam, wystąpił błąd podczas przetwarzania zapytania. Spróbuj ponownie później.'
@@ -164,22 +132,6 @@ export class ChatController {
         }
     }
 
-    /**
-     * POST /lab/chat
-     * Explaining: Lab chat endpoint using user's uploaded documents.
-     * Uses ChatWithUserKnowledgeUseCase which queries ONLY the current user's vectors.
-     * Protected by FirebaseAuthGuard and SecurityInterceptor for zero-trust context.
-     * 
-     * Security Context Isolation:
-     * - Extracts RAG_CONTEXT from SecurityInterceptor
-     * - Validates role is 'demo' (user context)
-     * - Validates userId matches the request context
-     * - Logs context isolation violations as security events
-     * 
-     * @param body ChatRequestDto with message and sessionId
-     * @param req Request with RAG_CONTEXT
-     * @returns ChatResponseDto with response, sources, and detected language
-     */
     @Post('lab/chat')
     @UseGuards(FirebaseAuthGuard, LabRateLimitGuard)
     @UseInterceptors(SecurityInterceptor)
@@ -190,7 +142,7 @@ export class ChatController {
     ): Promise<ChatResponseDto> {
         const context = req.RAG_CONTEXT;
 
-        // Validate security context presence (Defense in depth)
+        // Defense in depth: validate context even though SecurityInterceptor should set it
         if (!context) {
             this.logger.warn({
                 msg: 'SECURITY VIOLATION: Missing RAG_CONTEXT in lab chat',
@@ -201,7 +153,6 @@ export class ChatController {
             throw new ForbiddenException('Security context missing');
         }
 
-        // Validate role for user context
         if (context.role !== 'demo') {
             this.logger.warn({
                 msg: 'SECURITY VIOLATION: Invalid role for lab chat',
@@ -218,7 +169,6 @@ export class ChatController {
             );
         }
 
-        // Detect input language
         const detectedLanguage = this.detectLanguage(body.message);
 
         this.logger.log({
@@ -255,7 +205,6 @@ export class ChatController {
                 error: error instanceof Error ? error.message : 'Unknown error',
             });
 
-            // Return error in detected language
             return {
                 response: detectedLanguage === 'pl'
                     ? 'Przepraszam, wystąpił błąd podczas przetwarzania zapytania. Spróbuj ponownie później.'
@@ -266,38 +215,20 @@ export class ChatController {
         }
     }
 
-    /**
-     * Detect language from input message.
-     * Explaining: Simple heuristic detection for Polish vs English.
-     * Checks for Polish-specific characters and common words.
-     * 
-     * @param message The input message to analyze
-     * @returns 'pl' for Polish, 'en' for English
-     */
     private detectLanguage(message: string): 'pl' | 'en' {
         const lowerMessage = message.toLowerCase();
 
-        // Polish-specific characters
         const polishChars = /[ąćęłńóśźż]/;
-        // Common Polish words
         const polishWords = /\b(jak|co|gdzie|kiedy|dlaczego|czy|jest|są|tego|tym|dla|nie|tak|proszę|dziękuję)\b/;
 
         if (polishChars.test(lowerMessage) || polishWords.test(lowerMessage)) {
             return 'pl';
         }
 
-        // Default to English if no Polish indicators found
         return 'en';
     }
 
-    /**
-     * Anonymize session ID for logging.
-     * Explaining: Takes first 8 chars to enable session correlation
-     * without exposing full session ID in logs.
-     * 
-     * @param sessionId The full session ID
-     * @returns Anonymized session identifier
-     */
+    /** Truncate to first 8 chars to avoid exposing full session ID in logs. */
     private anonymizeSessionId(sessionId: string): string {
         if (!sessionId) return 'unknown';
         return sessionId.slice(0, 8) + '...';

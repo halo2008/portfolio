@@ -15,7 +15,6 @@ import { ConfirmAdminIndexUseCase } from './application/use-cases/confirm-admin-
     imports: [QdrantModule, forwardRef(() => LabModule)],
     controllers: [KnowledgeController],
     providers: [
-        // Adapters -> Ports
         {
             provide: KNOWLEDGE_REPO_PORT,
             useClass: QdrantKnowledgeRepoAdapter
@@ -24,7 +23,6 @@ import { ConfirmAdminIndexUseCase } from './application/use-cases/confirm-admin-
             provide: EMBEDDING_PROVIDER_PORT,
             useClass: GoogleEmbeddingAdapter
         },
-        // Use Cases
         IngestBatchUseCase,
         DeleteKnowledgeUseCase,
         GetKnowledgeStatsUseCase,

@@ -27,19 +27,11 @@ import { LabMetricsService } from '../metrics/lab-metrics.service';
 import { Inject } from '@nestjs/common';
 import { UserId } from '../../domain/value-objects/user-id.vo';
 
-/**
- * Request with RAG_CONTEXT
- * Explaining: Extended Express Request with injected security context.
- */
 interface RequestWithRagContext extends Request {
     RAG_CONTEXT?: RagSecurityContext;
     user?: unknown;
 }
 
-/**
- * ChunkDto
- * Explaining: Data Transfer Object for a semantic chunk in confirm-index request.
- */
 class ChunkDto {
     @IsString()
     content!: string;
@@ -49,10 +41,6 @@ class ChunkDto {
     title?: string;
 }
 
-/**
- * ConfirmIndexDto
- * Explaining: Data Transfer Object for confirm-index endpoint.
- */
 class ConfirmIndexDto {
     @IsArray()
     @ValidateNested({ each: true })
@@ -71,10 +59,6 @@ class SetLanguageDto {
     language!: 'pl' | 'en';
 }
 
-/**
- * LabStatsResponse
- * Explaining: Response DTO for lab stats endpoint.
- */
 interface LabStatsResponse {
     chunkCount: number;
     expiresAt: string;
@@ -83,10 +67,6 @@ interface LabStatsResponse {
     maxRequests: number;
 }
 
-/**
- * Bilingual error messages
- * Explaining: Error messages in Polish and English for user-facing errors.
- */
 const ERROR_MESSAGES = {
     pl: {
         fileRequired: 'Plik jest wymagany',
@@ -108,29 +88,9 @@ const ERROR_MESSAGES = {
     },
 };
 
-/**
- * Valid file extensions for document upload.
- */
 const VALID_FILE_EXTENSIONS = ['.txt', '.md', '.pdf'];
-
-/**
- * Maximum file size in bytes (1MB).
- */
 const MAX_FILE_SIZE_BYTES = 1 * 1024 * 1024;
 
-/**
- * LabController
- * Explaining: REST controller for Lab functionality with secure endpoints.
- * All endpoints are protected by FirebaseAuthGuard and SecurityInterceptor.
- * 
- * Acceptance Criteria:
- * - POST /lab/analyze - multipart/form-data, max 10MB, accepts .txt/.md/.pdf
- * - POST /lab/confirm-index - JSON body with edited chunks and detected language
- * - GET /lab/stats - returns user's chunk count, session expiry, and detected language
- * - All endpoints protected with FirebaseAuthGuard
- * - All endpoints use SecurityInterceptor for context injection
- * - Bilingual error messages based on user's preferred language
- */
 @Controller('lab')
 @UseGuards(FirebaseAuthGuard, LabRateLimitGuard)
 export class LabController {
@@ -144,17 +104,6 @@ export class LabController {
         private readonly labMetrics: LabMetricsService,
     ) { }
 
-    /**
-     * POST /lab/analyze
-     * Explaining: Analyzes uploaded document and returns semantic chunks with detected language.
-     * Accepts multipart/form-data with file field.
-     * Max file size: 10MB.
-     * Allowed file types: .txt, .md, .pdf.
-     * 
-     * @param file The uploaded file from multipart/form-data
-     * @param req Request with RAG_CONTEXT
-     * @returns AnalysisResultDto with detected language and chunks
-     */
     @Post('analyze')
     @UseInterceptors(FileInterceptor('file', {
         limits: {
@@ -176,26 +125,23 @@ export class LabController {
         const context = req.RAG_CONTEXT;
         const lang = context?.language === 'pl' ? 'pl' : 'en';
 
-        // Validate file presence
         if (!file) {
             this.logger.warn('File upload rejected: no file provided');
             throw new BadRequestException(ERROR_MESSAGES[lang].fileRequired);
         }
 
-        // Validate file size (additional check beyond multer limits)
+        // Additional check beyond multer limits
         if (file.size > MAX_FILE_SIZE_BYTES) {
             this.logger.warn({ fileSize: file.size, maxSize: MAX_FILE_SIZE_BYTES }, 'File too large');
             throw new PayloadTooLargeException(ERROR_MESSAGES[lang].fileTooLarge);
         }
 
-        // Validate file type
         const extension = file.originalname.toLowerCase().slice(file.originalname.lastIndexOf('.'));
         if (!VALID_FILE_EXTENSIONS.includes(extension)) {
             this.logger.warn({ filename: file.originalname, extension }, 'Invalid file type');
             throw new BadRequestException(ERROR_MESSAGES[lang].invalidFileType);
         }
 
-        // Validate context
         if (!context?.userId) {
             this.logger.warn('Request rejected: missing security context');
             throw new BadRequestException(ERROR_MESSAGES[lang].contextMissing);
@@ -209,7 +155,6 @@ export class LabController {
             fileSize: file.size,
         }, 'Processing document analysis');
 
-        // Extract chunking strategy from multipart form body
         const rawStrategy = (req as any).body?.chunkingStrategy;
         const strategy: ChunkingStrategy =
             rawStrategy === 'heuristic' ? 'heuristic' : 'llm';
@@ -242,15 +187,6 @@ export class LabController {
         }
     }
 
-    /**
-     * POST /lab/confirm-index
-     * Explaining: Confirms and indexes edited semantic chunks.
-     * Accepts JSON body with chunks array and detected language.
-     * 
-     * @param body ConfirmIndexDto with chunks and language
-     * @param req Request with RAG_CONTEXT
-     * @returns IndexResultDto with vector IDs and chunk count
-     */
     @Post('confirm-index')
     async confirmIndex(
         @Body() body: ConfirmIndexDto,
@@ -259,19 +195,16 @@ export class LabController {
         const context = req.RAG_CONTEXT;
         const lang = context?.language === 'pl' ? 'pl' : 'en';
 
-        // Validate context
         if (!context?.userId) {
             this.logger.warn('Request rejected: missing security context');
             throw new BadRequestException(ERROR_MESSAGES[lang].contextMissing);
         }
 
-        // Validate chunks
         if (!body.chunks || !Array.isArray(body.chunks) || body.chunks.length === 0) {
             this.logger.warn({ body }, 'Invalid chunks in request');
             throw new BadRequestException(ERROR_MESSAGES[lang].chunksRequired);
         }
 
-        // Validate language
         if (!body.language || (body.language !== 'pl' && body.language !== 'en')) {
             this.logger.warn({ language: body.language }, 'Invalid language in request');
             throw new BadRequestException(ERROR_MESSAGES[lang].invalidLanguage);
@@ -279,7 +212,6 @@ export class LabController {
 
         const userId = UserId.create(context.userId);
 
-        // Convert DTO chunks to use case format
         const chunks: SemanticChunk[] = body.chunks.map((chunk) => ({
             content: chunk.content,
             title: chunk.title,
@@ -318,12 +250,7 @@ export class LabController {
         }
     }
 
-    /**
-     * POST /lab/language
-     * Explaining: Sets user's preferred language. Called from frontend instead of
-     * direct Firestore write (which gets blocked by ad blockers).
-     * Does NOT reset expiresAt - only updates preferredLanguage field.
-     */
+    /** Called from frontend instead of direct Firestore write (blocked by ad blockers) */
     @Post('language')
     async setLanguage(
         @Body() body: SetLanguageDto,
@@ -341,13 +268,6 @@ export class LabController {
         return { status: 'ok', language: lang };
     }
 
-    /**
-     * GET /lab/stats
-     * Explaining: Returns user's chunk count, session expiry, and detected language.
-     * 
-     * @param req Request with RAG_CONTEXT
-     * @returns LabStatsResponse with chunk count, session expiry, and language
-     */
     @Get('stats')
     async getStats(
         @Req() req: RequestWithRagContext,
@@ -355,7 +275,6 @@ export class LabController {
         const context = req.RAG_CONTEXT;
         const lang = context?.language === 'pl' ? 'pl' : 'en';
 
-        // Validate context
         if (!context?.userId) {
             this.logger.warn('Request rejected: missing security context');
             throw new BadRequestException(ERROR_MESSAGES[lang].contextMissing);
@@ -367,10 +286,7 @@ export class LabController {
         }, 'Fetching lab stats');
 
         try {
-            // Get chunk count from knowledge repo using the count method
             const chunkCount = await this.knowledgeRepo.count(context);
-
-            // Read real expiresAt from Firestore (not hardcoded 24h)
             const expiresAt = await this.labUsageService.getSessionExpiresAt(context.userId);
 
             const detectedLanguage = context.language === 'pl' ? 'pl' : 'en';

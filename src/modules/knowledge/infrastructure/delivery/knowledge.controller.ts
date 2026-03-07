@@ -79,7 +79,7 @@ export class KnowledgeController {
 
     @Post('analyze')
     @UseGuards(FirebaseAuthGuard, ThrottlerGuard)
-    @Throttle({ demo: { limit: 5, ttl: 60000 } }) // 5 requests per minute for demo users
+    @Throttle({ demo: { limit: 5, ttl: 60000 } })
     @Roles('admin')
     async analyzeText(
         @Body('text') text: string,
@@ -152,7 +152,7 @@ export class KnowledgeController {
 
     @Delete('knowledge')
     @UseGuards(FirebaseAuthGuard)
-    @Roles('admin') // Only 'admin' role can delete
+    @Roles('admin')
     async deleteKnowledge(
         @Query('category') category?: string,
         @Query('hash') contentHash?: string,
@@ -174,11 +174,10 @@ export class KnowledgeController {
     @Get('stats')
     @UseGuards(FirebaseAuthGuard)
     @UseInterceptors(SecurityInterceptor)
-    // Both admin and demo can access this endpoint, but demo gets isolated stats
     async getStats(@Req() req: RequestWithRagContext) {
         const context = req.RAG_CONTEXT;
 
-        // If user is not an admin, they are in demo mode. Return isolated stats.
+        // Demo users only see their own isolated stats
         if (context?.role !== 'admin') {
             if (!context) throw new BadRequestException('Context missing');
             const demoChunksCount = await this.knowledgeRepo.count(context);
@@ -188,7 +187,6 @@ export class KnowledgeController {
             };
         }
 
-        // Admin sees total system stats
         const stats = await this.getKnowledgeStatsUseCase.execute();
         return {
             categories: stats,

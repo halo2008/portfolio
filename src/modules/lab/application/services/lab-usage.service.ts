@@ -9,11 +9,6 @@ export interface LabUsageStats {
     chatTokens: number;
 }
 
-/**
- * LabUsageService
- * Explaining: Service to track token usage and enforce rate limits for Lab sessions.
- * Persists data to Firestore using atomic increments to prevent race conditions.
- */
 @Injectable()
 export class LabUsageService {
     private readonly logger = new Logger(LabUsageService.name);
@@ -26,10 +21,6 @@ export class LabUsageService {
         @Inject(FIRESTORE_DB) private readonly firestore: Firestore,
     ) { }
 
-    /**
-     * Get current usage statistics for a user session.
-     * Explaining: Retrieves the aggregated usage data. If no data exists, returns zeros.
-     */
     async getUsageStats(userId: string): Promise<LabUsageStats> {
         try {
             const doc = await this.firestore.collection(this.COLLECTION_NAME).doc(userId).get();
@@ -54,19 +45,11 @@ export class LabUsageService {
         }
     }
 
-    /**
-     * Check if the user has exceeded their request limit.
-     * Explaining: Compares current request count against MAX_REQUESTS_PER_SESSION.
-     */
     async isRateLimited(userId: string): Promise<boolean> {
         const stats = await this.getUsageStats(userId);
         return stats.requestCount >= this.MAX_REQUESTS_PER_SESSION;
     }
 
-    /**
-     * Record usage for document analysis.
-     * Explaining: Atomically increments request count and analysis tokens.
-     */
     async recordAnalysis(userId: string, tokens: number): Promise<void> {
         await this.incrementUsage(userId, {
             requestCount: 1,
@@ -84,10 +67,6 @@ export class LabUsageService {
         });
     }
 
-    /**
-     * Record usage for document indexing (Qdrant).
-     * Explaining: Atomically increments request count and indexing ops.
-     */
     async recordIndexing(userId: string, opsCount: number): Promise<void> {
         await this.incrementUsage(userId, {
             requestCount: 1,
@@ -95,10 +74,6 @@ export class LabUsageService {
         });
     }
 
-    /**
-     * Record usage for chat interaction.
-     * Explaining: Atomically increments request count and chat tokens.
-     */
     async recordChat(userId: string, tokens: number): Promise<void> {
         await this.incrementUsage(userId, {
             requestCount: 1,
@@ -106,10 +81,6 @@ export class LabUsageService {
         });
     }
 
-    /**
-     * Clean up usage data for a user.
-     * Explaining: Called when the ephemeral user session expires.
-     */
     async cleanupUserData(userId: string): Promise<void> {
         try {
             await this.firestore.collection(this.COLLECTION_NAME).doc(userId).delete();
@@ -173,9 +144,8 @@ export class LabUsageService {
             if (increments.indexingOps !== undefined) updates.indexingOps = FieldValue.increment(increments.indexingOps);
             if (increments.chatTokens !== undefined) updates.chatTokens = FieldValue.increment(increments.chatTokens);
 
-            // TTL: set expiresAt to 24h from now (refreshed on every write)
+            // TTL refreshed on every write
             updates.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
-            // Track last activity time
             updates.lastActivityAt = FieldValue.serverTimestamp();
 
             await this.firestore.collection(this.COLLECTION_NAME).doc(userId).set(updates, { merge: true });

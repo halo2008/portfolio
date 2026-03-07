@@ -9,46 +9,25 @@ import {
 } from '../../../knowledge/domain/ports/knowledge-repo.port';
 import { LabUsageService } from '../services/lab-usage.service';
 
-/**
- * SemanticChunk
- * Explaining: A semantic chunk ready for indexing with title and content.
- */
 export interface SemanticChunk {
     content: string;
     title?: string;
 }
 
-/**
- * ConfirmIndexInput
- * Explaining: Input parameters for confirming and indexing chunks.
- */
 export interface ConfirmIndexInput {
     chunks: SemanticChunk[];
     userId: UserId;
     language: 'pl' | 'en';
 }
 
-/**
- * IndexResultDto
- * Explaining: Data transfer object for indexing results.
- */
 export interface IndexResultDto {
     vectorIds: string[];
     chunkCount: number;
     language: 'pl' | 'en';
 }
 
-/**
- * Maximum number of chunks allowed per indexing session.
- * Explaining: Rate limiting to prevent abuse - max 100 chunks/session.
- */
 const MAX_CHUNKS_PER_SESSION = 100;
 
-/**
- * ConfirmIndexUseCase
- * Explaining: Application use case for confirming and indexing semantic chunks.
- * Validates rate limits, generates embeddings, and stores in Qdrant with payload.
- */
 @Injectable()
 export class ConfirmIndexUseCase {
     private readonly logger = new Logger(ConfirmIndexUseCase.name);
@@ -61,15 +40,6 @@ export class ConfirmIndexUseCase {
         private readonly labUsageService: LabUsageService,
     ) { }
 
-    /**
-     * Execute chunk indexing.
-     * Explaining: Validates rate limits, generates embeddings using gemini-embedding-001,
-     * stores in Qdrant with proper payload, and returns indexing result.
-     * @param input The indexing input (chunks, userId, language)
-     * @returns Promise with indexing result including vector IDs and chunk count
-     * @throws BadRequestException if chunk count exceeds rate limit
-     * @throws ForbiddenException if security context is invalid
-     */
     async execute(input: ConfirmIndexInput): Promise<IndexResultDto> {
         const { chunks, userId, language } = input;
 
@@ -78,27 +48,16 @@ export class ConfirmIndexUseCase {
             'Starting chunk indexing',
         );
 
-        // Validate rate limits (max 100 chunks/session)
         this.validateRateLimit(chunks);
 
-        // Validate chunks are not empty
         if (chunks.length === 0) {
             throw new BadRequestException('No chunks provided for indexing');
         }
 
-        // Generate embeddings using gemini-embedding-001
         const embeddings = await this.generateEmbeddings(chunks);
-
-        // Build Qdrant points with payload
         const points = this.buildPoints(chunks, embeddings, userId, language);
-
-        // Store in Qdrant via knowledge repo
         await this.knowledgeRepo.upsertPoints(points);
-
-        // Record indexing operation usage
         await this.labUsageService.recordIndexing(userId.toString(), points.length);
-
-        // Extract vector IDs from points
         const vectorIds = points.map((point) => String(point.id));
 
         this.logger.log(
@@ -118,13 +77,6 @@ export class ConfirmIndexUseCase {
         };
     }
 
-    /**
-     * Validate rate limit for chunks.
-     * Explaining: Enforces max 100 chunks per session to prevent abuse.
-     * Throws BadRequestException if limit is exceeded.
-     * @param chunks The chunks to validate
-     * @throws BadRequestException if chunk count exceeds limit
-     */
     private validateRateLimit(chunks: SemanticChunk[]): void {
         if (chunks.length > MAX_CHUNKS_PER_SESSION) {
             this.logger.warn(
@@ -137,13 +89,6 @@ export class ConfirmIndexUseCase {
         }
     }
 
-    /**
-     * Generate embeddings for chunks.
-     * Explaining: Uses GoogleEmbeddingAdapter (gemini-embedding-001) to generate
-     * vector embeddings for each chunk's content.
-     * @param chunks The semantic chunks to embed
-     * @returns Promise with array of embedding vectors
-     */
     private async generateEmbeddings(chunks: SemanticChunk[]): Promise<number[][]> {
         const texts = chunks.map((chunk) => chunk.content);
 
@@ -165,17 +110,7 @@ export class ConfirmIndexUseCase {
         }
     }
 
-    /**
-     * Build Qdrant points with payload.
-     * Explaining: Creates point objects for Qdrant upsert with proper payload structure:
-     * { user_id, role: 'demo', title, content, language, created_at }
-     * Uses snake_case for payload fields (Qdrant convention).
-     * @param chunks The semantic chunks
-     * @param embeddings The embedding vectors
-     * @param userId The user ID
-     * @param language The detected language
-     * @returns Array of Qdrant point objects
-     */
+    /** Payload uses snake_case per Qdrant convention */
     private buildPoints(
         chunks: SemanticChunk[],
         embeddings: number[][],
@@ -196,19 +131,19 @@ export class ConfirmIndexUseCase {
                 throw new Error(`Missing embedding for chunk at index ${index}`);
             }
 
-            // Qdrant strictly requires valid UUID v4 or 64-bit unsigned int for point IDs
+            // Qdrant requires valid UUID v4 or 64-bit unsigned int for point IDs
             const id = uuidv4();
 
             return {
                 id,
                 vector: embedding,
                 payload: {
-                    user_id: userIdStr,       // snake_case for Qdrant payload
-                    role: 'demo',             // Fixed role for lab users
-                    title: chunk.title || '', // Optional title
-                    content: chunk.content,   // Full content
-                    language,                 // Detected language (pl | en)
-                    created_at: now,          // ISO timestamp
+                    user_id: userIdStr,
+                    role: 'demo',
+                    title: chunk.title || '',
+                    content: chunk.content,
+                    language,
+                    created_at: now,
                 },
             };
         });

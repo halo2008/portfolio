@@ -21,7 +21,6 @@ export const KnowledgeManager: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
 
-    // Form State
     const [step, setStep] = useState<Step>('input');
     const [text, setText] = useState('');
     const [category, setCategory] = useState('Experience');
@@ -96,8 +95,6 @@ export const KnowledgeManager: React.FC = () => {
         try {
             const token = await user.getIdToken();
 
-            // In demo mode, we could use demo-batch endpoint, but for simplicity let's assume
-            // this is primarily the admin panel. Let's send to confirm-index.
             const payload = {
                 chunks: chunks.filter(c => c.content.trim() !== ''),
                 category,
@@ -185,7 +182,6 @@ export const KnowledgeManager: React.FC = () => {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-                {/* Wgrywanie Danych */}
                 <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6 flex flex-col max-h-[800px]">
                     <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
                         Trenowanie Modelu
@@ -294,7 +290,6 @@ export const KnowledgeManager: React.FC = () => {
                     )}
                 </div>
 
-                {/* Baza Danych Stats */}
                 <div className="bg-gray-900/50 border border-gray-800 rounded-2xl p-6">
                     <div className="flex justify-between items-center mb-6">
                         <h3 className="text-xl font-bold text-white">Zawartość Bazy Wiedzy</h3>

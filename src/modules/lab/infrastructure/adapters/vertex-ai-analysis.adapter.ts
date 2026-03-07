@@ -8,12 +8,6 @@ import {
 } from '../../domain/ports/analysis.port';
 import { GOOGLE_GENAI } from '../../../../core/genai/genai.module';
 
-/**
- * VertexAiAnalysisAdapter
- * Explaining: Adapter for document analysis using Google Vertex AI (Gemini).
- * Implements language detection (PL/EN) and semantic chunking.
- * Includes retry logic for API resilience.
- */
 @Injectable()
 export class VertexAiAnalysisAdapter implements AnalysisPort {
     private readonly logger = new Logger(VertexAiAnalysisAdapter.name);
@@ -24,11 +18,6 @@ export class VertexAiAnalysisAdapter implements AnalysisPort {
         @Inject(GOOGLE_GENAI) private readonly ai: GoogleGenAI,
     ) { }
 
-    /**
-     * Analyze a document with automatic language detection.
-     * Explaining: Routes to LLM or heuristic chunking based on strategy.
-     * Detects if document is Polish or English and returns semantic chunks.
-     */
     async analyzeDocument(
         content: string,
         filename: string,
@@ -44,12 +33,7 @@ export class VertexAiAnalysisAdapter implements AnalysisPort {
         return this.executeWithRetry(() => this.callModel(prompt), filename);
     }
 
-    /**
-     * Heuristic document analysis.
-     * Explaining: Rule-based splitting by headings, blank lines, and paragraphs.
-     * Detects language using simple character/word heuristics.
-     * Free and fast - no API calls, no token cost.
-     */
+    /** Rule-based splitting - no API calls, no token cost */
     private analyzeHeuristic(content: string): SemanticAnalysisResult {
         const detectedLanguage = this.detectLanguageHeuristic(content);
         const chunks = this.splitHeuristic(content);
@@ -63,9 +47,6 @@ export class VertexAiAnalysisAdapter implements AnalysisPort {
         return { detectedLanguage, chunks, tokenCount: 0 };
     }
 
-    /**
-     * Detect language using character and word heuristics.
-     */
     private detectLanguageHeuristic(text: string): 'pl' | 'en' {
         const lower = text.toLowerCase();
         const polishChars = /[ąćęłńóśźż]/;
@@ -73,11 +54,7 @@ export class VertexAiAnalysisAdapter implements AnalysisPort {
         return (polishChars.test(lower) || polishWords.test(lower)) ? 'pl' : 'en';
     }
 
-    /**
-     * Split text into chunks using headings, blank lines, and size limits.
-     * Explaining: Splits on markdown headings (# ...) and double newlines.
-     * Merges small sections, splits oversized ones by sentences.
-     */
+    /** Splits on markdown headings and double newlines; merges small sections, splits oversized ones */
     private splitHeuristic(content: string): AnalysisResultChunk[] {
         const lines = content.split('\n');
         const sections: { title: string; lines: string[]; startLine: number }[] = [];
@@ -91,7 +68,6 @@ export class VertexAiAnalysisAdapter implements AnalysisPort {
             const headingMatch = line.match(/^(#{1,3})\s+(.+)/);
 
             if (headingMatch) {
-                // Save previous section
                 if (currentLines.length > 0) {
                     sections.push({ title: currentTitle, lines: currentLines, startLine: currentStart });
                 }
@@ -101,7 +77,6 @@ export class VertexAiAnalysisAdapter implements AnalysisPort {
                 continue;
             }
 
-            // Split on double blank lines (paragraph boundary)
             if (line.trim() === '' && currentLines.length > 0 && currentLines[currentLines.length - 1]?.trim() === '') {
                 sections.push({ title: currentTitle, lines: currentLines, startLine: currentStart });
                 currentTitle = '';
@@ -113,12 +88,10 @@ export class VertexAiAnalysisAdapter implements AnalysisPort {
             currentLines.push(line);
         }
 
-        // Push remaining
         if (currentLines.length > 0) {
             sections.push({ title: currentTitle, lines: currentLines, startLine: currentStart });
         }
 
-        // Merge small sections (< 100 chars) with next, split large ones (> 2000 chars)
         const MIN_CHUNK_CHARS = 100;
         const MAX_CHUNK_CHARS = 2000;
         const result: AnalysisResultChunk[] = [];
@@ -135,7 +108,6 @@ export class VertexAiAnalysisAdapter implements AnalysisPort {
                     if (!buffer.title && section.title) buffer.title = section.title;
                     continue;
                 }
-                // Flush buffer
                 this.pushChunk(result, buffer);
                 buffer = null;
             }
@@ -146,7 +118,6 @@ export class VertexAiAnalysisAdapter implements AnalysisPort {
             }
 
             if (text.length > MAX_CHUNK_CHARS) {
-                // Split by sentences
                 const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
                 let subChunk = '';
                 let subStart = section.startLine;
@@ -177,16 +148,14 @@ export class VertexAiAnalysisAdapter implements AnalysisPort {
             this.pushChunk(result, section);
         }
 
-        // Flush remaining buffer
         if (buffer) {
             this.pushChunk(result, buffer);
         }
 
-        // Cap at max 50 chunks to prevent abuse with crafted documents
+        // Cap to prevent abuse with crafted documents
         const MAX_HEURISTIC_CHUNKS = 50;
         const capped = result.slice(0, MAX_HEURISTIC_CHUNKS);
 
-        // Generate titles for untitled chunks
         return capped.map((chunk, i) => ({
             ...chunk,
             title: chunk.title || `Section ${i + 1}`,
@@ -207,10 +176,6 @@ export class VertexAiAnalysisAdapter implements AnalysisPort {
         });
     }
 
-    /**
-     * Build the analysis prompt.
-     * Explaining: Creates prompt instructing model to detect language and extract chunks.
-     */
     private buildPrompt(content: string, filename: string): string {
         return `Analyze the following document and extract semantic chunks.
 
@@ -234,10 +199,6 @@ Instructions:
 Return ONLY valid JSON matching the specified schema.`;
     }
 
-    /**
-     * Call Gemini model with structured output.
-     * Explaining: Uses Gemini 3 Flash Preview with JSON schema for structured response.
-     */
     private async callModel(
         prompt: string,
     ): Promise<SemanticAnalysisResult> {
@@ -294,12 +255,10 @@ Return ONLY valid JSON matching the specified schema.`;
             throw new Error('Empty response from Gemini model');
         }
 
-        // Extract real token usage from Gemini API response
         const tokenCount = (response as any).usageMetadata?.totalTokenCount ?? 0;
 
         const parsed = JSON.parse(text) as Omit<SemanticAnalysisResult, 'tokenCount'>;
 
-        // Log detected language for monitoring
         this.logger.log(
             {
                 detectedLanguage: parsed.detectedLanguage,
@@ -315,10 +274,6 @@ Return ONLY valid JSON matching the specified schema.`;
         };
     }
 
-    /**
-     * Execute function with retry logic.
-     * Explaining: Retries up to MAX_RETRIES times with exponential backoff.
-     */
     private async executeWithRetry<T>(
         fn: () => Promise<T>,
         filename: string,
@@ -361,9 +316,6 @@ Return ONLY valid JSON matching the specified schema.`;
         throw lastError;
     }
 
-    /**
-     * Delay helper for retry backoff.
-     */
     private delay(ms: number): Promise<void> {
         return new Promise((resolve) => setTimeout(resolve, ms));
     }

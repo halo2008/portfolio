@@ -3,10 +3,6 @@ import { QdrantClient } from '@qdrant/js-client-rest';
 import { KnowledgeFilter, KnowledgeRepoPort, RagSecurityContext } from '../../domain/ports/knowledge-repo.port';
 import { QDRANT_CLIENT } from '../../../qdrant/qdrant.provider';
 
-/**
- * Qdrant filter structure
- * Explaining: Internal type for building Qdrant filter conditions.
- */
 interface QdrantFilter {
     must?: Array<{
         key: string;
@@ -67,10 +63,6 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
         }
     }
 
-    /**
-     * Validates security context and throws if missing or invalid
-     * Explaining: Zero-trust validation - every operation must have valid context.
-     */
     private validateContext(context: RagSecurityContext | undefined): asserts context is RagSecurityContext {
         if (!context) {
             this.logger.warn('Security context is missing - rejecting operation');
@@ -88,10 +80,6 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
         }
     }
 
-    /**
-     * Build payload filter for user context (demo role)
-     * Explaining: Filters to only show knowledge where payload.user_id == context.userId
-     */
     private buildUserFilter(userId: string): QdrantFilter {
         return {
             must: [
@@ -100,10 +88,6 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
         };
     }
 
-    /**
-     * Build payload filter for admin context (public knowledge)
-     * Explaining: Filters to only show knowledge where payload.role == 'ADMIN'
-     */
     private buildAdminFilter(): QdrantFilter {
         return {
             must: [
@@ -178,18 +162,12 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
         return stats;
     }
 
-    /**
-     * Search for knowledge in admin context (strictly ADMIN only)
-     * Explaining: Used for main page chat - searches only public admin knowledge.
-     * Adds must filter for payload.role == 'ADMIN'.
-     */
     async searchAdminKnowledge(
         query: number[],
         context: RagSecurityContext
     ): Promise<string> {
         this.validateContext(context);
 
-        // Verify user is admin
         if (context.role !== 'admin') {
             this.logger.warn({
                 userId: context.userId,
@@ -227,11 +205,6 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
         }
     }
 
-    /**
-     * Search for knowledge in user context (strictly user only)
-     * Explaining: Used for lab chat - searches only knowledge belonging to the specific user.
-     * When role === 'demo', adds must filter for payload.user_id == context.userId.
-     */
     async searchUserKnowledge(
         query: number[],
         userId: string,
@@ -240,7 +213,7 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
     ): Promise<string> {
         this.validateContext(context);
 
-        // Verify the requesting user matches the target userId (strict isolation)
+        // Strict isolation: requester must match target user
         if (context.userId !== userId) {
             this.logger.warn({
                 requesterId: context.userId,
@@ -249,7 +222,6 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
             throw new ForbiddenException('Cannot search knowledge belonging to another user');
         }
 
-        // Only demo users should use this method for their private knowledge
         if (context.role !== 'demo') {
             this.logger.warn({
                 userId: context.userId,
@@ -287,15 +259,9 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
         }
     }
 
-    /**
-     * Delete all knowledge points for a specific user
-     * Explaining: Enforces payload filter for user_id when role === 'demo'.
-     * Throws if context is missing or ambiguous.
-     */
     async deleteByUserId(userId: string, context: RagSecurityContext): Promise<number> {
         this.validateContext(context);
 
-        // Only allow deletion if role is demo and matches the userId
         if (context.role !== 'demo' || context.userId !== userId) {
             this.logger.warn({
                 requesterId: context.userId,
@@ -330,19 +296,11 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
         }
     }
 
-    /**
-     * Count knowledge points based on context
-     * Explaining: Applies payload filters based on role:
-     * - role === 'demo': count where payload.user_id == context.userId
-     * - role === 'admin': count where payload.role == 'ADMIN'
-     * Filters are mutually exclusive.
-     */
     async count(context: RagSecurityContext): Promise<number> {
         this.validateContext(context);
 
         let filter: QdrantFilter;
 
-        // Apply mutually exclusive filters based on role
         if (context.role === 'demo') {
             filter = this.buildUserFilter(context.userId);
         } else if (context.role === 'admin') {
@@ -356,8 +314,7 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
         }
 
         try {
-            // Use scroll with limit 0 to get count via points length
-            // Qdrant doesn't have a direct count API, so we use scroll
+            // Qdrant lacks a direct count API, so we use scroll
             const response = await this.qdrantClient.scroll(this.COLLECTION_NAME, {
                 limit: 10000, // Reasonable upper limit for count
                 with_payload: false,
@@ -384,10 +341,6 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
         }
     }
 
-    /**
-     * Format search results into context string
-     * Explaining: Aggregates retrieved fragments with metadata for LLM context.
-     */
     private formatSearchResults(results: Array<{
         payload?: Record<string, unknown>;
         score?: number;

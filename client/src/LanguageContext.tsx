@@ -2,7 +2,6 @@ import React, { createContext, useContext, ReactNode } from 'react';
 import { Language, PortfolioContent } from './types';
 import { PORTFOLIO_DATA } from './data/portfolio';
 
-// Lab-specific translations interface
 export interface LabTranslations {
   title: string;
   uploadTitle: string;

@@ -10,7 +10,6 @@ import { LabModule } from './modules/lab/lab.module';
 import { UsemeModule } from './modules/useme/useme.module';
 
 const clientDistPath = resolve(__dirname, '..', 'dist', 'static');
-// Logger.log(`Serving static files from: ${clientDistPath}`, 'AppModule');
 
 import { AppController } from './app.controller';
 import { HealthController } from './health.controller';

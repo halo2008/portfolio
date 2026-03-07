@@ -11,10 +11,6 @@ import {
 } from '../../domain/ports/analysis.port';
 import { LabUsageService } from '../services/lab-usage.service';
 
-/**
- * AnalysisResultChunk DTO
- * Explaining: A single semantic chunk from document analysis.
- */
 export interface AnalysisResultChunkDto {
     content: string;
     title?: string;
@@ -23,20 +19,11 @@ export interface AnalysisResultChunkDto {
     endLine: number;
 }
 
-/**
- * AnalysisResultDto
- * Explaining: Data transfer object for document analysis results
- * including detected language and semantic chunks.
- */
 export interface AnalysisResultDto {
     detectedLanguage: 'pl' | 'en';
     chunks: AnalysisResultChunkDto[];
 }
 
-/**
- * AnalyzeDocumentInput
- * Explaining: Input parameters for document analysis.
- */
 export interface AnalyzeDocumentInput {
     file: Buffer;
     filename: string;
@@ -44,22 +31,11 @@ export interface AnalyzeDocumentInput {
     chunkingStrategy?: ChunkingStrategy;
 }
 
-/**
- * Valid file extensions for document upload.
- */
 const VALID_FILE_EXTENSIONS = ['.txt', '.md', '.pdf'];
 
-/**
- * Maximum file size in bytes (1MB) - must match controller limit.
- */
+/** Must match controller limit */
 const MAX_FILE_SIZE_BYTES = 1 * 1024 * 1024;
 
-/**
- * AnalyzeDocumentUseCase
- * Explaining: Application use case for analyzing uploaded documents.
- * Validates file type and size, extracts text content,
- * calls AI analysis for language detection and semantic chunking.
- */
 @Injectable()
 export class AnalyzeDocumentUseCase {
     private readonly logger = new Logger(AnalyzeDocumentUseCase.name);
@@ -69,13 +45,6 @@ export class AnalyzeDocumentUseCase {
         private readonly labUsageService: LabUsageService,
     ) { }
 
-    /**
-     * Execute document analysis.
-     * Explaining: Validates file, extracts text, calls AI analysis,
-     * and returns structured result with detected language.
-     * @param input The document input (file buffer, filename, userId)
-     * @returns Promise with analysis result including language and chunks
-     */
     async execute(input: AnalyzeDocumentInput): Promise<AnalysisResultDto> {
         const { file, filename, userId, chunkingStrategy } = input;
 
@@ -84,32 +53,24 @@ export class AnalyzeDocumentUseCase {
             'Starting document analysis',
         );
 
-        // Validate file type
         this.validateFileType(filename);
-
-        // Validate file size
         this.validateFileSize(file);
-
-        // Extract text content from file
         const content = await this.extractText(file, filename);
 
         // Record usage BEFORE the Gemini call to prevent concurrent request bypass
         // Token count is updated after the call with real usage data
         await this.labUsageService.recordAnalysis(userId.toString(), 0);
 
-        // Call analysis for language detection and chunking (LLM or heuristic)
         const analysisResult = await this.analysisPort.analyzeDocument(
             content,
             filename,
             chunkingStrategy,
         );
 
-        // Update with real token count from Gemini API response
         if (analysisResult.tokenCount > 0) {
             await this.labUsageService.recordAnalysisTokens(userId.toString(), analysisResult.tokenCount);
         }
 
-        // Convert to DTO format
         const result: AnalysisResultDto = {
             detectedLanguage: analysisResult.detectedLanguage,
             chunks: analysisResult.chunks.map((chunk) => ({
@@ -134,12 +95,6 @@ export class AnalyzeDocumentUseCase {
         return result;
     }
 
-    /**
-     * Validate file type.
-     * Explaining: Checks if file extension is in allowed list (.txt, .md, .pdf).
-     * Throws BadRequestException (400) for invalid file types.
-     * @param filename The name of the file
-     */
     private validateFileType(filename: string): void {
         const extension = filename.toLowerCase().slice(filename.lastIndexOf('.'));
 
@@ -154,12 +109,6 @@ export class AnalyzeDocumentUseCase {
         }
     }
 
-    /**
-     * Validate file size.
-     * Explaining: Ensures file size is within 1MB limit.
-     * Throws PayloadTooLargeException (413) if file is too large.
-     * @param file The file buffer
-     */
     private validateFileSize(file: Buffer): void {
         if (file.length > MAX_FILE_SIZE_BYTES) {
             this.logger.warn(
@@ -172,13 +121,6 @@ export class AnalyzeDocumentUseCase {
         }
     }
 
-    /**
-     * Extract text content from file.
-     * Explaining: Uses pdf-parse for PDF files, toString() for text files.
-     * @param file The file buffer
-     * @param filename The filename for context
-     * @returns Extracted text content
-     */
     private async extractText(file: Buffer, filename: string): Promise<string> {
         const extension = filename.toLowerCase().slice(filename.lastIndexOf('.'));
 
@@ -205,8 +147,6 @@ export class AnalyzeDocumentUseCase {
             }
         }
 
-        // For .txt and .md files, convert buffer to string
-        // Use UTF-8 encoding for text files
         const text = file.toString('utf-8');
         this.logger.debug(
             { filename, charCount: text.length },

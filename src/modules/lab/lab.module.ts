@@ -25,28 +25,16 @@ import {
     METRIC_LAB_CHUNKS_INDEXED,
 } from './infrastructure/metrics/lab-metrics.service';
 
-/**
- * SecurityInterceptorProvider
- * Explaining: Registers SecurityInterceptor as a global APP_INTERCEPTOR
- * to apply zero-trust context injection to all /lab/* routes.
- */
 const securityInterceptorProvider: Provider = {
     provide: APP_INTERCEPTOR,
     useClass: SecurityInterceptor,
 };
 
-/**
- * LabModule
- * Explaining: Module for Lab (demo) functionality including ephemeral users
- * and RAG query security context. Provides global security interceptor.
- */
 @Module({
     imports: [forwardRef(() => KnowledgeModule)],
     controllers: [LabController, CleanupController],
     providers: [
-        // Global security interceptor for zero-trust context injection
         securityInterceptorProvider,
-        // Prometheus metrics for lab
         makeCounterProvider({
             name: METRIC_LAB_ANALYSIS_TOTAL,
             help: 'Total lab document analyses',
@@ -74,21 +62,17 @@ const securityInterceptorProvider: Provider = {
             labelNames: ['user_id'],
         }),
         LabMetricsService,
-        // Analysis adapter -> Port binding
         {
             provide: ANALYSIS_PORT,
             useClass: VertexAiAnalysisAdapter,
         },
-        // Ephemeral user repo adapter
         {
             provide: EPHEMERAL_USER_REPO_PORT,
             useClass: FirestoreEphemeralUserAdapter,
         },
-        // Use cases
         AnalyzeDocumentUseCase,
         ConfirmIndexUseCase,
         ChatWithUserKnowledgeUseCase,
-        // Services
         IdentityCleanupService,
         LabUsageService,
         LabRateLimitGuard,

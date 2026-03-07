@@ -5,10 +5,6 @@ import { Logger } from 'nestjs-pino';
 import helmet from 'helmet';
 import * as basicAuth from 'express-basic-auth';
 
-/**
- * Bootstraps the NestJS application container.
- * Enforces strict security policies, structured logging, and captures initialization failures.
- */
 async function bootstrap(): Promise<void> {
     try {
         const app = await NestFactory.create(AppModule, { bufferLogs: true });

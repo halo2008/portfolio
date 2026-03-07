@@ -25,7 +25,6 @@ export class GenerateChatResponseUseCase {
       return;
     }
 
-    // 1. Log user message to Slack (for full history visibility)
     if (slackThread) {
       try {
         await this.notifier.logUserMessage(slackThread, message);
@@ -34,7 +33,6 @@ export class GenerateChatResponseUseCase {
       }
     }
 
-    // 2. Start Slack thread if new conversation
     let threadTs = slackThread;
     if (!threadTs) {
       try {
@@ -47,7 +45,6 @@ export class GenerateChatResponseUseCase {
       }
     }
 
-    // 3. Fetch history
     let history = [];
     try {
       history = await this.repository.getHistory(sessionId, 6);
@@ -55,10 +52,8 @@ export class GenerateChatResponseUseCase {
       this.logger.warn(`History fetch failed: ${(error as Error).message}`);
     }
 
-    // 4. Generate embedding
     const embedding = await this.ai.generateEmbedding(message);
 
-    // 5. Vector search
     let context = '';
     const vectorSearchStart = performance.now();
     try {
@@ -72,14 +67,12 @@ export class GenerateChatResponseUseCase {
 
     const systemPrompt = KONRAD_SYSTEM_PROMPT(context);
 
-    // 6. Save User message
     try {
       await this.repository.saveMessage(sessionId, 'user', message);
     } catch (error) {
       this.logger.warn(`Save user message failed: ${(error as Error).message}`);
     }
 
-    // 7. Stream and accumulate response
     let fullResponse = "";
     const streamStart = performance.now();
     const stream = this.ai.generateResponseStream(message, systemPrompt, history);
@@ -92,7 +85,6 @@ export class GenerateChatResponseUseCase {
     }
     this.telemetry.observeLlmLatency(performance.now() - streamStart);
 
-    // 8. Final sync: save to DB and log to Slack
     try {
       await this.repository.saveMessage(sessionId, 'model', fullResponse);
     } catch (error) {

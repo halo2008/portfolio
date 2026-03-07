@@ -21,10 +21,8 @@ import {
 } from 'lucide-react';
 import { LabStatsPanel } from '../components/LabStatsPanel';
 
-// API base URL
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
-// Types
 interface ChatTimings {
   embeddingMs: number;
   searchMs: number;
@@ -70,7 +68,6 @@ interface SessionInfo {
   maxRequests?: number;
 }
 
-// Toast notification component
 const Toast: React.FC<{
   message: string;
   type: 'error' | 'success';
@@ -95,7 +92,6 @@ const Toast: React.FC<{
   );
 };
 
-// Icons
 const CheckCircle: React.FC<{ size?: number; className?: string }> = ({ size = 24, className }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -137,7 +133,6 @@ const LabChat: React.FC = () => {
   const { language } = useLanguage();
   const navigate = useNavigate();
 
-  // State
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [chatState, setChatState] = useState<ChatState>({ isLoading: false });
@@ -154,7 +149,6 @@ const LabChat: React.FC = () => {
     return sessionStorage.getItem('lab_systemContext') || '';
   });
 
-  // Persist settings to sessionStorage
   useEffect(() => {
     sessionStorage.setItem('lab_scoreThreshold', String(scoreThreshold));
   }, [scoreThreshold]);
@@ -163,25 +157,21 @@ const LabChat: React.FC = () => {
     sessionStorage.setItem('lab_systemContext', systemContext);
   }, [systemContext]);
 
-  // Refs
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Redirect if not authenticated
   useEffect(() => {
     if (!loading && !user) {
       navigate('/');
     }
   }, [user, loading, navigate]);
 
-  // Fetch session info on mount
   useEffect(() => {
     if (user) {
       fetchSessionInfo();
     }
   }, [user]);
 
-  // Update countdown timer
   useEffect(() => {
     if (!sessionInfo?.expiresAt) return;
 
@@ -201,23 +191,20 @@ const LabChat: React.FC = () => {
     };
 
     updateTimer();
-    const interval = setInterval(updateTimer, 60000); // Update every minute
+    const interval = setInterval(updateTimer, 60000);
 
     return () => clearInterval(interval);
   }, [sessionInfo?.expiresAt]);
 
-  // Auto-scroll to latest message
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, chatState.isLoading]);
 
-  // Get auth token for API calls
   const getAuthToken = async (): Promise<string> => {
     if (!user) throw new Error('Not authenticated');
     return user.getIdToken();
   };
 
-  // Fetch session info
   const fetchSessionInfo = async () => {
     try {
       const token = await getAuthToken();
@@ -236,7 +223,6 @@ const LabChat: React.FC = () => {
     }
   };
 
-  // Send message
   const sendMessage = useCallback(async () => {
     if (!inputMessage.trim() || chatState.isLoading) return;
 
@@ -286,12 +272,10 @@ const LabChat: React.FC = () => {
       setMessages((prev) => [...prev, assistantMessage]);
       setRetrievedChunks(data.sources || []);
 
-      // Update detected language if response has it
       if (data.language && sessionInfo) {
         setSessionInfo((prev) => (prev ? { ...prev, detectedLanguage: data.language } : null));
       }
 
-      // Refresh stats after successful chat (updates token count, request count)
       fetchSessionInfo();
     } catch (error) {
       setChatState({
@@ -304,7 +288,6 @@ const LabChat: React.FC = () => {
     }
   }, [inputMessage, chatState.isLoading, user, t, sessionInfo, scoreThreshold]);
 
-  // Handle enter key
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -312,10 +295,8 @@ const LabChat: React.FC = () => {
     }
   };
 
-  // Check if user has documents
   const hasDocuments = sessionInfo && sessionInfo.chunkCount > 0;
 
-  // Format countdown string
   const formatCountdown = () => {
     if (!timeRemaining) return '';
     const { hours, minutes } = timeRemaining;
@@ -339,7 +320,6 @@ const LabChat: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-dark text-white flex flex-col">
-      {/* Header */}
       <nav className="fixed top-0 left-0 right-0 z-40 backdrop-blur-md bg-darker/80 border-b border-slate-800 h-16 flex items-center justify-between px-6 lg:px-24">
         <div className="flex items-center gap-4">
           <a
@@ -358,7 +338,6 @@ const LabChat: React.FC = () => {
           </a>
         </div>
         <div className="flex items-center gap-4">
-          {/* Language Indicator */}
           {sessionInfo && (
             <div className="flex items-center gap-2 text-xs text-slate-400">
               <Languages size={14} />
@@ -367,7 +346,6 @@ const LabChat: React.FC = () => {
               </span>
             </div>
           )}
-          {/* Session Countdown */}
           <div className="flex items-center gap-2 text-xs text-slate-400 bg-surface/50 px-3 py-1.5 rounded-sm">
             <Clock size={14} className="text-primary" />
             <span>
@@ -380,11 +358,8 @@ const LabChat: React.FC = () => {
         </div>
       </nav>
 
-      {/* Main Content */}
       <main className="flex-1 pt-16 flex overflow-hidden">
-        {/* Chat Area */}
         <div className={`flex-1 flex flex-col transition-all duration-300 ${sidebarOpen ? 'mr-80' : 'mr-0'}`}>
-          {/* Chat Header */}
           <div className="px-6 py-4 border-b border-slate-800 bg-darker/30">
             <div className="flex items-center gap-3">
               <MessageSquare className="text-primary" size={24} />
@@ -395,7 +370,6 @@ const LabChat: React.FC = () => {
             </div>
           </div>
 
-          {/* Messages Area */}
           <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
             {messages.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-slate-500">
@@ -470,7 +444,6 @@ const LabChat: React.FC = () => {
             )}
           </div>
 
-          {/* Input Area */}
           <div className="px-6 py-4 border-t border-slate-800 bg-darker/30">
             <div className="flex gap-3">
               <input
@@ -495,7 +468,6 @@ const LabChat: React.FC = () => {
           </div>
         </div>
 
-        {/* Sidebar Toggle Button (when closed) */}
         {!sidebarOpen && (
           <button
             onClick={() => setSidebarOpen(true)}
@@ -506,13 +478,11 @@ const LabChat: React.FC = () => {
           </button>
         )}
 
-        {/* Sidebar - Retrieved Chunks */}
         <div
           className={`fixed right-0 top-16 bottom-0 w-80 bg-darker/90 border-l border-slate-800 transform transition-transform duration-300 z-20 overflow-hidden ${sidebarOpen ? 'translate-x-0' : 'translate-x-full'
             }`}
         >
           <div className="h-full flex flex-col">
-            {/* Sidebar Header */}
             <div className="px-4 py-3 border-b border-slate-800 flex items-center justify-between bg-surface/50">
               <div className="flex items-center gap-2">
                 <FileText size={18} className="text-primary" />
@@ -527,7 +497,6 @@ const LabChat: React.FC = () => {
               </button>
             </div>
 
-            {/* Search Precision Slider */}
             <div className="px-4 py-3 border-b border-slate-800">
               <div className="flex items-center gap-2 mb-2">
                 <SlidersHorizontal size={14} className="text-primary" />
@@ -549,7 +518,6 @@ const LabChat: React.FC = () => {
               </div>
             </div>
 
-            {/* System Context */}
             <div className="px-4 py-3 border-b border-slate-800">
               <div className="flex items-center gap-2 mb-2">
                 <BrainCircuit size={14} className="text-primary" />
@@ -565,7 +533,6 @@ const LabChat: React.FC = () => {
               />
             </div>
 
-            {/* Sidebar Content */}
             <div className="flex-1 overflow-y-auto p-4">
               {retrievedChunks.length === 0 ? (
                 <div className="text-center text-slate-500 py-8">
@@ -592,7 +559,6 @@ const LabChat: React.FC = () => {
               )}
             </div>
 
-            {/* Stats Panel */}
             <div className="px-4 py-3 border-t border-slate-800">
               <LabStatsPanel
                 stats={{
@@ -608,7 +574,6 @@ const LabChat: React.FC = () => {
         </div>
       </main>
 
-      {/* Toast */}
       {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
     </div>
   );

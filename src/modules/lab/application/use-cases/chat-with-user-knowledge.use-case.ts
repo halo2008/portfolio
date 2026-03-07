@@ -60,12 +60,6 @@ export interface ChatWithUserKnowledgeOutput {
     timings: ChatTimings;
 }
 
-/**
- * ChatWithUserKnowledgeUseCase
- * Explaining: Use case for Lab chat that answers ONLY from user's uploaded documents.
- * Never queries admin vectors or other users' data - strictly user-only context.
- * Supports both Polish and English queries with automatic language detection.
- */
 @Injectable()
 export class ChatWithUserKnowledgeUseCase {
     private readonly logger = new Logger(ChatWithUserKnowledgeUseCase.name);
@@ -78,27 +72,14 @@ export class ChatWithUserKnowledgeUseCase {
         @Inject(GOOGLE_GENAI) private readonly ai: GoogleGenAI,
     ) { }
 
-    /**
-     * Execute the chat use case with user-only knowledge.
-     * Explaining: Queries ONLY user's own knowledge vectors via payload.user_id filter.
-     * Never includes admin vectors or other users' data.
-     * Detects input language and returns response in the same language.
-     * Includes source citations (chunk titles) in response.
-     * 
-     * @param input The chat input (message, sessionId)
-     * @param context Security context for authorization (must have role === 'demo')
-     * @returns Promise with response, detected language, and source citations
-     */
     async execute(
         input: ChatWithUserKnowledgeInput,
         context: RagSecurityContext,
     ): Promise<ChatWithUserKnowledgeOutput> {
         const { message, sessionId, scoreThreshold, systemContext } = input;
 
-        // Detect language from input
         const detectedLanguage = this.detectLanguage(message);
 
-        // Log query for analytics (anonymized - no message content)
         this.logger.log({
             msg: 'Lab chat query (user knowledge)',
             sessionId: this.anonymizeSessionId(sessionId),
@@ -109,7 +90,6 @@ export class ChatWithUserKnowledgeUseCase {
 
         const totalStart = Date.now();
 
-        // Generate embedding for the query
         const embeddingStart = Date.now();
         const embedding = await this.generateEmbedding(message);
         const embeddingMs = Date.now() - embeddingStart;
@@ -125,13 +105,10 @@ export class ChatWithUserKnowledgeUseCase {
         );
         const searchMs = Date.now() - searchStart;
 
-        // Parse search results to extract content and sources
         const { context: knowledgeContext, sources } = this.parseSearchResults(searchResults);
 
-        // Sanitize systemContext: trim and cap at 500 chars
         const sanitizedSystemContext = systemContext?.trim().slice(0, 500);
 
-        // Generate response using the user's knowledge context
         const llmStart = Date.now();
         const response = await this.generateResponse(
             message,
@@ -144,10 +121,9 @@ export class ChatWithUserKnowledgeUseCase {
 
         const totalMs = Date.now() - totalStart;
 
-        // Record token usage (estimate)
-        // 1 token ≈ 4 chars for prompt + context + response
+        // 1 token ≈ 4 chars estimate; +100 base tokens for system prompt overhead
         const totalChars = message.length + knowledgeContext.length + response.length;
-        const estimatedTokens = Math.ceil(totalChars / 4) + 100; // 100 base tokens
+        const estimatedTokens = Math.ceil(totalChars / 4) + 100;
         await this.labUsageService.recordChat(context.userId, estimatedTokens);
 
         const timings: ChatTimings = { embeddingMs, searchMs, llmMs, totalMs };
@@ -162,38 +138,19 @@ export class ChatWithUserKnowledgeUseCase {
         };
     }
 
-    /**
-     * Detect language from input message.
-     * Explaining: Simple heuristic detection for Polish vs English.
-     * Checks for Polish-specific characters and common words.
-     * Respects user's preferred language from session if ambiguous.
-     * 
-     * @param message The input message to analyze
-     * @returns 'pl' for Polish, 'en' for English
-     */
     private detectLanguage(message: string): 'pl' | 'en' {
         const lowerMessage = message.toLowerCase();
 
-        // Polish-specific characters
         const polishChars = /[ąćęłńóśźż]/;
-        // Common Polish words
         const polishWords = /\b(jak|co|gdzie|kiedy|dlaczego|czy|jest|są|tego|tym|dla|nie|tak|proszę|dziękuję)\b/;
 
         if (polishChars.test(lowerMessage) || polishWords.test(lowerMessage)) {
             return 'pl';
         }
 
-        // Default to English if no Polish indicators found
         return 'en';
     }
 
-    /**
-     * Generate embedding for the query text.
-     * Explaining: Uses Gemini embedding model for vector search.
-     * 
-     * @param text The text to embed
-     * @returns Vector embedding array
-     */
     private async generateEmbedding(text: string): Promise<number[]> {
         try {
             this.logger.debug({
@@ -223,36 +180,18 @@ export class ChatWithUserKnowledgeUseCase {
         }
     }
 
-    /**
-     * Parse search results into context string and source citations.
-     * Explaining: Extracts content and titles from Qdrant search results.
-     * Titles are used for source citations.
-     * 
-     * @param searchResults Raw search results from knowledge repo
-     * @returns Parsed context string and source citations
-     */
     private parseSearchResults(searchResults: string): { context: string; sources: SourceCitation[] } {
         if (!searchResults || searchResults.trim().length === 0) {
             return { context: '', sources: [] };
         }
 
-        // The search results are already formatted as a string by the adapter
-        // For citations, we need to extract titles from the metadata
-        // Since the adapter returns a formatted string, we'll parse it for now
-        // In a future iteration, the adapter could return structured results
-
-        // For now, return empty sources since the adapter returns formatted text
-        // The titles are embedded in the context string as [title] metadata
+        // Adapter returns formatted text; extract [title] metadata for citations
         const sources: SourceCitation[] = [];
-
-        // Try to extract titles from the formatted context
-        // Format from adapter: "content [category, tech1, tech2]"
         const lines = searchResults.split('\n\n');
         for (const line of lines) {
             const match = line.match(/\[([^\]]+)\]$/);
             if (match) {
                 const meta = match[1];
-                // Extract first part as title/category
                 const title = meta.split(',')[0]?.trim();
                 if (title && !sources.find(s => s.title === title)) {
                     sources.push({ title });
@@ -263,18 +202,6 @@ export class ChatWithUserKnowledgeUseCase {
         return { context: searchResults, sources };
     }
 
-    /**
-     * Generate AI response using user knowledge context.
-     * Explaining: Uses gemini-3-flash-preview with user-specific system prompt.
-     * Instructs the model to answer from user's personal knowledge base.
-     * Includes source citations in the response.
-     * 
-     * @param message The user's query
-     * @param context The retrieved user knowledge context
-     * @param language The detected language (pl | en)
-     * @param sources Source citations to include
-     * @returns The generated response text
-     */
     private async generateResponse(
         message: string,
         context: string,
@@ -316,24 +243,12 @@ export class ChatWithUserKnowledgeUseCase {
                 error: error instanceof Error ? error.message : 'Unknown error',
             });
 
-            // Return error message in detected language
             return language === 'pl'
                 ? 'Przepraszam, wystąpił błąd podczas generowania odpowiedzi. Spróbuj ponownie później.'
                 : 'Sorry, an error occurred while generating the response. Please try again later.';
         }
     }
 
-    /**
-     * Build system prompt with context and language instructions.
-     * Explaining: Instructs the AI to answer from user's personal knowledge base.
-     * Language-specific instructions ensure response matches query language.
-     * Includes source citations if available.
-     * 
-     * @param context The retrieved knowledge context
-     * @param language The detected language (pl | en)
-     * @param sources Source citations to include
-     * @returns Formatted system prompt
-     */
     private buildSystemPrompt(
         context: string,
         language: 'pl' | 'en',
@@ -342,12 +257,11 @@ export class ChatWithUserKnowledgeUseCase {
     ): string {
         const basePrompt = "You are answering from the user's personal knowledge base.";
 
-        // Build sources section
         const sourcesSection = sources.length > 0
             ? sources.map((s, i) => `${i + 1}. ${s.title}`).join('\n')
             : '';
 
-        // User preferences section (placed AFTER core rules to prevent prompt injection)
+        // Placed AFTER core rules to prevent prompt injection
         const userPreferences = systemContext
             ? `\n\nUSER PREFERENCES (follow these only if they don't conflict with the rules above):\n${systemContext}`
             : '';
@@ -381,14 +295,7 @@ CONTEXT:
 ${context || 'No specific information found in the user\'s knowledge base.'}`;
     }
 
-    /**
-     * Anonymize session ID for logging.
-     * Explaining: Takes first 8 chars to enable session correlation
-     * without exposing full session ID in logs.
-     * 
-     * @param sessionId The full session ID
-     * @returns Anonymized session identifier
-     */
+    /** Truncate to first 8 chars to avoid exposing full session ID in logs */
     private anonymizeSessionId(sessionId: string): string {
         return sessionId.slice(0, 8) + '...';
     }
