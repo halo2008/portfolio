@@ -109,6 +109,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     tech: ["RAG", "Qdrant", "Gemini AI", "Firebase Auth", "Vector Search"],
                     result: "Secure, isolated environment for experimenting with RAG technology on your own documents.",
                     iconName: 'FlaskConical',
+                    image: asset("img/airag.jpg"),
                     link: '/lab',
                     image: asset("img/airag.webp"),
                     languageBadge: 'en'
@@ -380,6 +381,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     tech: ["RAG", "Qdrant", "Gemini AI", "Firebase Auth", "Vector Search"],
                     result: "Bezpieczne, izolowane środowisko do eksperymentowania z technologią RAG na własnych dokumentach.",
                     iconName: 'FlaskConical',
+                    image: asset("img/airag.jpg"),
                     link: '/lab',
                     image: asset("img/airag.webp"),
                     languageBadge: 'pl'
