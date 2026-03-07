@@ -24,21 +24,6 @@ export class AppController {
         };
     }
 
-    @Get('health')
-    healthCheck() {
-        const memoryUsage = process.memoryUsage();
-        return {
-            status: 'OK',
-            timestamp: new Date().toISOString(),
-            uptime: process.uptime(),
-            memory: {
-                rss: `${Math.round(memoryUsage.rss / 1024 / 1024)} MB`,
-                heapTotal: `${Math.round(memoryUsage.heapTotal / 1024 / 1024)} MB`,
-                heapUsed: `${Math.round(memoryUsage.heapUsed / 1024 / 1024)} MB`,
-            }
-        };
-    }
-
     /**
      * Debug endpoint — only accessible with ADMIN_SECRET header.
      * Returns diagnostic info about connectivity to Firestore, Gemini, Qdrant.

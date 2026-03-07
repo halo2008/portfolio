@@ -13,6 +13,7 @@ const clientDistPath = resolve(__dirname, '..', 'dist', 'static');
 // Logger.log(`Serving static files from: ${clientDistPath}`, 'AppModule');
 
 import { AppController } from './app.controller';
+import { HealthController } from './health.controller';
 import { HttpMetricsMiddleware, METRIC_HTTP_DURATION } from './core/metrics/http-metrics.middleware';
 import { MetricsPushService } from './core/metrics/metrics-push.service';
 import { MiddlewareConsumer, NestModule } from '@nestjs/common';
@@ -46,7 +47,7 @@ import { GenAiModule } from './core/genai/genai.module';
         LabModule,
         UsemeModule,
     ],
-    controllers: [AppController],
+    controllers: [AppController, HealthController],
     providers: [
         {
             provide: APP_GUARD,
