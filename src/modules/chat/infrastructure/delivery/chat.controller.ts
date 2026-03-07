@@ -60,10 +60,18 @@ class SourceDto {
  * ChatResponseDto
  * Explaining: Data Transfer Object for chat responses with bilingual support.
  */
+class TimingsDto {
+    embeddingMs!: number;
+    searchMs!: number;
+    llmMs!: number;
+    totalMs!: number;
+}
+
 class ChatResponseDto {
     response!: string;
     sources!: SourceDto[];
     language!: 'pl' | 'en';
+    timings?: TimingsDto;
 }
 
 /**
@@ -237,6 +245,7 @@ export class ChatController {
                 response: result.response,
                 sources: result.sources,
                 language: result.detectedLanguage,
+                timings: result.timings,
             };
         } catch (error) {
             this.logger.error({

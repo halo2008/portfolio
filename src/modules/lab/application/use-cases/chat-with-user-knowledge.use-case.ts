@@ -33,6 +33,20 @@ export interface ChatWithUserKnowledgeInput {
 }
 
 /**
+ * Timing metrics for a single chat request
+ */
+export interface ChatTimings {
+    /** Embedding generation time in ms */
+    embeddingMs: number;
+    /** Qdrant vector search time in ms */
+    searchMs: number;
+    /** Gemini response generation time in ms */
+    llmMs: number;
+    /** Total end-to-end time in ms */
+    totalMs: number;
+}
+
+/**
  * Output from chat with user knowledge use case
  */
 export interface ChatWithUserKnowledgeOutput {
@@ -42,6 +56,8 @@ export interface ChatWithUserKnowledgeOutput {
     detectedLanguage: 'pl' | 'en';
     /** Source citations from retrieved chunks */
     sources: SourceCitation[];
+    /** Performance timings for this request */
+    timings: ChatTimings;
 }
 
 /**
@@ -91,17 +107,23 @@ export class ChatWithUserKnowledgeUseCase {
             messageLength: message.length,
         });
 
+        const totalStart = Date.now();
+
         // Generate embedding for the query
+        const embeddingStart = Date.now();
         const embedding = await this.generateEmbedding(message);
+        const embeddingMs = Date.now() - embeddingStart;
 
         // CRITICAL: Query ONLY user's own knowledge - never admin or other users' vectors
         // This enforces payload.user_id == context.userId filter at the adapter level
+        const searchStart = Date.now();
         const searchResults = await this.knowledgeRepo.searchUserKnowledge(
             embedding,
             context.userId,
             context,
             scoreThreshold,
         );
+        const searchMs = Date.now() - searchStart;
 
         // Parse search results to extract content and sources
         const { context: knowledgeContext, sources } = this.parseSearchResults(searchResults);
@@ -110,6 +132,7 @@ export class ChatWithUserKnowledgeUseCase {
         const sanitizedSystemContext = systemContext?.trim().slice(0, 500);
 
         // Generate response using the user's knowledge context
+        const llmStart = Date.now();
         const response = await this.generateResponse(
             message,
             knowledgeContext,
@@ -117,6 +140,9 @@ export class ChatWithUserKnowledgeUseCase {
             sources,
             sanitizedSystemContext,
         );
+        const llmMs = Date.now() - llmStart;
+
+        const totalMs = Date.now() - totalStart;
 
         // Record token usage (estimate)
         // 1 token ≈ 4 chars for prompt + context + response
@@ -124,10 +150,15 @@ export class ChatWithUserKnowledgeUseCase {
         const estimatedTokens = Math.ceil(totalChars / 4) + 100; // 100 base tokens
         await this.labUsageService.recordChat(context.userId, estimatedTokens);
 
+        const timings: ChatTimings = { embeddingMs, searchMs, llmMs, totalMs };
+
+        this.logger.log({ timings }, 'Chat request timings');
+
         return {
             response,
             detectedLanguage,
             sources,
+            timings,
         };
     }
 

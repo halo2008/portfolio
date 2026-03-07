@@ -25,11 +25,19 @@ import { LabStatsPanel } from '../components/LabStatsPanel';
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 // Types
+interface ChatTimings {
+  embeddingMs: number;
+  searchMs: number;
+  llmMs: number;
+  totalMs: number;
+}
+
 interface Message {
   id: string;
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
+  timings?: ChatTimings;
 }
 
 interface ChunkSource {
@@ -41,6 +49,7 @@ interface ChatResponse {
   response: string;
   sources: ChunkSource[];
   language: 'pl' | 'en';
+  timings?: ChatTimings;
 }
 
 interface ChatState {
@@ -271,6 +280,7 @@ const LabChat: React.FC = () => {
         role: 'assistant',
         content: data.response,
         timestamp: new Date(),
+        timings: data.timings,
       };
 
       setMessages((prev) => [...prev, assistantMessage]);
@@ -421,13 +431,26 @@ const LabChat: React.FC = () => {
                     >
                       <div className="text-sm whitespace-pre-wrap">{message.content}</div>
                       <div
-                        className={`text-xs mt-2 ${message.role === 'user' ? 'text-darker/60' : 'text-slate-500'
+                        className={`text-xs mt-2 flex items-center gap-3 ${message.role === 'user' ? 'text-darker/60' : 'text-slate-500'
                           }`}
                       >
-                        {message.timestamp.toLocaleTimeString(language === 'pl' ? 'pl-PL' : 'en-US', {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
+                        <span>
+                          {message.timestamp.toLocaleTimeString(language === 'pl' ? 'pl-PL' : 'en-US', {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                          })}
+                        </span>
+                        {message.timings && (
+                          <span className="flex items-center gap-2 font-mono text-[10px] text-slate-600">
+                            <span title="Embedding">emb {message.timings.embeddingMs}ms</span>
+                            <span className="text-slate-700">·</span>
+                            <span title="Qdrant search">search {message.timings.searchMs}ms</span>
+                            <span className="text-slate-700">·</span>
+                            <span title="Gemini LLM">llm {message.timings.llmMs}ms</span>
+                            <span className="text-slate-700">·</span>
+                            <span title="Total" className="text-primary/60">Σ {message.timings.totalMs}ms</span>
+                          </span>
+                        )}
                       </div>
                     </div>
                   </div>
