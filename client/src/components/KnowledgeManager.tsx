@@ -241,7 +241,7 @@ export const KnowledgeManager: React.FC = () => {
             const token = await user.getIdToken();
 
             const payload = {
-                chunks: chunks.filter(c => c.content.trim() !== ''),
+                chunks: chunks.filter(c => c.content.trim() !== '').map(c => ({ content: c.content, title: c.title })),
                 category,
                 tags: tags.split(',').map(t => t.trim()).filter(Boolean),
                 language: detectedLanguage
