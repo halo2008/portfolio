@@ -28,6 +28,7 @@ import { LabUsageService, LabUsageStats } from '../../application/services/lab-u
 import { LabMetricsService } from '../metrics/lab-metrics.service';
 import { Inject } from '@nestjs/common';
 import * as admin from 'firebase-admin';
+import * as crypto from 'crypto';
 import { UserId } from '../../domain/value-objects/user-id.vo';
 
 interface RequestWithRagContext extends Request {

@@ -8,6 +8,7 @@ import { AnalyzeDocumentUseCase } from './application/use-cases/analyze-document
 import { ConfirmIndexUseCase } from './application/use-cases/confirm-index.use-case';
 import { ChatWithUserKnowledgeUseCase } from './application/use-cases/chat-with-user-knowledge.use-case';
 import { LabController } from './infrastructure/delivery/lab.controller';
+import { LabSessionController } from './infrastructure/delivery/lab-session.controller';
 import { CleanupController } from './infrastructure/delivery/cleanup.controller';
 import { EPHEMERAL_USER_REPO_PORT } from './domain/ports/ephemeral-user-repo.port';
 import { FirestoreEphemeralUserAdapter } from './infrastructure/adapters/firestore-ephemeral-user.adapter';
@@ -35,7 +36,7 @@ const securityInterceptorProvider: Provider = {
 
 @Module({
     imports: [forwardRef(() => KnowledgeModule)],
-    controllers: [LabController, CleanupController],
+    controllers: [LabController, LabSessionController, CleanupController],
     providers: [
         securityInterceptorProvider,
         makeCounterProvider({
