@@ -10,7 +10,7 @@ import { GetKnowledgeStatsUseCase } from '../../application/use-cases/get-knowle
 import { ANALYSIS_PORT, AnalysisPort } from '../../../lab/domain/ports/analysis.port';
 import { ConfirmAdminIndexUseCase, ConfirmAdminIndexInput, AdminIndexResultDto } from '../../application/use-cases/confirm-admin-index.use-case';
 import { ConfirmIndexUseCase } from '../../../lab/application/use-cases/confirm-index.use-case';
-import { ThrottlerGuard, Throttle } from '@nestjs/throttler';
+import { Throttle } from '@nestjs/throttler';
 import { RagSecurityContext, KNOWLEDGE_REPO_PORT, KnowledgeRepoPort } from '../../domain/ports/knowledge-repo.port';
 import { SecurityInterceptor } from '../../../lab/infrastructure/security/security.interceptor';
 import { UseInterceptors, forwardRef } from '@nestjs/common';
@@ -98,8 +98,8 @@ export class KnowledgeController {
     ) { }
 
     @Post('analyze')
-    @UseGuards(FirebaseAuthGuard, ThrottlerGuard)
-    @Throttle({ demo: { limit: 5, ttl: 60000 } })
+    @UseGuards(FirebaseAuthGuard)
+    @Throttle({ short: { ttl: 60000, limit: 10 } })
     @Roles('admin')
     async analyzeText(
         @Body('text') text: string,
@@ -138,7 +138,7 @@ export class KnowledgeController {
     }
 
     @Post('demo-batch')
-    @UseGuards(FirebaseAuthGuard, ThrottlerGuard)
+    @UseGuards(FirebaseAuthGuard)
     @UseInterceptors(SecurityInterceptor)
     @Throttle({ demo: { limit: 5, ttl: 60000 } })
     async ingestDemoBatch(

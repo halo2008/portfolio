@@ -3,11 +3,14 @@ import { QdrantClient } from '@qdrant/js-client-rest';
 import { KnowledgeFilter, KnowledgePoint, KnowledgeRepoPort, RagSecurityContext } from '../../domain/ports/knowledge-repo.port';
 import { QDRANT_CLIENT } from '../../../qdrant/qdrant.provider';
 
+interface QdrantFilterCondition {
+    key: string;
+    match?: { value?: string; any?: string[] };
+}
+
 interface QdrantFilter {
-    must?: Array<{
-        key: string;
-        match: { value?: string; any?: string[] };
-    }>;
+    must?: QdrantFilterCondition[];
+    must_not?: QdrantFilterCondition[];
 }
 
 @Injectable()
@@ -81,12 +84,20 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
     }
 
     private buildUserFilter(userId: string, chunkingStrategy?: 'llm' | 'heuristic' | 'all'): QdrantFilter {
-        const must: QdrantFilter['must'] = [
+        const must: QdrantFilterCondition[] = [
             { key: 'user_id', match: { value: userId } },
         ];
+
         if (chunkingStrategy && chunkingStrategy !== 'all') {
-            must.push({ key: 'chunking_strategy', match: { value: chunkingStrategy } });
+            if (chunkingStrategy === 'heuristic') {
+                // Heuristic: only explicitly tagged chunks
+                must.push({ key: 'chunking_strategy', match: { value: 'heuristic' } });
+            } else {
+                // LLM: exclude heuristic — includes both explicit 'llm' AND legacy chunks without the field
+                return { must, must_not: [{ key: 'chunking_strategy', match: { value: 'heuristic' } }] };
+            }
         }
+
         return { must };
     }
 
@@ -228,10 +239,12 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
                 filter,
             });
 
-            this.logger.debug({
+            this.logger.log({
                 msg: 'Admin knowledge search performed',
                 userId: context.userId,
                 resultsCount: results.length,
+                scoreThreshold,
+                topScore: results[0]?.score ?? null,
             });
 
             return this.formatSearchResults(results);
@@ -283,10 +296,13 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
                 filter,
             });
 
-            this.logger.debug({
+            this.logger.log({
                 msg: 'User knowledge search performed',
                 userId,
                 resultsCount: results.length,
+                scoreThreshold,
+                chunkingStrategy: chunkingStrategy || 'all',
+                topScore: results[0]?.score ?? null,
             });
 
             return this.formatSearchResults(results);
