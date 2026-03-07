@@ -21,14 +21,14 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             tags: ["DevOps", "Kubernetes", "Industrial IoT"],
             cta: "View Case Studies",
             ctaSecondary: "Discuss Your Project",
-            profileImage: asset("portrait.jpg")
+            profileImage: asset("portrait.webp")
         },
         philosophy: {
             title: "Engineering Pragmatism over Hype.",
             description: "I am not just a coder. With over a decade of experience in mechanics and production management, I understand that software is merely a tool to solve business problems. My path from repairing heavy machinery to architecting scalable Kubernetes clusters and training AI models gives me a unique advantage: I know how things work from the inside out.",
             differentiatorTitle: "Reliability & Automation",
             differentiator: "I don't build over-complicated solutions. I build reliable, secure, and automated systems that drive efficiency—whether it's on a production line or in a Google Cloud cluster.",
-            image: asset("img/industrial.jpg")
+            image: asset("img/industrial.webp")
         },
         projects: {
             title: "Featured Projects",
@@ -43,7 +43,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     tech: ["Kubernetes", "DevSecOps", "GKE", "Terraform", "Vault"],
                     result: "Eliminated downtime (Zero Downtime Deployments), fully automated Disaster Recovery, and ensured security compliance.",
                     iconName: 'Cloud',
-                    image: asset("img/gke.jpg")
+                    image: asset("img/gke.webp")
                 },
                 {
                     id: '2',
@@ -54,7 +54,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     tech: ["IoT", "NestJS", "RS232", "Hardware", "FFmpeg"],
                     result: "Automatic weight logging upon license plate recognition. 100% digitalization of the goods receipt process.",
                     iconName: 'Wifi',
-                    image: asset("img/anpr.jpg")
+                    image: asset("img/anpr.webp")
                 },
                 {
                     id: '3',
@@ -65,7 +65,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     tech: ["GenAI", "RAG", "Python", "Local LLM", "Privacy"],
                     result: "Secure generation of personalized offers without data leakage (GDPR compliant).",
                     iconName: 'Brain',
-                    image: asset("img/ai.jpg")
+                    image: asset("img/ai.webp")
                 },
                 {
                     id: '4',
@@ -76,7 +76,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     tech: ["Android", "Kotlin", "Zebra", "CPCL", "Firebase"],
                     result: "Full control over steel labeling process and automatic reporting of sales department KPIs.",
                     iconName: 'Smartphone',
-                    image: asset("img/mobile.jpg")
+                    image: asset("img/mobile.webp")
                 },
                 {
                     id: '5',
@@ -87,7 +87,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     tech: ["AI", "Computer Vision", "R&D", "Process Automation"],
                     result: "Data extraction accuracy increased from 75% to 95%.",
                     iconName: 'Brain',
-                    image: asset("img/invoice.jpg")
+                    image: asset("img/invoice.webp")
                 },
                 {
                     id: '6',
@@ -98,7 +98,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     tech: ["Microservices", "Docker", "Redis", "WebSockets"],
                     result: "Functional MVP supporting multiple tenants with data isolation.",
                     iconName: 'Bot',
-                    image: asset("img/chat.jpg")
+                    image: asset("img/chat.webp")
                 },
                 {
                     id: '7',
@@ -110,6 +110,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     result: "Secure, isolated environment for experimenting with RAG technology on your own documents.",
                     iconName: 'FlaskConical',
                     link: '/lab',
+                    image: asset("img/airag.webp"),
                     languageBadge: 'en'
                 }
             ]
@@ -273,7 +274,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 bio: "Hi, I'm Konrad. I design infrastructure for industry daily. I built this tool because I was tired of searching through 500-page PDFs. I prioritize reliability and security over hype.",
                 name: "Konrad Sędkowski",
                 role: "Senior DevOps & Founder",
-                image: asset("portrait.jpg"),
+                image: asset("portrait.webp"),
                 linkedin: "https://linkedin.com/in/placeholder"
             }
         }
@@ -288,7 +289,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             tags: ["DevOps", "Kubernetes", "Industrial IoT"],
             cta: "Zobacz Case Studies",
             ctaSecondary: "Omów Projekt",
-            profileImage: asset("portrait.jpg")
+            profileImage: asset("portrait.webp")
         },
 
         philosophy: {
@@ -296,7 +297,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             description: "Nie jestem tylko koderem. Z ponad dekadą doświadczenia w mechanice i zarządzaniu produkcją, rozumiem, że software to tylko narzędzie do rozwiązywania problemów biznesowych. Moja droga od naprawy ciężkich maszyn do architektury klastrów Kubernetes daje mi unikalną przewagę: wiem, jak rzeczy działają od środka.",
             differentiatorTitle: "Niezawodność i Automatyzacja",
             differentiator: "Nie buduję przekomplikowanych rozwiązań. Buduję niezawodne, bezpieczne i zautomatyzowane systemy, które napędzają efektywność – czy to na linii produkcyjnej, czy w klastrze Google Cloud.",
-            image: asset("img/industrial.jpg")
+            image: asset("img/industrial.webp")
         },
         projects: {
             title: "Wybrane Projekty",
@@ -311,7 +312,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     tech: ["Kubernetes", "DevSecOps", "GKE", "Terraform", "Vault"],
                     result: "Eliminacja przestojów (Zero Downtime Deployments), pełna automatyzacja odzyskiwania (Disaster Recovery) i zgodność ze standardami bezpieczeństwa.",
                     iconName: 'Cloud',
-                    image: asset("img/gke.jpg")
+                    image: asset("img/gke.webp")
                 },
                 {
                     id: '2',
@@ -322,7 +323,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     tech: ["IoT", "NestJS", "RS232", "Hardware", "FFmpeg"],
                     result: "Automatyczny zapis wagi po rozpoznaniu tablicy rejestracyjnej. 100% cyfryzacja procesu przyjęcia towaru.",
                     iconName: 'Wifi',
-                    image: asset("img/anpr.jpg")
+                    image: asset("img/anpr.webp")
                 },
                 {
                     id: '3',
@@ -333,7 +334,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     tech: ["GenAI", "RAG", "Python", "Local LLM", "Privacy"],
                     result: "Bezpieczne generowanie spersonalizowanych ofert bez wycieku danych (GDPR compliant).",
                     iconName: 'Brain',
-                    image: asset("img/ai.jpg")
+                    image: asset("img/ai.webp")
                 },
                 {
                     id: '4',
@@ -344,7 +345,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     tech: ["Android", "Kotlin", "Zebra", "CPCL", "Firebase"],
                     result: "Pełna kontrola nad procesem etykietowania stali i automatyczne raportowanie KPI działu handlowego.",
                     iconName: 'Smartphone',
-                    image: asset("img/mobile.jpg")
+                    image: asset("img/mobile.webp")
                 },
                 {
                     id: '5',
@@ -355,7 +356,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     tech: ["AI", "Computer Vision", "R&D", "Process Automation"],
                     result: "Wzrost skuteczności ekstrakcji danych z 75% do 95%.",
                     iconName: 'Brain',
-                    image: asset("img/invoice.jpg")
+                    image: asset("img/invoice.webp")
                 },
                 {
                     id: '6',
@@ -366,7 +367,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     tech: ["Microservices", "Docker", "Redis", "WebSockets"],
                     result: "Działający MVP obsługujący wielu tenantów z izolacją danych.",
                     iconName: 'Bot',
-                    image: asset("img/chat.jpg")
+                    image: asset("img/chat.webp")
                 },
                 {
                     id: '7',
@@ -378,6 +379,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     result: "Bezpieczne, izolowane środowisko do eksperymentowania z technologią RAG na własnych dokumentach.",
                     iconName: 'FlaskConical',
                     link: '/lab',
+                    image: asset("img/airag.webp"),
                     languageBadge: 'pl'
                 }
             ]
@@ -541,7 +543,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 bio: "Cześć, jestem Konrad. Na co dzień projektuję infrastrukturę dla przemysłu. Zbudowałem to narzędzie, bo miałem dość szukania w PDF-ach. Stawiam na niezawodność, nie na hype.",
                 name: "Konrad Sędkowski",
                 role: "Senior DevOps & Founder",
-                image: asset("portrait.jpg"),
+                image: asset("portrait.webp"),
                 linkedin: "https://linkedin.com/in/placeholder"
             }
         }

@@ -1,7 +1,7 @@
 import { PortfolioContent } from './types';
 
 const IMAGES = {
-  portrait: "/portrait.jpg",
+  portrait: "/portrait.webp",
   factory: "https://image.pollinations.ai/prompt/Heavy%20Industry%20Factory%20Floor%20Sparks%20Welding%20Robot%20Arm%20IoT%20Sensors%20Data%20Cables%20Connecting%20To%20Cloud%20Hologram%20Overlay?width=1024&height=1024&nologo=true",
   projectA: "https://image.pollinations.ai/prompt/Industrial%20Logistics%20Truck%20Weighing%20Station%20Night%20Cyberpunk%20Neon%20Lights%20Rain%20Reflections%20High%20Tech%20Overlay%20UI%20Data%20Visualization%204k%20realistic?width=1024&height=1024&nologo=true",
   projectB: "https://image.pollinations.ai/prompt/Artificial%20Intelligence%20Brain%20Neural%20Network%20Glowing%20Synapses%20Data%20Flow%20Digital%20Art%20Dark%20Background%20Blue%20Purple%20Neon?width=1024&height=1024&nologo=true",
@@ -207,7 +207,7 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
         headline: "Enterprise AI Assistant",
         subheadline: "RAG-powered Slack bot for instant document queries. Upload PDFs, get answers backed by your knowledge base.",
         cta: "Try Demo",
-        demoImage: "/img/chat.jpg"
+        demoImage: "/img/chat.webp"
       },
       howItWorks: {
         title: "How It Works",
@@ -244,7 +244,7 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
         bio: "Infrastructure Architect & SRE Consultant specializing in GKE, RAG systems, and Industrial IoT. Building enterprise-grade solutions that bridge physical and digital infrastructure.",
         name: "Konrad Sędkowski",
         role: "Infrastructure Architect & SRE Consultant",
-        image: "/portrait.jpg",
+        image: "/portrait.webp",
         linkedin: "https://linkedin.com/in/konrad-sedkowski"
       }
     },
@@ -441,7 +441,7 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
         headline: "Enterprise AI Assistant",
         subheadline: "RAG-powered Slack bot do natychmiastowych zapytań o dokumenty. Prześlij PDF-y, otrzymaj odpowiedzi wsparte bazą wiedzy.",
         cta: "Wypróbuj Demo",
-        demoImage: "/img/chat.jpg"
+        demoImage: "/img/chat.webp"
       },
       howItWorks: {
         title: "Jak To Działa",
@@ -478,7 +478,7 @@ export const TRANSLATIONS: Record<'en' | 'pl', PortfolioContent> = {
         bio: "Infrastructure Architect & SRE Consultant specjalizujący się w GKE, systemach RAG i Industrial IoT. Budowanie rozwiązań klasy enterprise łączących infrastrukturę fizyczną i cyfrową.",
         name: "Konrad Sędkowski",
         role: "Infrastructure Architect & SRE Consultant",
-        image: "/portrait.jpg",
+        image: "/portrait.webp",
         linkedin: "https://linkedin.com/in/konrad-sedkowski"
       }
     },
