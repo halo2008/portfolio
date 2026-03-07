@@ -117,9 +117,13 @@ export class ChatController {
                 context,
             );
 
+            this.telemetry.observeVectorSearchLatency(result.timings.searchMs);
+            this.telemetry.observeLlmLatency(result.timings.llmMs);
+            this.telemetry.incrementLlmRequests();
+
             return {
                 response: result.response,
-                sources: [], // Admin knowledge doesn't return sources in the same way
+                sources: [],
                 language: result.detectedLanguage,
             };
         } catch (error) {

@@ -16,6 +16,12 @@ export interface ChatWithAdminKnowledgeInput {
 export interface ChatWithAdminKnowledgeOutput {
     response: string;
     detectedLanguage: 'pl' | 'en';
+    timings: {
+        embeddingMs: number;
+        searchMs: number;
+        llmMs: number;
+        totalMs: number;
+    };
 }
 
 @Injectable()
@@ -37,6 +43,7 @@ export class ChatWithAdminKnowledgeUseCase {
         const { message, sessionId } = input;
 
         const detectedLanguage = this.detectLanguage(message);
+        const totalStart = Date.now();
 
         this.logger.log({
             msg: 'Main page chat query',
@@ -45,16 +52,21 @@ export class ChatWithAdminKnowledgeUseCase {
             messageLength: message.length,
         });
 
+        const embeddingStart = Date.now();
         const embedding = await this.generateEmbedding(message);
+        const embeddingMs = Date.now() - embeddingStart;
 
         // CRITICAL: Query ONLY admin knowledge - never user-specific vectors
+        const searchStart = Date.now();
         const knowledgeContext = await this.knowledgeRepo.searchAdminKnowledge(
             embedding,
             context,
         );
+        const searchMs = Date.now() - searchStart;
 
         const settings = await this.adminSettings.getSettings();
 
+        const llmStart = Date.now();
         const response = await this.generateResponse(
             message,
             knowledgeContext,
@@ -62,10 +74,16 @@ export class ChatWithAdminKnowledgeUseCase {
             settings.systemPrompt,
             settings.modelName,
         );
+        const llmMs = Date.now() - llmStart;
+        const totalMs = Date.now() - totalStart;
+
+        const timings = { embeddingMs, searchMs, llmMs, totalMs };
+        this.logger.log({ timings }, 'Main page chat timings');
 
         return {
             response,
             detectedLanguage,
+            timings,
         };
     }
 

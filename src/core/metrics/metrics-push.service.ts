@@ -33,6 +33,16 @@ export class MetricsPushService implements OnModuleInit, OnModuleDestroy {
         try {
             const metrics = await client.register.getMetricsAsJSON();
 
+            // Debug: log histogram metrics to verify they're being captured
+            for (const metric of metrics) {
+                if (String(metric.type) === 'histogram') {
+                    const nonZeroValues = metric.values.filter(v => Number(v.value) > 0);
+                    if (nonZeroValues.length > 0) {
+                        this.logger.log(`Histogram ${metric.name}: ${nonZeroValues.length} non-zero values (sample: ${JSON.stringify(nonZeroValues[0])})`);
+                    }
+                }
+            }
+
             const timeseries = this.convertToTimeSeries(metrics);
 
             if (timeseries.length === 0) return;
