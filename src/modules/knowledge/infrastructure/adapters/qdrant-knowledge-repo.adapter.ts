@@ -203,7 +203,8 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
 
     async searchAdminKnowledge(
         query: number[],
-        context: RagSecurityContext
+        context: RagSecurityContext,
+        scoreThreshold = 0.7,
     ): Promise<string> {
         this.validateContext(context);
 
@@ -223,7 +224,7 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
                 limit: 5,
                 with_payload: true,
                 with_vector: false,
-                score_threshold: 0.7,
+                score_threshold: scoreThreshold,
                 filter,
             });
 
@@ -262,7 +263,7 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
             throw new ForbiddenException('Cannot search knowledge belonging to another user');
         }
 
-        if (context.role !== 'demo') {
+        if (context.role !== 'demo' && context.role !== 'admin') {
             this.logger.warn({
                 userId: context.userId,
                 role: context.role,
@@ -344,7 +345,7 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
     async deleteByUserId(userId: string, context: RagSecurityContext): Promise<number> {
         this.validateContext(context);
 
-        if (context.role !== 'demo' || context.userId !== userId) {
+        if ((context.role !== 'demo' && context.role !== 'admin') || context.userId !== userId) {
             this.logger.warn({
                 requesterId: context.userId,
                 targetUserId: userId,

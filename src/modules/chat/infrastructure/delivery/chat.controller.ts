@@ -168,7 +168,7 @@ export class ChatController {
             throw new ForbiddenException('Security context missing');
         }
 
-        if (context.role !== 'demo') {
+        if (context.role !== 'demo' && context.role !== 'admin') {
             this.logger.warn({
                 msg: 'SECURITY VIOLATION: Invalid role for lab chat',
                 userId: context.userId,

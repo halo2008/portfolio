@@ -52,6 +52,8 @@ export class ChatWithAdminKnowledgeUseCase {
             messageLength: message.length,
         });
 
+        const settings = await this.adminSettings.getSettings();
+
         const embeddingStart = Date.now();
         const embedding = await this.generateEmbedding(message);
         const embeddingMs = Date.now() - embeddingStart;
@@ -61,10 +63,9 @@ export class ChatWithAdminKnowledgeUseCase {
         const knowledgeContext = await this.knowledgeRepo.searchAdminKnowledge(
             embedding,
             context,
+            settings.scoreThreshold,
         );
         const searchMs = Date.now() - searchStart;
-
-        const settings = await this.adminSettings.getSettings();
 
         const llmStart = Date.now();
         const response = await this.generateResponse(

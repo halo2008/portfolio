@@ -5,11 +5,13 @@ import { FIRESTORE_DB } from '../../../../core/firestore/firestore.provider';
 export interface AdminSettings {
     systemPrompt: string;
     modelName: string;
+    scoreThreshold: number;
 }
 
 const DEFAULTS: AdminSettings = {
     systemPrompt: '',
     modelName: 'gemini-3-flash-preview',
+    scoreThreshold: 0.7,
 };
 
 @Injectable()
@@ -38,6 +40,7 @@ export class AdminSettingsService {
                 this.cache = {
                     systemPrompt: data.systemPrompt ?? DEFAULTS.systemPrompt,
                     modelName: data.modelName ?? DEFAULTS.modelName,
+                    scoreThreshold: data.scoreThreshold ?? DEFAULTS.scoreThreshold,
                 };
             } else {
                 this.cache = { ...DEFAULTS };
@@ -58,6 +61,7 @@ export class AdminSettingsService {
         const updated: AdminSettings = {
             systemPrompt: partial.systemPrompt ?? current.systemPrompt,
             modelName: partial.modelName ?? current.modelName,
+            scoreThreshold: partial.scoreThreshold ?? current.scoreThreshold,
         };
 
         await this.db.collection(this.COLLECTION).doc(this.DOC_ID).set(updated, { merge: true });

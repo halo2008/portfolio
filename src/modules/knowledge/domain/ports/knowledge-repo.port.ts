@@ -36,7 +36,7 @@ export interface KnowledgeRepoPort {
     browsePoints(category?: string, limit?: number, offset?: string): Promise<{ points: KnowledgePoint[]; nextOffset?: string }>;
 
     /** Searches strictly admin-only vectors. */
-    searchAdminKnowledge(query: number[], context: RagSecurityContext): Promise<string>;
+    searchAdminKnowledge(query: number[], context: RagSecurityContext, scoreThreshold?: number): Promise<string>;
 
     /** Searches strictly user-owned vectors (isolated by userId). */
     searchUserKnowledge(query: number[], userId: string, context: RagSecurityContext, scoreThreshold?: number, chunkingStrategy?: 'llm' | 'heuristic' | 'all'): Promise<string>;

@@ -61,6 +61,7 @@ export const KnowledgeManager: React.FC = () => {
     // Admin settings state
     const [systemPrompt, setSystemPrompt] = useState('');
     const [modelName, setModelName] = useState('gemini-3-flash-preview');
+    const [scoreThreshold, setScoreThreshold] = useState(0.7);
     const [settingsLoading, setSettingsLoading] = useState(false);
     const [settingsSaved, setSettingsSaved] = useState(false);
 
@@ -96,6 +97,7 @@ export const KnowledgeManager: React.FC = () => {
                 const data = await res.json();
                 setSystemPrompt(data.systemPrompt || '');
                 setModelName(data.modelName || 'gemini-3-flash-preview');
+                setScoreThreshold(data.scoreThreshold ?? 0.7);
             }
         } catch (err) {
             console.error('Failed to fetch settings:', err);
@@ -114,7 +116,7 @@ export const KnowledgeManager: React.FC = () => {
                     'Content-Type': 'application/json',
                     Authorization: `Bearer ${token}`,
                 },
-                body: JSON.stringify({ systemPrompt, modelName }),
+                body: JSON.stringify({ systemPrompt, modelName, scoreThreshold }),
             });
             if (!res.ok) throw new Error('Save failed');
             setSettingsSaved(true);
@@ -367,6 +369,27 @@ export const KnowledgeManager: React.FC = () => {
                                 placeholder="Np. Odpowiadaj w pierwszej osobie jako Konrad. Bądź konkretny i profesjonalny. Unikaj zbędnych wstępów."
                                 className="w-full bg-darker border border-slate-700 rounded-sm px-3 py-2 text-white text-sm focus:border-primary focus:outline-none transition-colors resize-none"
                             />
+                        </div>
+                    </div>
+
+                    <div className="mt-4">
+                        <div className="flex items-center gap-2 mb-2">
+                            <Database size={14} className="text-primary" />
+                            <label className="text-xs text-slate-400">Score threshold (precyzja wyszukiwania)</label>
+                            <span className="text-xs font-mono text-primary ml-auto">{scoreThreshold.toFixed(2)}</span>
+                        </div>
+                        <input
+                            type="range"
+                            min="0"
+                            max="1"
+                            step="0.05"
+                            value={scoreThreshold}
+                            onChange={(e) => setScoreThreshold(parseFloat(e.target.value))}
+                            className="w-full h-1.5 bg-slate-700 rounded-sm appearance-none cursor-pointer accent-primary"
+                        />
+                        <div className="flex justify-between text-[10px] text-slate-500 mt-1">
+                            <span>Więcej wyników (mniej trafne)</span>
+                            <span>Mniej wyników (bardziej trafne)</span>
                         </div>
                     </div>
 
