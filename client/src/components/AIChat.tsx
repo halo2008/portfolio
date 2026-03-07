@@ -1,18 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { X, Send, Loader2, Bot, BookOpen } from 'lucide-react';
+import { io, Socket } from 'socket.io-client';
 import { ChatMessage, LoadingState } from '../types';
 import { useLanguage } from '../LanguageContext';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
-// API base URL - same origin for main page chat
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
-
-// Response from POST /chat endpoint
-interface ChatResponse {
-  response: string;
-  sources: { title: string }[];
-  language: 'pl' | 'en';
-}
+const WS_URL = import.meta.env.VITE_WS_URL || '';
 
 const AIChat: React.FC = () => {
   const { content, language } = useLanguage();
@@ -25,6 +18,9 @@ const AIChat: React.FC = () => {
   const [loading, setLoading] = useState<LoadingState>(LoadingState.IDLE);
   const [detectedLanguage, setDetectedLanguage] = useState<'pl' | 'en'>(language === 'pl' ? 'pl' : 'en');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const socketRef = useRef<Socket | null>(null);
+  const streamingTextRef = useRef('');
+  const sessionIdRef = useRef(`main_page_${crypto.randomUUID()}`);
 
   // Disclaimer text based on detected language
   const getDisclaimer = (lang: 'pl' | 'en'): string => {
@@ -43,6 +39,52 @@ const AIChat: React.FC = () => {
     setDetectedLanguage(language === 'pl' ? 'pl' : 'en');
   }, [language, aiChat.initialMessage]);
 
+  // WebSocket connection management
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const socket = io(WS_URL, { transports: ['websocket'] });
+    socketRef.current = socket;
+
+    socket.on('messageToClient', (payload: { sender: string; message: string; isChunk?: boolean }) => {
+      if (payload.isChunk) {
+        streamingTextRef.current += payload.message;
+        setMessages(prev => {
+          const last = prev[prev.length - 1];
+          if (last?.isStreaming) {
+            return [...prev.slice(0, -1), { ...last, text: streamingTextRef.current }];
+          }
+          return [...prev, { role: 'model', text: streamingTextRef.current, timestamp: new Date(), isStreaming: true }];
+        });
+      } else {
+        // Non-chunk message (system message or human takeover)
+        setMessages(prev => [...prev, { role: 'model', text: payload.message, timestamp: new Date() }]);
+        setLoading(LoadingState.SUCCESS);
+      }
+    });
+
+    socket.on('streamComplete', () => {
+      streamingTextRef.current = '';
+      setMessages(prev => {
+        const last = prev[prev.length - 1];
+        if (last?.isStreaming) {
+          return [...prev.slice(0, -1), { ...last, isStreaming: false }];
+        }
+        return prev;
+      });
+      setLoading(LoadingState.SUCCESS);
+    });
+
+    socket.on('connect_error', () => {
+      setLoading(LoadingState.ERROR);
+    });
+
+    return () => {
+      socket.disconnect();
+      socketRef.current = null;
+    };
+  }, [isOpen]);
+
   const toggleChat = () => setIsOpen(!isOpen);
 
   const scrollToBottom = () => {
@@ -53,7 +95,7 @@ const AIChat: React.FC = () => {
     scrollToBottom();
   }, [messages, isOpen]);
 
-  const handleSend = async (e?: React.FormEvent) => {
+  const handleSend = useCallback(async (e?: React.FormEvent) => {
     e?.preventDefault();
     if (!input.trim() || loading === LoadingState.LOADING) return;
 
@@ -62,57 +104,35 @@ const AIChat: React.FC = () => {
       return;
     }
 
+    const socket = socketRef.current;
+    if (!socket?.connected) {
+      console.warn('WebSocket not connected');
+      return;
+    }
+
     const userMsg: ChatMessage = { role: 'user', text: input, timestamp: new Date() };
     setMessages(prev => [...prev, userMsg]);
+    const messageText = input;
     setInput('');
     setLoading(LoadingState.LOADING);
 
     try {
       const token = await executeRecaptcha('chat_submit');
 
-      // Call POST /chat endpoint (admin-only knowledge, CAPTCHA protected)
-      const response = await fetch(`${API_BASE_URL}/chat`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          message: input,
-          sessionId: `main_page_${Date.now()}`,
-          captcha: token,
-        }),
+      socket.emit('messageToServer', {
+        text: messageText,
+        sessionId: sessionIdRef.current,
+        captcha: token,
       });
-
-      if (!response.ok) {
-        const errorBody = await response.text().catch(() => '');
-        console.error('Chat API error:', response.status, errorBody);
-        throw new Error(`HTTP error! status: ${response.status} body: ${errorBody}`);
-      }
-
-      const data: ChatResponse = await response.json();
-
-      // Update detected language from response
-      setDetectedLanguage(data.language);
-
-      const modelMsg: ChatMessage = {
-        role: 'model',
-        text: data.response,
-        timestamp: new Date()
-      };
-
-      setMessages(prev => [...prev, modelMsg]);
-      setLoading(LoadingState.SUCCESS);
     } catch (error) {
       console.error('Chat request failed:', error);
       setLoading(LoadingState.ERROR);
-      const errorDetail = error instanceof Error ? error.message : String(error);
-      console.error('Chat error detail:', errorDetail);
       const errorText = detectedLanguage === 'pl'
         ? 'Przepraszam, wystąpił błąd. Spróbuj ponownie później.'
         : 'Sorry, an error occurred. Please try again later.';
       setMessages(prev => [...prev, { role: 'model', text: errorText, timestamp: new Date() }]);
     }
-  };
+  }, [input, loading, executeRecaptcha, detectedLanguage]);
 
   return (
     <div className="fixed bottom-6 right-6 z-50 font-sans">

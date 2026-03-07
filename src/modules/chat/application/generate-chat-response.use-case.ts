@@ -79,11 +79,14 @@ export class GenerateChatResponseUseCase {
 
     this.telemetry.incrementLlmRequests();
 
-    for await (const chunk of stream) {
-      fullResponse += chunk;
-      yield chunk;
+    try {
+      for await (const chunk of stream) {
+        fullResponse += chunk;
+        yield chunk;
+      }
+    } finally {
+      this.telemetry.observeLlmLatency(performance.now() - streamStart);
     }
-    this.telemetry.observeLlmLatency(performance.now() - streamStart);
 
     try {
       await this.repository.saveMessage(sessionId, 'model', fullResponse);

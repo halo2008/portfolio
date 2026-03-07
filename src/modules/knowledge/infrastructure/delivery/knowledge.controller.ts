@@ -1,5 +1,5 @@
 import { Controller, Post, Delete, Get, Put, Body, Query, UseGuards, Inject, Req, BadRequestException } from '@nestjs/common';
-import { IsString, IsOptional, IsArray, IsIn, ValidateNested, ArrayMinSize, MaxLength } from 'class-validator';
+import { IsString, IsOptional, IsArray, IsIn, ValidateNested, ArrayMinSize, MaxLength, IsNumber, Min, Max } from 'class-validator';
 import { Type } from 'class-transformer';
 import { Request } from 'express';
 import { FirebaseAuthGuard } from '../../../../core/auth/firebase-auth.guard';
@@ -27,6 +27,12 @@ class AdminSettingsDto {
     @IsString()
     @MaxLength(100)
     modelName?: string;
+
+    @IsOptional()
+    @IsNumber()
+    @Min(0)
+    @Max(1)
+    scoreThreshold?: number;
 }
 
 class KnowledgeAtomDto {
