@@ -43,7 +43,9 @@ export class MetricsPushService implements OnModuleInit, OnModuleDestroy {
                 },
             });
 
-            if (result.status !== 200) {
+            if (result.status === 200) {
+                this.logger.debug(`Pushed ${timeseries.length} timeseries to Grafana Cloud`);
+            } else {
                 this.logger.warn(`Metrics push returned ${result.status}: ${result.statusText}`);
             }
         } catch (error) {

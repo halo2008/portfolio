@@ -415,14 +415,14 @@ const LabChat: React.FC = () => {
                           })}
                         </span>
                         {message.timings && (
-                          <span className="flex items-center gap-2 font-mono text-[10px] text-slate-600">
-                            <span title="Embedding">emb {message.timings.embeddingMs}ms</span>
-                            <span className="text-slate-700">·</span>
-                            <span title="Qdrant search">search {message.timings.searchMs}ms</span>
-                            <span className="text-slate-700">·</span>
-                            <span title="Gemini LLM">llm {message.timings.llmMs}ms</span>
-                            <span className="text-slate-700">·</span>
-                            <span title="Total" className="text-primary/60">Σ {message.timings.totalMs}ms</span>
+                          <span className="inline-flex items-center gap-1.5 font-mono text-[11px] bg-darker/60 border border-slate-700/50 rounded-sm px-2 py-0.5 ml-1">
+                            <span className="text-blue-400" title="Embedding">emb {message.timings.embeddingMs}ms</span>
+                            <span className="text-slate-600">·</span>
+                            <span className="text-emerald-400" title="Qdrant search">qdrant {message.timings.searchMs}ms</span>
+                            <span className="text-slate-600">·</span>
+                            <span className="text-amber-400" title="Gemini LLM">llm {message.timings.llmMs}ms</span>
+                            <span className="text-slate-600">·</span>
+                            <span className="text-primary font-bold" title="Total">Σ {message.timings.totalMs}ms</span>
                           </span>
                         )}
                       </div>
@@ -559,17 +559,19 @@ const LabChat: React.FC = () => {
               )}
             </div>
 
-            <div className="px-4 py-3 border-t border-slate-800">
-              <LabStatsPanel
-                stats={{
-                  requestCount: sessionInfo?.usage?.requestCount ?? 0,
-                  analysisTokens: sessionInfo?.usage?.analysisTokens ?? 0,
-                  indexingOps: sessionInfo?.usage?.indexingOps ?? 0,
-                  chatTokens: sessionInfo?.usage?.chatTokens ?? 0,
-                  maxRequests: sessionInfo?.maxRequests ?? 50,
-                }}
-              />
-            </div>
+            {sessionInfo && (
+              <div className="px-4 py-3 border-t border-slate-800">
+                <LabStatsPanel
+                  stats={{
+                    requestCount: sessionInfo.usage?.requestCount ?? 0,
+                    analysisTokens: sessionInfo.usage?.analysisTokens ?? 0,
+                    indexingOps: sessionInfo.usage?.indexingOps ?? 0,
+                    chatTokens: sessionInfo.usage?.chatTokens ?? 0,
+                    maxRequests: sessionInfo.maxRequests ?? 50,
+                  }}
+                />
+              </div>
+            )}
           </div>
         </div>
       </main>

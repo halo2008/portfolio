@@ -14,8 +14,8 @@ import { LoggerModule as PinoLoggerModule } from 'nestjs-pino';
                             username: process.env.LOKI_USERNAME,
                             password: process.env.LOKI_PASSWORD,
                         },
-                        batching: true,
-                        interval: 5,
+                        batching: { interval: 5 },
+                        silenceErrors: false,
                         labels: { application: 'portfolio-backend' },
                     }
                 } : process.env.NODE_ENV !== 'production'

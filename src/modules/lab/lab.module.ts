@@ -23,6 +23,9 @@ import {
     METRIC_LAB_CHAT_TOTAL,
     METRIC_LAB_EMBEDDING_DURATION,
     METRIC_LAB_CHUNKS_INDEXED,
+    METRIC_LAB_SEARCH_DURATION,
+    METRIC_LAB_LLM_DURATION,
+    METRIC_LAB_CHAT_TOTAL_DURATION,
 } from './infrastructure/metrics/lab-metrics.service';
 
 const securityInterceptorProvider: Provider = {
@@ -60,6 +63,21 @@ const securityInterceptorProvider: Provider = {
             name: METRIC_LAB_CHUNKS_INDEXED,
             help: 'Total chunks indexed in lab',
             labelNames: ['user_id'],
+        }),
+        makeHistogramProvider({
+            name: METRIC_LAB_SEARCH_DURATION,
+            help: 'Qdrant vector search duration in ms',
+            buckets: [5, 10, 25, 50, 100, 250, 500],
+        }),
+        makeHistogramProvider({
+            name: METRIC_LAB_LLM_DURATION,
+            help: 'Gemini LLM response duration in ms',
+            buckets: [200, 500, 1000, 2000, 5000, 10000, 20000],
+        }),
+        makeHistogramProvider({
+            name: METRIC_LAB_CHAT_TOTAL_DURATION,
+            help: 'Total lab chat e2e duration in ms',
+            buckets: [500, 1000, 2000, 5000, 10000, 20000, 30000],
         }),
         LabMetricsService,
         {

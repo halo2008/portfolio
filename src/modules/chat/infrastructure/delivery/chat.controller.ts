@@ -190,6 +190,7 @@ export class ChatController {
             );
 
             this.labMetrics.recordChat(context.userId, result.detectedLanguage);
+            this.labMetrics.recordChatTimings(result.timings);
 
             return {
                 response: result.response,
