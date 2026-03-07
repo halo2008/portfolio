@@ -58,12 +58,16 @@ export class ChatWithAdminKnowledgeUseCase {
         const embedding = await this.generateEmbedding(message);
         const embeddingMs = Date.now() - embeddingStart;
 
+        // Extract technology keywords from the user's message for tag-boosted search
+        const extractedTags = await this.extractTags(message);
+
         // CRITICAL: Query ONLY admin knowledge - never user-specific vectors
         const searchStart = Date.now();
         const knowledgeContext = await this.knowledgeRepo.searchAdminKnowledge(
             embedding,
             context,
             settings.scoreThreshold,
+            extractedTags.length > 0 ? extractedTags : undefined,
         );
         const searchMs = Date.now() - searchStart;
 
@@ -207,6 +211,13 @@ RULES:
 
 CONTEXT:
 ${context || 'No specific information found in the knowledge base.'}`;
+    }
+
+    /** Extract technology/topic keywords from user message by matching against tags in the knowledge base */
+    private async extractTags(message: string): Promise<string[]> {
+        const knownTags = await this.knowledgeRepo.getAdminTags();
+        const lowerMessage = message.toLowerCase();
+        return knownTags.filter(tag => lowerMessage.includes(tag));
     }
 
     private anonymizeSessionId(sessionId: string): string {

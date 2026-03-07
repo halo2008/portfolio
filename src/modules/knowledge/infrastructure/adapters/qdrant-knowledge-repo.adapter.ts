@@ -16,6 +16,9 @@ interface QdrantFilter {
 @Injectable()
 export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleInit {
     private readonly logger = new Logger(QdrantKnowledgeRepoAdapter.name);
+    private adminTagsCache: string[] | null = null;
+    private adminTagsCacheExpiry = 0;
+    private readonly TAG_CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
     private readonly COLLECTION_NAME = 'portfolio';
 
     constructor(@Inject(QDRANT_CLIENT) private readonly qdrantClient: QdrantClient) { }
@@ -216,6 +219,7 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
         query: number[],
         context: RagSecurityContext,
         scoreThreshold = 0.7,
+        tags?: string[],
     ): Promise<string> {
         this.validateContext(context);
 
@@ -230,7 +234,8 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
         const filter = this.buildAdminFilter();
 
         try {
-            const results = await this.qdrantClient.search(this.COLLECTION_NAME, {
+            // Phase 1: Standard vector search
+            const vectorResults = await this.qdrantClient.search(this.COLLECTION_NAME, {
                 vector: query,
                 limit: 5,
                 with_payload: true,
@@ -239,15 +244,46 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
                 filter,
             });
 
+            // Phase 2: Tag-boosted search (experimental) — find chunks matching extracted tags
+            let tagResults: typeof vectorResults = [];
+            if (tags && tags.length > 0) {
+                tagResults = await this.qdrantClient.search(this.COLLECTION_NAME, {
+                    vector: query,
+                    limit: 3,
+                    with_payload: true,
+                    with_vector: false,
+                    score_threshold: Math.max(scoreThreshold - 0.15, 0.1),
+                    filter: {
+                        must: [
+                            { key: 'role', match: { value: 'admin' } },
+                            { key: 'technologies', match: { any: tags } },
+                        ],
+                    },
+                });
+            }
+
+            // Merge & deduplicate: vector results first, then tag-boosted extras
+            const seenIds = new Set(vectorResults.map(r => r.id));
+            const merged = [...vectorResults];
+            for (const tagResult of tagResults) {
+                if (!seenIds.has(tagResult.id)) {
+                    merged.push(tagResult);
+                    seenIds.add(tagResult.id);
+                }
+            }
+
             this.logger.log({
                 msg: 'Admin knowledge search performed',
                 userId: context.userId,
-                resultsCount: results.length,
+                vectorHits: vectorResults.length,
+                tagHits: tagResults.length,
+                mergedTotal: merged.length,
+                tags: tags || [],
                 scoreThreshold,
-                topScore: results[0]?.score ?? null,
+                topScore: vectorResults[0]?.score ?? null,
             });
 
-            return this.formatSearchResults(results);
+            return this.formatSearchResults(merged);
         } catch (error) {
             this.logger.error({
                 msg: 'Admin knowledge search failed',
@@ -437,6 +473,38 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
                 role: context.role,
             });
             return 0;
+        }
+    }
+
+    async getAdminTags(): Promise<string[]> {
+        if (this.adminTagsCache && Date.now() < this.adminTagsCacheExpiry) {
+            return this.adminTagsCache;
+        }
+
+        try {
+            const response = await this.qdrantClient.scroll(this.COLLECTION_NAME, {
+                limit: 1000,
+                with_payload: true,
+                with_vector: false,
+                filter: this.buildAdminFilter(),
+            });
+
+            const tags = new Set<string>();
+            for (const point of response.points) {
+                const techs = point.payload?.technologies as string[] | undefined;
+                if (techs) {
+                    techs.forEach(t => tags.add(t.toLowerCase()));
+                }
+            }
+
+            this.adminTagsCache = [...tags];
+            this.adminTagsCacheExpiry = Date.now() + this.TAG_CACHE_TTL_MS;
+
+            this.logger.log({ tagCount: this.adminTagsCache.length }, 'Admin tags cache refreshed');
+            return this.adminTagsCache;
+        } catch (error) {
+            this.logger.warn({ error: (error as Error).message }, 'Failed to fetch admin tags');
+            return this.adminTagsCache || [];
         }
     }
 

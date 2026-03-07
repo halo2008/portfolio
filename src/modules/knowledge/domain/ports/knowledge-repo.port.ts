@@ -35,8 +35,8 @@ export interface KnowledgeRepoPort {
     /** Browse admin knowledge points with pagination. */
     browsePoints(category?: string, limit?: number, offset?: string): Promise<{ points: KnowledgePoint[]; nextOffset?: string }>;
 
-    /** Searches strictly admin-only vectors. */
-    searchAdminKnowledge(query: number[], context: RagSecurityContext, scoreThreshold?: number): Promise<string>;
+    /** Searches strictly admin-only vectors. Optional tags for hybrid tag-boosted search. */
+    searchAdminKnowledge(query: number[], context: RagSecurityContext, scoreThreshold?: number, tags?: string[]): Promise<string>;
 
     /** Searches strictly user-owned vectors (isolated by userId). */
     searchUserKnowledge(query: number[], userId: string, context: RagSecurityContext, scoreThreshold?: number, chunkingStrategy?: 'llm' | 'heuristic' | 'all'): Promise<string>;
@@ -46,4 +46,7 @@ export interface KnowledgeRepoPort {
 
     deleteByUserId(userId: string, context: RagSecurityContext): Promise<number>;
     count(context: RagSecurityContext): Promise<number>;
+
+    /** Returns all unique technology tags from admin knowledge (cached). */
+    getAdminTags(): Promise<string[]>;
 }
