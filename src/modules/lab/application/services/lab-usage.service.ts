@@ -96,7 +96,8 @@ export class LabUsageService {
      */
     async getSessionExpiresAt(userId: string): Promise<string> {
         try {
-            const doc = await this.firestore.collection('ephemeral_users').doc(userId).get();
+            // Read from lab_usage (where incrementUsage writes expiresAt)
+            const doc = await this.firestore.collection(this.COLLECTION_NAME).doc(userId).get();
             if (doc.exists) {
                 const data = doc.data();
                 if (data?.expiresAt) {

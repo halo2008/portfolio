@@ -64,12 +64,18 @@ export class MetricsPushService implements OnModuleInit, OnModuleDestroy {
 
         for (const metric of metrics) {
             for (const value of metric.values) {
+                // Stringify all label values (prom remote write requires strings)
+                const rawLabels = (value.labels || {}) as Record<string, unknown>;
+                const stringLabels: Record<string, string> = {};
+                for (const [k, v] of Object.entries(rawLabels)) {
+                    stringLabels[k] = String(v);
+                }
+
                 const labels: { __name__: string; [key: string]: string } = {
                     __name__: metric.name,
-                    ...((value.labels as Record<string, string>) || {}),
+                    ...stringLabels,
                 };
 
-                // For histograms, append the suffix (le, bucket, sum, count)
                 if ('metricName' in value && typeof value.metricName === 'string') {
                     labels.__name__ = value.metricName;
                 }
