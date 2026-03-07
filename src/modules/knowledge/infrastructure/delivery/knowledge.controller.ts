@@ -105,11 +105,14 @@ export class KnowledgeController {
         @Body('text') text: string,
         @Body('filename') filename: string = 'admin_input.txt',
     ) {
-        const analysisResult = await this.analysisPort.analyzeDocument(text, filename);
+        const analysisResult = await this.analysisPort.analyzeDocument(text, filename, 'llm', 'admin');
         return {
             detectedLanguage: analysisResult.detectedLanguage,
             chunks: analysisResult.chunks.map((chunk) => ({
                 content: chunk.content,
+                title: chunk.title,
+                rationale: chunk.rationale,
+                suggestedTags: chunk.suggestedTags,
                 startLine: chunk.startLine,
                 endLine: chunk.endLine,
             })),

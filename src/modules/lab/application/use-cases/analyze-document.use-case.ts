@@ -15,6 +15,7 @@ export interface AnalysisResultChunkDto {
     content: string;
     title?: string;
     rationale?: string;
+    suggestedTags?: string[];
     startLine: number;
     endLine: number;
 }
@@ -77,6 +78,7 @@ export class AnalyzeDocumentUseCase {
                 content: chunk.content,
                 title: chunk.title,
                 rationale: chunk.rationale,
+                suggestedTags: chunk.suggestedTags,
                 startLine: chunk.startLine,
                 endLine: chunk.endLine,
             })),

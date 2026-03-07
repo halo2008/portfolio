@@ -14,6 +14,8 @@ interface KnowledgeStats {
 interface SemanticChunk {
     title?: string;
     content: string;
+    rationale?: string;
+    suggestedTags?: string[];
 }
 
 interface KnowledgePoint {
@@ -203,7 +205,24 @@ export const KnowledgeManager: React.FC = () => {
 
             const data = await res.json();
             setDetectedLanguage(data.detectedLanguage);
-            setChunks(data.chunks.map((c: any) => ({ title: c.title || '', content: c.content })));
+            setChunks(data.chunks.map((c: any) => ({
+                title: c.title || '',
+                content: c.content,
+                rationale: c.rationale,
+                suggestedTags: c.suggestedTags || [],
+            })));
+
+            // Auto-merge suggested tags from all chunks (deduplicated)
+            const allSuggestedTags = new Set<string>();
+            data.chunks.forEach((c: any) => {
+                (c.suggestedTags || []).forEach((t: string) => allSuggestedTags.add(t));
+            });
+            if (allSuggestedTags.size > 0) {
+                const existingTags = tags.split(',').map(t => t.trim()).filter(Boolean);
+                const merged = [...new Set([...existingTags, ...allSuggestedTags])];
+                setTags(merged.join(', '));
+            }
+
             setStep('review');
         } catch (err: any) {
             setError(err.message);
@@ -516,6 +535,20 @@ export const KnowledgeManager: React.FC = () => {
                                             rows={3}
                                             className="w-full bg-transparent text-sm text-slate-300 resize-y outline-none border border-transparent focus:border-slate-600 rounded-sm px-1 py-0.5 transition-colors min-h-[60px]"
                                         />
+                                        {chunk.rationale && (
+                                            <p className="text-[10px] text-slate-500 italic px-1 mt-1">
+                                                {chunk.rationale}
+                                            </p>
+                                        )}
+                                        {chunk.suggestedTags && chunk.suggestedTags.length > 0 && (
+                                            <div className="flex gap-1 flex-wrap mt-1.5 px-1">
+                                                {chunk.suggestedTags.map((tag, i) => (
+                                                    <span key={i} className="text-[10px] text-primary bg-primary/10 px-1.5 py-0.5 rounded-sm border border-primary/20">
+                                                        {tag}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        )}
                                     </div>
                                 ))}
                             </div>

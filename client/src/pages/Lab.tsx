@@ -44,6 +44,7 @@ interface SemanticChunk {
   content: string;
   title?: string;
   rationale?: string;
+  suggestedTags?: string[];
   startLine?: number;
   endLine?: number;
 }
@@ -909,6 +910,15 @@ const Lab: React.FC = () => {
                         <div>
                           <label className="block text-xs text-slate-500 mb-1">{t.rationaleLabel}</label>
                           <p className="text-xs text-slate-400 bg-darker/50 p-2 rounded-sm">{chunk.rationale}</p>
+                        </div>
+                      )}
+                      {chunk.suggestedTags && chunk.suggestedTags.length > 0 && (
+                        <div className="flex gap-1 flex-wrap">
+                          {chunk.suggestedTags.map((tag, i) => (
+                            <span key={i} className="text-[10px] text-primary bg-primary/10 px-1.5 py-0.5 rounded-sm border border-primary/20">
+                              {tag}
+                            </span>
+                          ))}
                         </div>
                       )}
                     </div>

@@ -2,6 +2,7 @@ import { Injectable, Logger, Inject } from '@nestjs/common';
 import { GoogleGenAI, Type } from '@google/genai';
 import {
     AnalysisPort,
+    AnalysisContext,
     ChunkingStrategy,
     SemanticAnalysisResult,
     AnalysisResultChunk,
@@ -22,14 +23,15 @@ export class VertexAiAnalysisAdapter implements AnalysisPort {
         content: string,
         filename: string,
         strategy: ChunkingStrategy = 'llm',
+        context: AnalysisContext = 'lab',
     ): Promise<SemanticAnalysisResult> {
-        this.logger.log({ filename, strategy }, 'Analyzing document');
+        this.logger.log({ filename, strategy, context }, 'Analyzing document');
 
         if (strategy === 'heuristic') {
             return this.analyzeHeuristic(content);
         }
 
-        const prompt = this.buildPrompt(content, filename);
+        const prompt = this.buildPrompt(content, filename, context);
         return this.executeWithRetry(() => this.callModel(prompt), filename);
     }
 
@@ -176,25 +178,56 @@ export class VertexAiAnalysisAdapter implements AnalysisPort {
         });
     }
 
-    private buildPrompt(content: string, filename: string): string {
-        return `Analyze the following document and extract semantic chunks.
+    private buildPrompt(content: string, filename: string, context: AnalysisContext): string {
+        const domainHint = context === 'admin'
+            ? `
+Domain: This is a personal portfolio / professional knowledge base. The content describes experience, projects, skills, and technical decisions of a specific person.
+- Use first-person references where appropriate (e.g. "Konrad uses Terraform for IaC")
+- Categorize into: Strategy & Philosophy, Cloud & DevOps, AI & RAG Engineering, Industrial IoT & Experience
+- Questions should mirror recruiter/client intent (e.g. "What cloud technologies does Konrad use?")`
+            : `
+Domain: This is a general-purpose document uploaded by a user. The content can be anything: documentation, notes, articles, specifications, reports, etc.
+- Do NOT assume any specific person or project unless explicitly mentioned in the text
+- Derive categories and topics from the actual content
+- Questions should mirror what a reader of this document would naturally ask`;
+
+        return `Role: Act as a Senior Knowledge Engineer and RAG Optimization Specialist.
+
+Objective: Deconstruct the provided raw input and reconstruct it into high-fidelity, Self-Contained QA Atoms optimized for semantic retrieval in a Qdrant-based RAG system.
 
 Filename: ${filename}
+${domainHint}
 
-Detect if document is in Polish or English. Return semantic chunks with detected language.
-
-Document content:
+Raw input:
 ${content}
 
-Instructions:
-1. Detect the primary language of the document (Polish or English)
-2. Split the content into semantic chunks (logical sections)
-3. For each chunk, provide:
-   - A short descriptive title (in the same language as the document)
-   - The chunk content
-   - A brief rationale explaining why this section was chunked this way
-   - Start line number (approximate)
-   - End line number (approximate)
+The Problem to Solve:
+Raw text often lacks clear intent boundaries, leading to fragmented chunks that return low-quality context. Transform this into "Self-Contained QA Atoms" where each chunk is an independent unit of knowledge.
+
+Transformation Requirements:
+
+1. LANGUAGE DETECTION: Detect the primary language of the document (Polish='pl' or English='en').
+
+2. GRANULAR QA PAIRING: Convert raw descriptions into specific Question-Answer pairs.
+   - The "title" field = a natural question that mirrors potential user intent
+   - The "content" field = a complete, self-contained answer
+
+3. CONTEXTUAL SELF-CONTAINMENT: Each answer MUST be fully understandable on its own.
+   - NEVER use relative pronouns like "it," "they," "as mentioned before"
+   - ALWAYS use specific nouns and full names from the document
+   - Include enough context so the answer makes sense without seeing the original document
+
+4. CHUNKING LOGIC:
+   - Maximum 1000 characters per QA pair content
+   - Group related facts together (e.g. a topic with its details and outcomes)
+   - One chunk should answer one specific question or closely related set of questions
+   - Avoid splitting mid-thought
+
+5. SUGGESTED TAGS: For each chunk, suggest 2-5 topic keywords relevant to the content
+
+6. RATIONALE: Brief explanation of why this chunk was created and what questions it answers
+
+7. LINE NUMBERS: Approximate start and end line numbers from the original document
 
 Return ONLY valid JSON matching the specified schema.`;
     }
@@ -222,7 +255,7 @@ Return ONLY valid JSON matching the specified schema.`;
                                 properties: {
                                     content: {
                                         type: Type.STRING,
-                                        description: 'The semantic chunk content',
+                                        description: 'The semantic chunk content, self-contained and readable standalone',
                                     },
                                     title: {
                                         type: Type.STRING,
@@ -231,6 +264,11 @@ Return ONLY valid JSON matching the specified schema.`;
                                     rationale: {
                                         type: Type.STRING,
                                         description: 'Brief explanation of why this section was chunked this way',
+                                    },
+                                    suggestedTags: {
+                                        type: Type.ARRAY,
+                                        items: { type: Type.STRING },
+                                        description: 'Suggested technology/topic tags for this chunk (2-5 keywords)',
                                     },
                                     startLine: {
                                         type: Type.INTEGER,
@@ -241,7 +279,7 @@ Return ONLY valid JSON matching the specified schema.`;
                                         description: 'Ending line number',
                                     },
                                 },
-                                required: ['content', 'title', 'startLine', 'endLine'],
+                                required: ['content', 'title', 'suggestedTags', 'startLine', 'endLine'],
                             },
                         },
                     },

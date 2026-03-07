@@ -88,13 +88,18 @@ export class ConfirmAdminIndexUseCase {
             const chunk = chunks[i];
             const vector = embeddings[i];
 
-            // We use the full content for hash generation to check duplicates
             const hash = this.hashContent(chunk.content);
-            const isDuplicate = await this.knowledgeRepo.checkDuplicate(hash);
 
-            if (isDuplicate) {
-                this.logger.warn(`Duplicate chunk detected, skipping title: ${chunk.title}`);
-                result.duplicates++;
+            try {
+                const isDuplicate = await this.knowledgeRepo.checkDuplicate(hash);
+                if (isDuplicate) {
+                    this.logger.warn(`Duplicate chunk detected, skipping title: ${chunk.title}`);
+                    result.duplicates++;
+                    continue;
+                }
+            } catch (error) {
+                this.logger.error({ error: (error as Error).message, chunkIndex: i }, 'Duplicate check failed');
+                result.errors++;
                 continue;
             }
 
@@ -108,7 +113,7 @@ export class ConfirmAdminIndexUseCase {
                     category: category,
                     technologies: tags,
                     language: language,
-                    role: 'admin', // Fixed role for admin
+                    role: 'admin',
                     timestamp: now,
                     source: 'admin_panel',
                     contentHash: hash,
@@ -118,8 +123,14 @@ export class ConfirmAdminIndexUseCase {
         }
 
         if (allPoints.length > 0) {
-            await this.knowledgeRepo.upsertPoints(allPoints);
-            result.inserted = allPoints.length;
+            try {
+                await this.knowledgeRepo.upsertPoints(allPoints);
+                result.inserted = allPoints.length;
+            } catch (error) {
+                this.logger.error({ error: (error as Error).message }, 'Failed to upsert points to Qdrant');
+                result.errors += allPoints.length;
+                result.ids = [];
+            }
         }
 
         this.logger.log(`Admin Ingestion complete: ${result.inserted} inserted, ${result.duplicates} skipped, ${result.errors} errors`);

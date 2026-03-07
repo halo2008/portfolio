@@ -193,13 +193,22 @@ export class ChatWithUserKnowledgeUseCase {
             return { context: '', sources: [] };
         }
 
-        // Adapter returns formatted text; extract [title] metadata for citations
         const sources: SourceCitation[] = [];
-        const lines = searchResults.split('\n\n');
-        for (const line of lines) {
-            const match = line.match(/\[([^\]]+)\]$/);
-            if (match) {
-                const meta = match[1];
+        const sections = searchResults.split('\n\n');
+        for (const section of sections) {
+            // New QA Atom format: "### Title\nContent [meta]"
+            const titleMatch = section.match(/^### (.+)/);
+            if (titleMatch) {
+                const title = titleMatch[1].trim();
+                if (!sources.find(s => s.title === title)) {
+                    sources.push({ title });
+                }
+                continue;
+            }
+            // Legacy format: "Content [Category, tag1, tag2]"
+            const metaMatch = section.match(/\[([^\]]+)\]$/);
+            if (metaMatch) {
+                const meta = metaMatch[1];
                 const title = meta.split(',')[0]?.trim();
                 if (title && !sources.find(s => s.title === title)) {
                     sources.push({ title });
