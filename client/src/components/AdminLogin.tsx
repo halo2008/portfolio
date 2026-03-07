@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../core/auth/firebase';
 import { useAuth } from '../core/auth/AuthContext';
-import { Lock, Mail, Key } from 'lucide-react';
+import { Lock, Mail, Key, AlertCircle, Loader2 } from 'lucide-react';
 
 export const AdminLogin: React.FC = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const { user, loading } = useAuth(); // Just to double check state if needed
+    const { loading } = useAuth();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -27,54 +27,51 @@ export const AdminLogin: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-950 p-4">
-            <div className="max-w-md w-full bg-gray-900 border border-gray-800 rounded-2xl shadow-xl overflow-hidden p-8">
+        <div className="min-h-screen flex items-center justify-center bg-dark p-4">
+            <div className="max-w-sm w-full bg-surface border border-slate-700 rounded-sm p-8">
                 <div className="flex justify-center mb-6">
-                    <div className="p-4 bg-blue-500/10 rounded-full text-blue-500">
-                        <Lock size={32} />
+                    <div className="p-3 bg-primary/10 rounded-sm text-primary">
+                        <Lock size={28} />
                     </div>
                 </div>
-                <h2 className="text-2xl font-bold text-center text-white mb-2">Panel Autoryzacji</h2>
-                <p className="text-gray-400 text-center mb-8 text-sm">Zaloguj się, by zarządzać wiedzą</p>
+                <h2 className="text-xl font-bold text-center text-white mb-1">Knowledge Base</h2>
+                <p className="text-slate-400 text-center mb-6 text-xs">Zaloguj się, aby zarządzać bazą wiedzy</p>
 
                 {error && (
-                    <div className="mb-6 bg-red-500/10 border border-red-500/50 text-red-500 p-3 rounded-lg text-sm">
+                    <div className="mb-4 bg-red-500/10 border border-red-500/30 text-red-400 p-3 rounded-sm text-xs flex items-center gap-2">
+                        <AlertCircle size={14} />
                         {error}
                     </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-2">Adres E-mail</label>
+                        <label className="block text-xs text-slate-400 mb-1.5">Email</label>
                         <div className="relative">
-                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <Mail size={18} className="text-gray-500" />
-                            </div>
+                            <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
                             <input
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 autoComplete="email"
                                 required
-                                className="w-full pl-10 pr-3 py-2 bg-gray-950 border border-gray-800 rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                                placeholder="admin@example.com"
+                                className="w-full pl-9 pr-3 py-2.5 bg-darker border border-slate-700 rounded-sm text-white text-sm focus:border-primary focus:outline-none transition-colors"
+                                placeholder="admin@ks-infra.dev"
                             />
                         </div>
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-400 mb-2">Hasło dostępu</label>
+                        <label className="block text-xs text-slate-400 mb-1.5">Hasło</label>
                         <div className="relative">
-                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <Key size={18} className="text-gray-500" />
-                            </div>
+                            <Key size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
                             <input
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 autoComplete="current-password"
                                 required
-                                className="w-full pl-10 pr-3 py-2 bg-gray-950 border border-gray-800 rounded-lg text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                className="w-full pl-9 pr-3 py-2.5 bg-darker border border-slate-700 rounded-sm text-white text-sm focus:border-primary focus:outline-none transition-colors"
                                 placeholder="••••••••"
                             />
                         </div>
@@ -83,11 +80,16 @@ export const AdminLogin: React.FC = () => {
                     <button
                         type="submit"
                         disabled={isLoading || loading}
-                        className="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 focus:ring-offset-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                        className="w-full flex items-center justify-center gap-2 py-2.5 bg-primary hover:bg-primary/90 disabled:bg-slate-700 disabled:cursor-not-allowed text-darker font-bold rounded-sm transition-colors text-sm"
                     >
-                        {isLoading ? 'Autoryzacja...' : 'Zaloguj się'}
+                        {isLoading ? <Loader2 size={16} className="animate-spin" /> : null}
+                        {isLoading ? 'Logowanie...' : 'Zaloguj się'}
                     </button>
                 </form>
+
+                <p className="text-center text-[10px] text-slate-600 mt-6">
+                    Firebase Auth · Email/Password
+                </p>
             </div>
         </div>
     );

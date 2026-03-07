@@ -16,11 +16,24 @@ export type SearchContext =
     | { type: 'ADMIN' }
     | { type: 'USER'; userId: string };
 
+export interface KnowledgePoint {
+    id: string;
+    title?: string;
+    content: string;
+    category?: string;
+    technologies?: string[];
+    language?: string;
+    createdAt?: string;
+}
+
 export interface KnowledgeRepoPort {
     checkDuplicate(hash: string): Promise<boolean>;
     upsertPoints(points: any[]): Promise<void>;
     deleteByFilter(filter: KnowledgeFilter): Promise<number>;
     getStats(): Promise<Record<string, number>>;
+
+    /** Browse admin knowledge points with pagination. */
+    browsePoints(category?: string, limit?: number, offset?: string): Promise<{ points: KnowledgePoint[]; nextOffset?: string }>;
 
     /** Searches strictly admin-only vectors. */
     searchAdminKnowledge(query: number[], context: RagSecurityContext): Promise<string>;

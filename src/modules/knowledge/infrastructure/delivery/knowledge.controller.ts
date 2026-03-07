@@ -1,4 +1,4 @@
-import { Controller, Post, Delete, Get, Body, Query, UseGuards, Inject, Req, BadRequestException, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Post, Delete, Get, Body, Query, UseGuards, Inject, Req, BadRequestException } from '@nestjs/common';
 import { IsString, IsOptional, IsArray, IsIn, ValidateNested, ArrayMinSize } from 'class-validator';
 import { Type } from 'class-transformer';
 import { Request } from 'express';
@@ -148,6 +148,18 @@ export class KnowledgeController {
             errors: 0,
             ids: result.vectorIds,
         };
+    }
+
+    @Get('browse')
+    @UseGuards(FirebaseAuthGuard)
+    @Roles('admin')
+    async browseKnowledge(
+        @Query('category') category?: string,
+        @Query('limit') limitStr?: string,
+        @Query('offset') offset?: string,
+    ) {
+        const limit = limitStr ? Math.min(parseInt(limitStr, 10) || 20, 100) : 20;
+        return await this.knowledgeRepo.browsePoints(category, limit, offset);
     }
 
     @Delete('knowledge')

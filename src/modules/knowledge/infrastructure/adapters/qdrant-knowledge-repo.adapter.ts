@@ -1,6 +1,6 @@
 import { ForbiddenException, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { QdrantClient } from '@qdrant/js-client-rest';
-import { KnowledgeFilter, KnowledgeRepoPort, RagSecurityContext } from '../../domain/ports/knowledge-repo.port';
+import { KnowledgeFilter, KnowledgePoint, KnowledgeRepoPort, RagSecurityContext } from '../../domain/ports/knowledge-repo.port';
 import { QDRANT_CLIENT } from '../../../qdrant/qdrant.provider';
 
 interface QdrantFilter {
@@ -162,6 +162,43 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
             }
         }
         return stats;
+    }
+
+    async browsePoints(category?: string, limit = 20, offset?: string): Promise<{ points: KnowledgePoint[]; nextOffset?: string }> {
+        const filter: QdrantFilter | undefined = category
+            ? { must: [{ key: 'category', match: { value: category } }] }
+            : undefined;
+
+        try {
+            const response = await this.qdrantClient.scroll(this.COLLECTION_NAME, {
+                limit,
+                with_payload: true,
+                with_vector: false,
+                filter,
+                ...(offset ? { offset } : {}),
+            });
+
+            const points: KnowledgePoint[] = response.points.map((p) => ({
+                id: String(p.id),
+                title: (p.payload?.title as string) || undefined,
+                content: (p.payload?.content as string) || '',
+                category: (p.payload?.category as string) || undefined,
+                technologies: (p.payload?.technologies as string[]) || undefined,
+                language: (p.payload?.language as string) || undefined,
+                createdAt: (p.payload?.created_at as string) || undefined,
+            }));
+
+            return {
+                points,
+                nextOffset: response.next_page_offset != null ? String(response.next_page_offset) : undefined,
+            };
+        } catch (error) {
+            this.logger.error({
+                msg: 'Failed to browse points',
+                error: error instanceof Error ? error.message : 'Unknown error',
+            });
+            return { points: [] };
+        }
     }
 
     async searchAdminKnowledge(
