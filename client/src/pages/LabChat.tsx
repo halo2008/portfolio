@@ -150,8 +150,8 @@ const LabChat: React.FC = () => {
   const [systemContext, setSystemContext] = useState(() => {
     return sessionStorage.getItem('lab_systemContext') || '';
   });
-  const [chunkingStrategy, setChunkingStrategy] = useState<'llm' | 'heuristic' | 'all'>(() => {
-    return (sessionStorage.getItem('lab_chunkingStrategy') as 'llm' | 'heuristic' | 'all') || 'all';
+  const [searchStrategy, setSearchStrategy] = useState<'llm' | 'heuristic' | 'all'>(() => {
+    return (sessionStorage.getItem('lab_searchStrategy') as 'llm' | 'heuristic' | 'all') || 'all';
   });
 
   useEffect(() => {
@@ -163,8 +163,8 @@ const LabChat: React.FC = () => {
   }, [systemContext]);
 
   useEffect(() => {
-    sessionStorage.setItem('lab_chunkingStrategy', chunkingStrategy);
-  }, [chunkingStrategy]);
+    sessionStorage.setItem('lab_searchStrategy', searchStrategy);
+  }, [searchStrategy]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -259,7 +259,7 @@ const LabChat: React.FC = () => {
           message: userMessage.content,
           sessionId: user?.uid || 'unknown',
           scoreThreshold,
-          chunkingStrategy,
+          ...(searchStrategy !== 'all' && { chunkingStrategy: searchStrategy }),
           ...(systemContext.trim() && { systemContext: systemContext.trim() }),
         }),
       });
@@ -544,11 +544,13 @@ const LabChat: React.FC = () => {
             </div>
 
             <div className="px-4 py-3 border-b border-slate-800">
-              <label className="block text-xs text-slate-400 mb-2">{t.chunkingStrategy}</label>
+              <label className="block text-xs text-slate-400 mb-2">
+                {language === 'pl' ? 'Źródło wiedzy' : 'Knowledge source'}
+              </label>
               <div className="grid grid-cols-3 gap-1.5">
                 <button
-                  onClick={() => setChunkingStrategy('all')}
-                  className={`flex items-center justify-center gap-1 px-2 py-1.5 rounded-sm border text-[11px] font-bold transition-colors ${chunkingStrategy === 'all'
+                  onClick={() => setSearchStrategy('all')}
+                  className={`flex items-center justify-center gap-1 px-2 py-1.5 rounded-sm border text-[11px] font-bold transition-colors ${searchStrategy === 'all'
                     ? 'border-primary bg-primary/10 text-primary'
                     : 'border-slate-700 text-slate-400 hover:border-slate-500'
                     }`}
@@ -556,24 +558,24 @@ const LabChat: React.FC = () => {
                   {language === 'pl' ? 'Wszystko' : 'All'}
                 </button>
                 <button
-                  onClick={() => setChunkingStrategy('llm')}
-                  className={`flex items-center justify-center gap-1 px-2 py-1.5 rounded-sm border text-[11px] font-bold transition-colors ${chunkingStrategy === 'llm'
+                  onClick={() => setSearchStrategy('llm')}
+                  className={`flex items-center justify-center gap-1 px-2 py-1.5 rounded-sm border text-[11px] font-bold transition-colors ${searchStrategy === 'llm'
                     ? 'border-primary bg-primary/10 text-primary'
                     : 'border-slate-700 text-slate-400 hover:border-slate-500'
                     }`}
                 >
                   <Sparkles size={10} />
-                  {t.chunkingLlm}
+                  {language === 'pl' ? 'Tylko AI' : 'AI only'}
                 </button>
                 <button
-                  onClick={() => setChunkingStrategy('heuristic')}
-                  className={`flex items-center justify-center gap-1 px-2 py-1.5 rounded-sm border text-[11px] font-bold transition-colors ${chunkingStrategy === 'heuristic'
+                  onClick={() => setSearchStrategy('heuristic')}
+                  className={`flex items-center justify-center gap-1 px-2 py-1.5 rounded-sm border text-[11px] font-bold transition-colors ${searchStrategy === 'heuristic'
                     ? 'border-primary bg-primary/10 text-primary'
                     : 'border-slate-700 text-slate-400 hover:border-slate-500'
                     }`}
                 >
                   <Scissors size={10} />
-                  {t.chunkingHeuristic}
+                  {language === 'pl' ? 'Heuryst.' : 'Heurist.'}
                 </button>
               </div>
             </div>

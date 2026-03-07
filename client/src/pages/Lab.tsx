@@ -170,13 +170,17 @@ const Lab: React.FC = () => {
   const [systemContext, setSystemContext] = useState(() => {
     return sessionStorage.getItem('lab_systemContext') || '';
   });
-  const [chunkingStrategy, setChunkingStrategy] = useState<'llm' | 'heuristic' | 'all'>(() => {
-    return (sessionStorage.getItem('lab_chunkingStrategy') as 'llm' | 'heuristic' | 'all') || 'all';
+  const [uploadStrategy, setUploadStrategy] = useState<'llm' | 'heuristic'>(() => {
+    return (sessionStorage.getItem('lab_uploadStrategy') as 'llm' | 'heuristic') || 'llm';
+  });
+  const [searchStrategy, setSearchStrategy] = useState<'llm' | 'heuristic' | 'all'>(() => {
+    return (sessionStorage.getItem('lab_searchStrategy') as 'llm' | 'heuristic' | 'all') || 'all';
   });
 
   useEffect(() => { sessionStorage.setItem('lab_scoreThreshold', String(scoreThreshold)); }, [scoreThreshold]);
   useEffect(() => { sessionStorage.setItem('lab_systemContext', systemContext); }, [systemContext]);
-  useEffect(() => { sessionStorage.setItem('lab_chunkingStrategy', chunkingStrategy); }, [chunkingStrategy]);
+  useEffect(() => { sessionStorage.setItem('lab_uploadStrategy', uploadStrategy); }, [uploadStrategy]);
+  useEffect(() => { sessionStorage.setItem('lab_searchStrategy', searchStrategy); }, [searchStrategy]);
 
   // ── Refs ────────────────────────────────────────────
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -247,7 +251,7 @@ const Lab: React.FC = () => {
       const token = await getAuthToken();
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('chunkingStrategy', chunkingStrategy);
+      formData.append('chunkingStrategy', uploadStrategy);
 
       const progressInterval = setInterval(() => {
         setUploadState((prev) => ({
@@ -300,7 +304,7 @@ const Lab: React.FC = () => {
         body: JSON.stringify({
           chunks: chunks.map((c) => ({ content: c.content, title: c.title || '' })),
           language: analysisResult.detectedLanguage,
-          ...(chunkingStrategy !== 'all' && { chunkingStrategy }),
+          chunkingStrategy: uploadStrategy,
         }),
       });
 
@@ -404,7 +408,7 @@ const Lab: React.FC = () => {
           message: userMessage.content,
           sessionId: user?.uid || 'unknown',
           scoreThreshold,
-          chunkingStrategy,
+          ...(searchStrategy !== 'all' && { chunkingStrategy: searchStrategy }),
           ...(systemContext.trim() && { systemContext: systemContext.trim() }),
         }),
       });
@@ -551,25 +555,14 @@ const Lab: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-xs text-slate-400 mb-2">{t.chunkingStrategy}</label>
-              <p className="text-[10px] text-slate-500 mb-2">{language === 'pl' ? 'Dotyczy uploadu i wyszukiwania w czacie' : 'Applies to upload and chat search'}</p>
-              <div className="grid grid-cols-3 gap-2">
+              <label className="block text-xs text-slate-400 mb-2">
+                <Upload size={12} className="inline mr-1" />
+                {language === 'pl' ? 'Strategia podziału (upload)' : 'Chunking strategy (upload)'}
+              </label>
+              <div className="grid grid-cols-2 gap-2">
                 <button
-                  onClick={() => setChunkingStrategy('all')}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-sm border text-xs transition-colors ${chunkingStrategy === 'all'
-                    ? 'border-primary bg-primary/10 text-primary'
-                    : 'border-slate-700 text-slate-400 hover:border-slate-500'
-                    }`}
-                >
-                  <Brain size={14} />
-                  <div className="text-left">
-                    <div className="font-bold">{language === 'pl' ? 'Wszystko' : 'All'}</div>
-                    <div className="text-[10px] opacity-70">{language === 'pl' ? 'Cała baza wiedzy' : 'Entire knowledge base'}</div>
-                  </div>
-                </button>
-                <button
-                  onClick={() => setChunkingStrategy('llm')}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-sm border text-xs transition-colors ${chunkingStrategy === 'llm'
+                  onClick={() => setUploadStrategy('llm')}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-sm border text-xs transition-colors ${uploadStrategy === 'llm'
                     ? 'border-primary bg-primary/10 text-primary'
                     : 'border-slate-700 text-slate-400 hover:border-slate-500'
                     }`}
@@ -581,8 +574,8 @@ const Lab: React.FC = () => {
                   </div>
                 </button>
                 <button
-                  onClick={() => setChunkingStrategy('heuristic')}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-sm border text-xs transition-colors ${chunkingStrategy === 'heuristic'
+                  onClick={() => setUploadStrategy('heuristic')}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-sm border text-xs transition-colors ${uploadStrategy === 'heuristic'
                     ? 'border-primary bg-primary/10 text-primary'
                     : 'border-slate-700 text-slate-400 hover:border-slate-500'
                     }`}
@@ -591,6 +584,51 @@ const Lab: React.FC = () => {
                   <div className="text-left">
                     <div className="font-bold">{t.chunkingHeuristic}</div>
                     <div className="text-[10px] opacity-70">{t.chunkingHeuristicDesc}</div>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs text-slate-400 mb-2">
+                <MessageSquare size={12} className="inline mr-1" />
+                {language === 'pl' ? 'Źródło wiedzy (czat)' : 'Knowledge source (chat)'}
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  onClick={() => setSearchStrategy('all')}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-sm border text-xs transition-colors ${searchStrategy === 'all'
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-slate-700 text-slate-400 hover:border-slate-500'
+                    }`}
+                >
+                  <Brain size={14} />
+                  <div className="text-left">
+                    <div className="font-bold">{language === 'pl' ? 'Wszystko' : 'All'}</div>
+                  </div>
+                </button>
+                <button
+                  onClick={() => setSearchStrategy('llm')}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-sm border text-xs transition-colors ${searchStrategy === 'llm'
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-slate-700 text-slate-400 hover:border-slate-500'
+                    }`}
+                >
+                  <Sparkles size={14} />
+                  <div className="text-left">
+                    <div className="font-bold">{language === 'pl' ? 'Tylko AI' : 'AI only'}</div>
+                  </div>
+                </button>
+                <button
+                  onClick={() => setSearchStrategy('heuristic')}
+                  className={`flex items-center gap-2 px-3 py-2 rounded-sm border text-xs transition-colors ${searchStrategy === 'heuristic'
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-slate-700 text-slate-400 hover:border-slate-500'
+                    }`}
+                >
+                  <Scissors size={14} />
+                  <div className="text-left">
+                    <div className="font-bold">{language === 'pl' ? 'Tylko heuryst.' : 'Heuristic only'}</div>
                   </div>
                 </button>
               </div>
