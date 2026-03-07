@@ -300,6 +300,7 @@ const Lab: React.FC = () => {
         body: JSON.stringify({
           chunks: chunks.map((c) => ({ content: c.content, title: c.title || '' })),
           language: analysisResult.detectedLanguage,
+          chunkingStrategy,
         }),
       });
 
@@ -403,6 +404,7 @@ const Lab: React.FC = () => {
           message: userMessage.content,
           sessionId: user?.uid || 'unknown',
           scoreThreshold,
+          chunkingStrategy,
           ...(systemContext.trim() && { systemContext: systemContext.trim() }),
         }),
       });

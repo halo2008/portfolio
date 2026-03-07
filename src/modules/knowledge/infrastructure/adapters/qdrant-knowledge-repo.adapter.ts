@@ -80,12 +80,14 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
         }
     }
 
-    private buildUserFilter(userId: string): QdrantFilter {
-        return {
-            must: [
-                { key: 'user_id', match: { value: userId } }
-            ]
-        };
+    private buildUserFilter(userId: string, chunkingStrategy?: 'llm' | 'heuristic'): QdrantFilter {
+        const must: QdrantFilter['must'] = [
+            { key: 'user_id', match: { value: userId } },
+        ];
+        if (chunkingStrategy) {
+            must.push({ key: 'chunking_strategy', match: { value: chunkingStrategy } });
+        }
+        return { must };
     }
 
     private buildAdminFilter(): QdrantFilter {
@@ -210,6 +212,7 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
         userId: string,
         context: RagSecurityContext,
         scoreThreshold = 0.7,
+        chunkingStrategy?: 'llm' | 'heuristic',
     ): Promise<string> {
         this.validateContext(context);
 
@@ -230,7 +233,7 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
             throw new ForbiddenException('User knowledge search is only available for demo users');
         }
 
-        const filter = this.buildUserFilter(userId);
+        const filter = this.buildUserFilter(userId, chunkingStrategy);
 
         try {
             const results = await this.qdrantClient.search(this.COLLECTION_NAME, {

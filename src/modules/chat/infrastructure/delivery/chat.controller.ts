@@ -12,7 +12,7 @@ import {
     Inject,
 } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
-import { IsString, IsOptional, IsNumber, Min, Max, MaxLength } from 'class-validator';
+import { IsString, IsOptional, IsNumber, IsIn, Min, Max, MaxLength } from 'class-validator';
 import { Request } from 'express';
 import { GenerateChatResponseUseCase } from '../../application/generate-chat-response.use-case';
 import { ChatWithAdminKnowledgeUseCase } from '../../application/use-cases/chat-with-admin-knowledge.use-case';
@@ -46,6 +46,11 @@ class ChatRequestDto {
     @IsString()
     @MaxLength(500)
     systemContext?: string;
+
+    @IsOptional()
+    @IsString()
+    @IsIn(['llm', 'heuristic'])
+    chunkingStrategy?: 'llm' | 'heuristic';
 }
 
 class SourceDto {
@@ -185,6 +190,7 @@ export class ChatController {
                     sessionId: body.sessionId,
                     scoreThreshold: body.scoreThreshold,
                     systemContext: body.systemContext,
+                    chunkingStrategy: body.chunkingStrategy,
                 },
                 context,
             );

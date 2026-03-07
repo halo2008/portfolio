@@ -18,6 +18,7 @@ export interface ConfirmIndexInput {
     chunks: SemanticChunk[];
     userId: UserId;
     language: 'pl' | 'en';
+    chunkingStrategy?: 'llm' | 'heuristic';
 }
 
 export interface IndexResultDto {
@@ -41,7 +42,7 @@ export class ConfirmIndexUseCase {
     ) { }
 
     async execute(input: ConfirmIndexInput): Promise<IndexResultDto> {
-        const { chunks, userId, language } = input;
+        const { chunks, userId, language, chunkingStrategy } = input;
 
         this.logger.log(
             { userId: userId.toString(), chunkCount: chunks.length, language },
@@ -55,7 +56,7 @@ export class ConfirmIndexUseCase {
         }
 
         const embeddings = await this.generateEmbeddings(chunks);
-        const points = this.buildPoints(chunks, embeddings, userId, language);
+        const points = this.buildPoints(chunks, embeddings, userId, language, chunkingStrategy);
         await this.knowledgeRepo.upsertPoints(points);
         await this.labUsageService.recordIndexing(userId.toString(), points.length);
         const vectorIds = points.map((point) => String(point.id));
@@ -116,6 +117,7 @@ export class ConfirmIndexUseCase {
         embeddings: number[][],
         userId: UserId,
         language: 'pl' | 'en',
+        chunkingStrategy?: 'llm' | 'heuristic',
     ): Array<{
         id: string;
         vector: number[];
@@ -143,6 +145,7 @@ export class ConfirmIndexUseCase {
                     title: chunk.title || '',
                     content: chunk.content,
                     language,
+                    chunking_strategy: chunkingStrategy || 'llm',
                     created_at: now,
                 },
             };

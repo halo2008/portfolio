@@ -6,7 +6,7 @@ import { pushTimeseries } from 'prometheus-remote-write';
 export class MetricsPushService implements OnModuleInit, OnModuleDestroy {
     private readonly logger = new Logger(MetricsPushService.name);
     private intervalHandle?: ReturnType<typeof setInterval>;
-    private readonly pushIntervalMs = 60_000;
+    private readonly pushIntervalMs = 15_000;
 
     private readonly remoteWriteUrl = process.env.GRAFANA_REMOTE_WRITE_URL;
     private readonly user = process.env.GRAFANA_METRICS_USER;
@@ -18,7 +18,8 @@ export class MetricsPushService implements OnModuleInit, OnModuleDestroy {
             return;
         }
 
-        this.logger.log('Starting metrics push to Grafana Cloud (every 60s)');
+        this.logger.log('Starting metrics push to Grafana Cloud (every 15s)');
+        this.push();
         this.intervalHandle = setInterval(() => this.push(), this.pushIntervalMs);
     }
 
@@ -31,6 +32,7 @@ export class MetricsPushService implements OnModuleInit, OnModuleDestroy {
     private async push(): Promise<void> {
         try {
             const metrics = await client.register.getMetricsAsJSON();
+
             const timeseries = this.convertToTimeSeries(metrics);
 
             if (timeseries.length === 0) return;
@@ -41,12 +43,17 @@ export class MetricsPushService implements OnModuleInit, OnModuleDestroy {
                     username: this.user!,
                     password: this.password!,
                 },
+                verbose: true,
+                console: {
+                    info: (...args: unknown[]) => this.logger.log(args.join(' ')),
+                    warn: (...args: unknown[]) => this.logger.warn(args.join(' ')),
+                } as any,
             });
 
-            if (result.status === 200) {
-                this.logger.debug(`Pushed ${timeseries.length} timeseries to Grafana Cloud`);
+            if (result.status >= 200 && result.status < 300) {
+                this.logger.log(`Pushed ${timeseries.length} timeseries to Grafana Cloud (${result.status})`);
             } else {
-                this.logger.warn(`Metrics push returned ${result.status}: ${result.statusText}`);
+                this.logger.warn(`Metrics push returned ${result.status}: ${result.statusText} ${(result as any).errorMessage || ''}`);
             }
         } catch (error) {
             this.logger.error(

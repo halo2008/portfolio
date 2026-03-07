@@ -51,6 +51,11 @@ class ConfirmIndexDto {
     @IsString()
     @IsIn(['pl', 'en'])
     language!: 'pl' | 'en';
+
+    @IsOptional()
+    @IsString()
+    @IsIn(['llm', 'heuristic'])
+    chunkingStrategy?: 'llm' | 'heuristic';
 }
 
 class SetLanguageDto {
@@ -227,6 +232,7 @@ export class LabController {
             const result = await this.confirmIndexUseCase.execute({
                 chunks,
                 userId,
+                chunkingStrategy: body.chunkingStrategy,
                 language: body.language,
             });
 

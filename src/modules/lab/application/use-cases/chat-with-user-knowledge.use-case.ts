@@ -30,6 +30,8 @@ export interface ChatWithUserKnowledgeInput {
     scoreThreshold?: number;
     /** Custom system context/instructions for the AI (max 500 chars) */
     systemContext?: string;
+    /** Filter by chunking strategy used during indexing */
+    chunkingStrategy?: 'llm' | 'heuristic';
 }
 
 /**
@@ -76,7 +78,7 @@ export class ChatWithUserKnowledgeUseCase {
         input: ChatWithUserKnowledgeInput,
         context: RagSecurityContext,
     ): Promise<ChatWithUserKnowledgeOutput> {
-        const { message, sessionId, scoreThreshold, systemContext } = input;
+        const { message, sessionId, scoreThreshold, systemContext, chunkingStrategy } = input;
 
         const detectedLanguage = this.detectLanguage(message);
 
@@ -102,6 +104,7 @@ export class ChatWithUserKnowledgeUseCase {
             context.userId,
             context,
             scoreThreshold,
+            chunkingStrategy,
         );
         const searchMs = Date.now() - searchStart;
 
