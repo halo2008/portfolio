@@ -107,4 +107,4 @@ npm run start:dev
 **Senior SRE & Infrastructure Architect**
 Specializing in GKE, MLOps, and Intelligent Automation.
 
-[Portfolio Site](https://ks-infra.dev) | [LinkedIn](https://linkedin.com/in/ksedkowski)
+[Portfolio Site](https://ks-infra.dev) | [LinkedIn](https://www.linkedin.com/in/konrad-s%C4%99dkowski-329644176/
