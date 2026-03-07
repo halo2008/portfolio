@@ -19,6 +19,7 @@ import {
   SlidersHorizontal,
   BrainCircuit,
 } from 'lucide-react';
+import { LabStatsPanel } from '../components/LabStatsPanel';
 
 // API base URL
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
@@ -51,6 +52,13 @@ interface SessionInfo {
   chunkCount: number;
   expiresAt: string;
   detectedLanguage: 'pl' | 'en';
+  usage?: {
+    requestCount: number;
+    analysisTokens: number;
+    indexingOps: number;
+    chatTokens: number;
+  };
+  maxRequests?: number;
 }
 
 // Toast notification component
@@ -561,12 +569,17 @@ const LabChat: React.FC = () => {
               )}
             </div>
 
-            {/* Sidebar Footer - Session Info */}
-            <div className="px-4 py-3 border-t border-slate-800 bg-surface/30">
-              <div className="flex items-center justify-between text-xs text-slate-400">
-                <span>{t.sessionInfo}</span>
-                <span className="font-mono text-primary">{user.uid.slice(0, 8)}...</span>
-              </div>
+            {/* Stats Panel */}
+            <div className="px-4 py-3 border-t border-slate-800">
+              <LabStatsPanel
+                stats={{
+                  requestCount: sessionInfo?.usage?.requestCount ?? 0,
+                  analysisTokens: sessionInfo?.usage?.analysisTokens ?? 0,
+                  indexingOps: sessionInfo?.usage?.indexingOps ?? 0,
+                  chatTokens: sessionInfo?.usage?.chatTokens ?? 0,
+                  maxRequests: sessionInfo?.maxRequests ?? 50,
+                }}
+              />
             </div>
           </div>
         </div>
