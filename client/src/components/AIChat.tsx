@@ -84,7 +84,9 @@ const AIChat: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorBody = await response.text().catch(() => '');
+        console.error('Chat API error:', response.status, errorBody);
+        throw new Error(`HTTP error! status: ${response.status} body: ${errorBody}`);
       }
 
       const data: ChatResponse = await response.json();
@@ -101,8 +103,10 @@ const AIChat: React.FC = () => {
       setMessages(prev => [...prev, modelMsg]);
       setLoading(LoadingState.SUCCESS);
     } catch (error) {
-      console.error('Chat request failed', error);
+      console.error('Chat request failed:', error);
       setLoading(LoadingState.ERROR);
+      const errorDetail = error instanceof Error ? error.message : String(error);
+      console.error('Chat error detail:', errorDetail);
       const errorText = detectedLanguage === 'pl'
         ? 'Przepraszam, wystąpił błąd. Spróbuj ponownie później.'
         : 'Sorry, an error occurred. Please try again later.';

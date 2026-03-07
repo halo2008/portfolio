@@ -38,6 +38,10 @@ class ChatRequestDto {
     sessionId!: string;
 
     @IsOptional()
+    @IsString()
+    captcha?: string;
+
+    @IsOptional()
     @IsNumber()
     @Min(0)
     @Max(1)
