@@ -31,7 +31,7 @@ export interface ChatWithUserKnowledgeInput {
     /** Custom system context/instructions for the AI (max 500 chars) */
     systemContext?: string;
     /** Filter by chunking strategy used during indexing */
-    chunkingStrategy?: 'llm' | 'heuristic';
+    chunkingStrategy?: 'llm' | 'heuristic' | 'all';
 }
 
 /**

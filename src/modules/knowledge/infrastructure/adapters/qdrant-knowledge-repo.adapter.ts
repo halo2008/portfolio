@@ -80,11 +80,11 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
         }
     }
 
-    private buildUserFilter(userId: string, chunkingStrategy?: 'llm' | 'heuristic'): QdrantFilter {
+    private buildUserFilter(userId: string, chunkingStrategy?: 'llm' | 'heuristic' | 'all'): QdrantFilter {
         const must: QdrantFilter['must'] = [
             { key: 'user_id', match: { value: userId } },
         ];
-        if (chunkingStrategy) {
+        if (chunkingStrategy && chunkingStrategy !== 'all') {
             must.push({ key: 'chunking_strategy', match: { value: chunkingStrategy } });
         }
         return { must };
@@ -212,7 +212,7 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
         userId: string,
         context: RagSecurityContext,
         scoreThreshold = 0.7,
-        chunkingStrategy?: 'llm' | 'heuristic',
+        chunkingStrategy?: 'llm' | 'heuristic' | 'all',
     ): Promise<string> {
         this.validateContext(context);
 

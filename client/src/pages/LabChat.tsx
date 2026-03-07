@@ -150,8 +150,8 @@ const LabChat: React.FC = () => {
   const [systemContext, setSystemContext] = useState(() => {
     return sessionStorage.getItem('lab_systemContext') || '';
   });
-  const [chunkingStrategy, setChunkingStrategy] = useState<'llm' | 'heuristic'>(() => {
-    return (sessionStorage.getItem('lab_chunkingStrategy') as 'llm' | 'heuristic') || 'llm';
+  const [chunkingStrategy, setChunkingStrategy] = useState<'llm' | 'heuristic' | 'all'>(() => {
+    return (sessionStorage.getItem('lab_chunkingStrategy') as 'llm' | 'heuristic' | 'all') || 'all';
   });
 
   useEffect(() => {
@@ -545,30 +545,35 @@ const LabChat: React.FC = () => {
 
             <div className="px-4 py-3 border-b border-slate-800">
               <label className="block text-xs text-slate-400 mb-2">{t.chunkingStrategy}</label>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-3 gap-1.5">
                 <button
-                  onClick={() => setChunkingStrategy('llm')}
-                  className={`flex items-center gap-1.5 px-2 py-1.5 rounded-sm border text-xs transition-colors ${chunkingStrategy === 'llm'
+                  onClick={() => setChunkingStrategy('all')}
+                  className={`flex items-center justify-center gap-1 px-2 py-1.5 rounded-sm border text-[11px] font-bold transition-colors ${chunkingStrategy === 'all'
                     ? 'border-primary bg-primary/10 text-primary'
                     : 'border-slate-700 text-slate-400 hover:border-slate-500'
                     }`}
                 >
-                  <Sparkles size={12} />
-                  <div className="text-left">
-                    <div className="font-bold text-[11px]">{t.chunkingLlm}</div>
-                  </div>
+                  {language === 'pl' ? 'Wszystko' : 'All'}
+                </button>
+                <button
+                  onClick={() => setChunkingStrategy('llm')}
+                  className={`flex items-center justify-center gap-1 px-2 py-1.5 rounded-sm border text-[11px] font-bold transition-colors ${chunkingStrategy === 'llm'
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-slate-700 text-slate-400 hover:border-slate-500'
+                    }`}
+                >
+                  <Sparkles size={10} />
+                  {t.chunkingLlm}
                 </button>
                 <button
                   onClick={() => setChunkingStrategy('heuristic')}
-                  className={`flex items-center gap-1.5 px-2 py-1.5 rounded-sm border text-xs transition-colors ${chunkingStrategy === 'heuristic'
+                  className={`flex items-center justify-center gap-1 px-2 py-1.5 rounded-sm border text-[11px] font-bold transition-colors ${chunkingStrategy === 'heuristic'
                     ? 'border-primary bg-primary/10 text-primary'
                     : 'border-slate-700 text-slate-400 hover:border-slate-500'
                     }`}
                 >
-                  <Scissors size={12} />
-                  <div className="text-left">
-                    <div className="font-bold text-[11px]">{t.chunkingHeuristic}</div>
-                  </div>
+                  <Scissors size={10} />
+                  {t.chunkingHeuristic}
                 </button>
               </div>
             </div>

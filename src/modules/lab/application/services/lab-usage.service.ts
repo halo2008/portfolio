@@ -139,17 +139,22 @@ export class LabUsageService {
 
     private async incrementUsage(userId: string, increments: Partial<LabUsageStats>): Promise<void> {
         try {
+            const docRef = this.firestore.collection(this.COLLECTION_NAME).doc(userId);
+            const doc = await docRef.get();
+
             const updates: Record<string, any> = {};
             if (increments.requestCount !== undefined) updates.requestCount = FieldValue.increment(increments.requestCount);
             if (increments.analysisTokens !== undefined) updates.analysisTokens = FieldValue.increment(increments.analysisTokens);
             if (increments.indexingOps !== undefined) updates.indexingOps = FieldValue.increment(increments.indexingOps);
             if (increments.chatTokens !== undefined) updates.chatTokens = FieldValue.increment(increments.chatTokens);
 
-            // TTL refreshed on every write
-            updates.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+            // expiresAt set only on first write — not refreshed on activity
+            if (!doc.exists || !doc.data()?.expiresAt) {
+                updates.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
+            }
             updates.lastActivityAt = FieldValue.serverTimestamp();
 
-            await this.firestore.collection(this.COLLECTION_NAME).doc(userId).set(updates, { merge: true });
+            await docRef.set(updates, { merge: true });
 
             this.logger.debug(
                 { userId, increments },

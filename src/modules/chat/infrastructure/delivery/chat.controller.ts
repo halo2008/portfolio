@@ -50,8 +50,8 @@ class ChatRequestDto {
 
     @IsOptional()
     @IsString()
-    @IsIn(['llm', 'heuristic'])
-    chunkingStrategy?: 'llm' | 'heuristic';
+    @IsIn(['llm', 'heuristic', 'all'])
+    chunkingStrategy?: 'llm' | 'heuristic' | 'all';
 }
 
 class SourceDto {

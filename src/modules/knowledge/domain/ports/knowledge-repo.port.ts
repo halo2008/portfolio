@@ -26,7 +26,7 @@ export interface KnowledgeRepoPort {
     searchAdminKnowledge(query: number[], context: RagSecurityContext): Promise<string>;
 
     /** Searches strictly user-owned vectors (isolated by userId). */
-    searchUserKnowledge(query: number[], userId: string, context: RagSecurityContext, scoreThreshold?: number, chunkingStrategy?: 'llm' | 'heuristic'): Promise<string>;
+    searchUserKnowledge(query: number[], userId: string, context: RagSecurityContext, scoreThreshold?: number, chunkingStrategy?: 'llm' | 'heuristic' | 'all'): Promise<string>;
 
     deleteByUserId(userId: string, context: RagSecurityContext): Promise<number>;
     count(context: RagSecurityContext): Promise<number>;
