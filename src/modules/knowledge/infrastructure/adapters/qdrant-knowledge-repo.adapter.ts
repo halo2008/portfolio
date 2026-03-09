@@ -55,6 +55,9 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
             { field_name: 'user_id', field_schema: 'keyword' as const },
             { field_name: 'role', field_schema: 'keyword' as const },
             { field_name: 'language', field_schema: 'keyword' as const },
+            { field_name: 'contentHash', field_schema: 'keyword' as const },
+            { field_name: 'category', field_schema: 'keyword' as const },
+            { field_name: 'technologies', field_schema: 'keyword' as const },
         ];
 
         for (const index of indexes) {
@@ -116,15 +119,20 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
     }
 
     async checkDuplicate(hash: string): Promise<boolean> {
-        const response = await this.qdrantClient.scroll(this.COLLECTION_NAME, {
-            limit: 1,
-            filter: {
-                must: [{ key: 'contentHash', match: { value: hash } }],
-            },
-            with_payload: false,
-            with_vector: false,
-        });
-        return response.points.length > 0;
+        try {
+            const response = await this.qdrantClient.scroll(this.COLLECTION_NAME, {
+                limit: 1,
+                filter: {
+                    must: [{ key: 'contentHash', match: { value: hash } }],
+                },
+                with_payload: false,
+                with_vector: false,
+            });
+            return response.points.length > 0;
+        } catch (error) {
+            this.logger.error({ hash, error: (error as Error).message }, 'checkDuplicate failed');
+            throw error;
+        }
     }
 
     async upsertPoints(points: any[]): Promise<void> {

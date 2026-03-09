@@ -76,9 +76,10 @@ export class ConfirmAdminIndexUseCase {
         try {
             embeddings = await this.embeddingProvider.generateEmbeddings(texts);
         } catch (error) {
-            this.logger.error({ error: (error as Error).message }, 'Failed to generate embeddings');
+            const errMsg = (error as Error).message;
+            this.logger.error({ error: errMsg, stack: (error as Error).stack }, 'Failed to generate embeddings');
             result.errors += chunks.length;
-            return result;
+            throw new BadRequestException(`Embedding generation failed: ${errMsg}`);
         }
 
         const allPoints: any[] = [];
@@ -98,7 +99,8 @@ export class ConfirmAdminIndexUseCase {
                     continue;
                 }
             } catch (error) {
-                this.logger.error({ error: (error as Error).message, chunkIndex: i }, 'Duplicate check failed');
+                const errMsg = (error as Error).message;
+                this.logger.error({ error: errMsg, chunkIndex: i, hash }, 'Duplicate check failed');
                 result.errors++;
                 continue;
             }
