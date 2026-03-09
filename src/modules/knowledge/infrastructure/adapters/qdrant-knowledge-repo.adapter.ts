@@ -54,6 +54,7 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
         const indexes = [
             { field_name: 'user_id', field_schema: 'keyword' as const },
             { field_name: 'role', field_schema: 'keyword' as const },
+            { field_name: 'language', field_schema: 'keyword' as const },
         ];
 
         for (const index of indexes) {
@@ -104,12 +105,14 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
         return { must };
     }
 
-    private buildAdminFilter(): QdrantFilter {
-        return {
-            must: [
-                { key: 'role', match: { value: 'admin' } }
-            ]
-        };
+    private buildAdminFilter(language?: string): QdrantFilter {
+        const must: QdrantFilterCondition[] = [
+            { key: 'role', match: { value: 'admin' } },
+        ];
+        if (language) {
+            must.push({ key: 'language', match: { value: language } });
+        }
+        return { must };
     }
 
     async checkDuplicate(hash: string): Promise<boolean> {
@@ -231,7 +234,9 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
             throw new ForbiddenException('Only admin users can search admin knowledge');
         }
 
-        const filter = this.buildAdminFilter();
+        // Filter by detected language to avoid mixing pl/en chunks
+        const language = context.language || undefined;
+        const filter = this.buildAdminFilter(language);
 
         try {
             // Phase 1: Standard vector search — wider net for reranking
@@ -247,18 +252,21 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
             // Phase 2: Tag-boosted search — find chunks matching extracted tags
             let tagResults: typeof vectorResults = [];
             if (tags && tags.length > 0) {
+                const tagMust: QdrantFilterCondition[] = [
+                    { key: 'role', match: { value: 'admin' } },
+                    { key: 'technologies', match: { any: tags } },
+                ];
+                if (language) {
+                    tagMust.push({ key: 'language', match: { value: language } });
+                }
+
                 tagResults = await this.qdrantClient.search(this.COLLECTION_NAME, {
                     vector: query,
                     limit: 5,
                     with_payload: true,
                     with_vector: false,
                     score_threshold: Math.max(scoreThreshold - 0.25, 0.1),
-                    filter: {
-                        must: [
-                            { key: 'role', match: { value: 'admin' } },
-                            { key: 'technologies', match: { any: tags } },
-                        ],
-                    },
+                    filter: { must: tagMust },
                 });
             }
 

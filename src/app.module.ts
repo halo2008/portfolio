@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { LoggerModule } from './core/logger/logger.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { ConfigModule } from '@nestjs/config';
@@ -23,6 +24,7 @@ import { GenAiModule } from './core/genai/genai.module';
 
 @Module({
     imports: [
+        ScheduleModule.forRoot(),
         FirestoreModule,
         GenAiModule,
         LoggerModule,

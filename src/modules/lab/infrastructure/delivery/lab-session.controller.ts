@@ -2,12 +2,17 @@ import {
     Controller,
     Post,
     Req,
+    Inject,
     Logger,
     InternalServerErrorException,
 } from '@nestjs/common';
 import { Request } from 'express';
+import { Firestore } from '@google-cloud/firestore';
 import * as admin from 'firebase-admin';
 import * as crypto from 'crypto';
+import { FIRESTORE_DB } from '../../../../core/firestore/firestore.provider';
+
+const SESSION_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 /**
  * Public controller (no FirebaseAuthGuard) that maps client IP to a
@@ -19,6 +24,10 @@ import * as crypto from 'crypto';
 @Controller('lab')
 export class LabSessionController {
     private readonly logger = new Logger(LabSessionController.name);
+
+    constructor(
+        @Inject(FIRESTORE_DB) private readonly firestore: Firestore,
+    ) { }
 
     @Post('session')
     async createSession(
@@ -37,6 +46,10 @@ export class LabSessionController {
         try {
             const customToken = await admin.auth().createCustomToken(uid);
 
+            // Ensure ephemeral_users doc exists with expiresAt for cleanup scheduler.
+            // Uses merge to not overwrite existing sessions (same IP = same UID).
+            await this.ensureEphemeralUserDoc(uid);
+
             this.logger.log({ uid, ip: this.maskIp(ip) }, 'Session token created for IP');
 
             return { token: customToken };
@@ -46,6 +59,36 @@ export class LabSessionController {
                 error: (error as Error).message,
             }, 'Failed to create session token');
             throw new InternalServerErrorException('Failed to create session');
+        }
+    }
+
+    /**
+     * Creates ephemeral_users doc if it doesn't exist, or refreshes expiresAt
+     * if the previous session already expired (same IP returning).
+     */
+    private async ensureEphemeralUserDoc(uid: string): Promise<void> {
+        const docRef = this.firestore.collection('ephemeral_users').doc(uid);
+        const doc = await docRef.get();
+
+        const now = new Date();
+        const expiresAt = new Date(now.getTime() + SESSION_TTL_MS);
+
+        if (!doc.exists) {
+            await docRef.set({
+                uid,
+                email: `${uid}@demo.lab`,
+                createdAt: now,
+                role: 'demo',
+                expiresAt,
+            });
+            return;
+        }
+
+        // If existing session already expired, refresh it
+        const data = doc.data();
+        const existingExpiry = data?.expiresAt?.toDate?.() ?? data?.expiresAt;
+        if (existingExpiry && existingExpiry < now) {
+            await docRef.update({ expiresAt, createdAt: now });
         }
     }
 

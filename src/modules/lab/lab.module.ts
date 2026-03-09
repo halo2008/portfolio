@@ -28,6 +28,7 @@ import {
     METRIC_LAB_LLM_DURATION,
     METRIC_LAB_CHAT_TOTAL_DURATION,
 } from './infrastructure/metrics/lab-metrics.service';
+import { LabCleanupScheduler } from './infrastructure/scheduling/lab-cleanup.scheduler';
 
 const securityInterceptorProvider: Provider = {
     provide: APP_INTERCEPTOR,
@@ -95,6 +96,7 @@ const securityInterceptorProvider: Provider = {
         IdentityCleanupService,
         LabUsageService,
         LabRateLimitGuard,
+        LabCleanupScheduler,
     ],
     exports: [
         AnalyzeDocumentUseCase,
