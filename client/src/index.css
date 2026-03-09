@@ -189,7 +189,7 @@
 }
 
 .reveal-visible {
-  animation: slideInUp 0.6s ease-out forwards;
+  animation: slideInUp 0.6s ease-out both;
 }
 
 /* Staggered children */
