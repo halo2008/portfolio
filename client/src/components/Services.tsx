@@ -3,20 +3,20 @@ import { Rocket, Brain, Wifi, Shield, Server, Cloud } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
 import { useTilt } from '../hooks/useTilt';
 import { useScrollReveal } from '../hooks/useScrollReveal';
+import GlowCard from './GlowCard';
 
 const ServiceCard: React.FC<{ children: React.ReactNode; delay: number; isVisible: boolean }> = ({ children, delay, isVisible }) => {
     const { ref, handleMouseMove, handleMouseLeave } = useTilt({ maxRotation: 5, scale: 1.01 });
 
     return (
-        <div
-            ref={ref}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-            className={`glow-card bg-surface border border-slate-700 p-8 rounded-sm hover:border-primary transition-all duration-300 group relative overflow-hidden ${isVisible ? 'reveal-visible' : 'reveal-hidden'}`}
+        <GlowCard
+            className={`bg-surface border border-slate-700 rounded-sm hover:border-primary/50 transition-all duration-300 group relative overflow-hidden ${isVisible ? 'reveal-visible' : 'reveal-hidden'}`}
             style={{ animationDelay: `${delay}ms` }}
         >
-            {children}
-        </div>
+            <div ref={ref} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} className="p-8">
+                {children}
+            </div>
+        </GlowCard>
     );
 };
 

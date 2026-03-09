@@ -5,6 +5,7 @@ import { useLanguage } from '../LanguageContext';
 import { Project } from '../types';
 import { useTilt } from '../hooks/useTilt';
 import { useScrollReveal } from '../hooks/useScrollReveal';
+import GlowCard from './GlowCard';
 
 const iconMap: Record<string, React.ElementType> = {
   'Server': Server,
@@ -22,16 +23,20 @@ const TiltCard: React.FC<{ children: React.ReactNode; onClick: () => void; delay
   const { ref, handleMouseMove, handleMouseLeave } = useTilt({ maxRotation: 6, scale: 1.01 });
 
   return (
-    <div
-      ref={ref}
+    <GlowCard
       onClick={onClick}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      className={`glow-card group relative bg-surface border border-slate-800 rounded-sm overflow-hidden hover:border-primary transition-all duration-300 cursor-pointer flex flex-col ${isVisible ? 'reveal-visible' : 'reveal-hidden'}`}
+      className={`group relative bg-surface border border-slate-800 rounded-sm overflow-hidden hover:border-primary/50 transition-all duration-300 cursor-pointer flex flex-col ${isVisible ? 'reveal-visible' : 'reveal-hidden'}`}
       style={{ animationDelay: `${delay}ms` }}
     >
-      {children}
-    </div>
+      <div
+        ref={ref}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        className="flex flex-col flex-grow"
+      >
+        {children}
+      </div>
+    </GlowCard>
   );
 };
 

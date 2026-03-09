@@ -141,76 +141,45 @@
   }
 }
 
-@property --glow-angle {
-  syntax: '<angle>';
-  initial-value: 0deg;
-  inherits: false;
-}
-
-/* Glowing spark border card wrapper */
-.glow-card {
+/* Spark border card — JS-driven rotation via --spark-bg / --glow-bg */
+.spark-card {
   position: relative;
   transition: transform 0.3s ease-out, box-shadow 0.3s ease-out;
 }
 
 /* Sharp spark trail */
-.glow-card::before {
+.spark-card::before {
   content: '';
   position: absolute;
   inset: -1px;
   border-radius: inherit;
   padding: 1px;
-  background: conic-gradient(
-    from var(--glow-angle),
-    transparent 0%,
-    transparent 75%,
-    #f59e0b 82%,
-    #fbbf24 88%,
-    #fff 90%,
-    #fbbf24 92%,
-    #f59e0b 98%,
-    transparent 100%
-  );
+  background: var(--spark-bg, transparent);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-  opacity: 0;
+  opacity: var(--spark-opacity, 0);
   transition: opacity 0.4s ease;
-  animation: glowRotate 2.5s linear infinite;
+  pointer-events: none;
+  z-index: 1;
 }
 
 /* Soft glow halo behind the spark */
-.glow-card::after {
+.spark-card::after {
   content: '';
   position: absolute;
-  inset: -3px;
+  inset: -4px;
   border-radius: inherit;
-  padding: 3px;
-  background: conic-gradient(
-    from var(--glow-angle),
-    transparent 0%,
-    transparent 70%,
-    rgba(245, 158, 11, 0.4) 85%,
-    rgba(251, 191, 36, 0.6) 90%,
-    rgba(245, 158, 11, 0.4) 95%,
-    transparent 100%
-  );
+  padding: 4px;
+  background: var(--glow-bg, transparent);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
   -webkit-mask-composite: xor;
   mask-composite: exclude;
-  filter: blur(6px);
-  opacity: 0;
+  filter: blur(8px);
+  opacity: var(--spark-opacity, 0);
   transition: opacity 0.4s ease;
-  animation: glowRotate 2.5s linear infinite;
-  z-index: -1;
-}
-
-.glow-card:hover::before {
-  opacity: 1;
-}
-
-.glow-card:hover::after {
-  opacity: 1;
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* Scroll reveal utilities */
