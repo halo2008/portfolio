@@ -443,31 +443,6 @@ export const KnowledgeManager: React.FC = () => {
 
                     {step === 'input' && (
                         <form onSubmit={handleAnalyze} className="space-y-4 flex-1 flex flex-col">
-                            <div className="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label className="block text-xs text-slate-400 mb-1.5">Kategoria</label>
-                                    <select
-                                        value={category}
-                                        onChange={(e) => setCategory(e.target.value)}
-                                        className="w-full bg-darker border border-slate-700 rounded-sm px-3 py-2 text-white text-sm focus:border-primary focus:outline-none transition-colors"
-                                    >
-                                        {CATEGORIES.map(c => (
-                                            <option key={c.value} value={c.value}>{c.label}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div>
-                                    <label className="block text-xs text-slate-400 mb-1.5">Tagi</label>
-                                    <input
-                                        type="text"
-                                        value={tags}
-                                        onChange={(e) => setTags(e.target.value)}
-                                        placeholder="React, NestJS, Terraform"
-                                        className="w-full bg-darker border border-slate-700 rounded-sm px-3 py-2 text-white text-sm focus:border-primary focus:outline-none transition-colors"
-                                    />
-                                </div>
-                            </div>
-
                             <div className="flex-1">
                                 <label className="block text-xs text-slate-400 mb-1.5">Tekst do analizy</label>
                                 <textarea
@@ -512,6 +487,31 @@ export const KnowledgeManager: React.FC = () => {
                                 >
                                     Anuluj
                                 </button>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-3 mb-4">
+                                <div>
+                                    <label className="block text-xs text-slate-400 mb-1.5">Kategoria</label>
+                                    <select
+                                        value={category}
+                                        onChange={(e) => setCategory(e.target.value)}
+                                        className="w-full bg-darker border border-slate-700 rounded-sm px-3 py-2 text-white text-sm focus:border-primary focus:outline-none transition-colors"
+                                    >
+                                        {CATEGORIES.map(c => (
+                                            <option key={c.value} value={c.value}>{c.label}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-xs text-slate-400 mb-1.5">Tagi (auto z LLM)</label>
+                                    <input
+                                        type="text"
+                                        value={tags}
+                                        onChange={(e) => setTags(e.target.value)}
+                                        placeholder="Uzupełnione automatycznie"
+                                        className="w-full bg-darker border border-slate-700 rounded-sm px-3 py-2 text-white text-sm focus:border-primary focus:outline-none transition-colors"
+                                    />
+                                </div>
                             </div>
 
                             <div className="flex-1 overflow-y-auto space-y-3 pr-1 pb-4 max-h-[500px]">
