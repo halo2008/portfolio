@@ -4,7 +4,9 @@ import {
     KNOWLEDGE_REPO_PORT,
     KnowledgeRepoPort,
     RagSecurityContext,
+    SearchResultChunk,
 } from '../../../knowledge/domain/ports/knowledge-repo.port';
+import { RERANKING_PORT, RerankingPort } from '../../../knowledge/domain/ports/reranking.port';
 import { LabUsageService } from '../services/lab-usage.service';
 import { GOOGLE_GENAI } from '../../../../core/genai/genai.module';
 import { AdminSettingsService } from '../../../knowledge/application/services/admin-settings.service';
@@ -74,6 +76,7 @@ export class ChatWithUserKnowledgeUseCase {
         private readonly labUsageService: LabUsageService,
         @Inject(GOOGLE_GENAI) private readonly ai: GoogleGenAI,
         private readonly adminSettings: AdminSettingsService,
+        @Inject(RERANKING_PORT) private readonly reranker: RerankingPort,
     ) { }
 
     async execute(
@@ -98,19 +101,30 @@ export class ChatWithUserKnowledgeUseCase {
         const embedding = await this.generateEmbedding(message);
         const embeddingMs = Date.now() - embeddingStart;
 
+        // Extract user's tags for tag-boosted search
+        const extractedTags = await this.extractTags(message, context);
+
         // CRITICAL: Query ONLY user's own knowledge - never admin or other users' vectors
         // This enforces payload.user_id == context.userId filter at the adapter level
         const searchStart = Date.now();
-        const searchResults = await this.knowledgeRepo.searchUserKnowledge(
+        const rawChunks = await this.knowledgeRepo.searchUserKnowledge(
             embedding,
             context.userId,
             context,
             scoreThreshold,
             chunkingStrategy,
+            extractedTags.length > 0 ? extractedTags : undefined,
+        );
+
+        // Rerank: LLM judges relevance, picks best chunks
+        const reranked = await this.reranker.rerank(
+            message,
+            rawChunks.map(c => ({ ...c, vectorScore: c.score })),
+            5,
         );
         const searchMs = Date.now() - searchStart;
 
-        const { context: knowledgeContext, sources } = this.parseSearchResults(searchResults);
+        const { context: knowledgeContext, sources } = this.buildContextFromChunks(reranked);
 
         const sanitizedSystemContext = systemContext?.trim().slice(0, 500);
 
@@ -188,35 +202,40 @@ export class ChatWithUserKnowledgeUseCase {
         }
     }
 
-    private parseSearchResults(searchResults: string): { context: string; sources: SourceCitation[] } {
-        if (!searchResults || searchResults.trim().length === 0) {
+    private buildContextFromChunks(chunks: Array<{ content: string; title?: string; category?: string; technologies?: string[]; tags?: string[]; relevanceScore?: number }>): { context: string; sources: SourceCitation[] } {
+        if (chunks.length === 0) {
             return { context: '', sources: [] };
         }
 
         const sources: SourceCitation[] = [];
-        const sections = searchResults.split('\n\n');
-        for (const section of sections) {
-            // New QA Atom format: "### Title\nContent [meta]"
-            const titleMatch = section.match(/^### (.+)/);
-            if (titleMatch) {
-                const title = titleMatch[1].trim();
-                if (!sources.find(s => s.title === title)) {
-                    sources.push({ title });
+        const formattedParts: string[] = [];
+
+        for (const chunk of chunks) {
+            const metaParts = [
+                chunk.category,
+                ...(chunk.technologies || []),
+                ...(chunk.tags || []),
+            ].filter(Boolean);
+            const meta = metaParts.length > 0 ? ` [${metaParts.join(', ')}]` : '';
+
+            if (chunk.title) {
+                formattedParts.push(`### ${chunk.title}\n${chunk.content}${meta}`);
+                if (!sources.find(s => s.title === chunk.title)) {
+                    sources.push({ title: chunk.title, score: chunk.relevanceScore });
                 }
-                continue;
-            }
-            // Legacy format: "Content [Category, tag1, tag2]"
-            const metaMatch = section.match(/\[([^\]]+)\]$/);
-            if (metaMatch) {
-                const meta = metaMatch[1];
-                const title = meta.split(',')[0]?.trim();
-                if (title && !sources.find(s => s.title === title)) {
-                    sources.push({ title });
-                }
+            } else {
+                formattedParts.push(chunk.content + meta);
             }
         }
 
-        return { context: searchResults, sources };
+        return { context: formattedParts.join('\n\n'), sources };
+    }
+
+    /** Extract topic keywords from user message by matching against user's indexed tags */
+    private async extractTags(message: string, context: RagSecurityContext): Promise<string[]> {
+        const knownTags = await this.knowledgeRepo.getUserTags(context.userId, context);
+        const lowerMessage = message.toLowerCase();
+        return knownTags.filter(tag => lowerMessage.includes(tag));
     }
 
     private async generateResponse(

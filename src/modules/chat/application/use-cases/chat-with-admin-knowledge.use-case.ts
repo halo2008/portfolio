@@ -4,7 +4,9 @@ import {
     KNOWLEDGE_REPO_PORT,
     KnowledgeRepoPort,
     RagSecurityContext,
+    SearchResultChunk,
 } from '../../../knowledge/domain/ports/knowledge-repo.port';
+import { RERANKING_PORT, RerankingPort } from '../../../knowledge/domain/ports/reranking.port';
 import { GOOGLE_GENAI } from '../../../../core/genai/genai.module';
 import { AdminSettingsService } from '../../../knowledge/application/services/admin-settings.service';
 
@@ -34,6 +36,7 @@ export class ChatWithAdminKnowledgeUseCase {
         private readonly knowledgeRepo: KnowledgeRepoPort,
         @Inject(GOOGLE_GENAI) private readonly ai: GoogleGenAI,
         private readonly adminSettings: AdminSettingsService,
+        @Inject(RERANKING_PORT) private readonly reranker: RerankingPort,
     ) { }
 
     async execute(
@@ -63,13 +66,22 @@ export class ChatWithAdminKnowledgeUseCase {
 
         // CRITICAL: Query ONLY admin knowledge - never user-specific vectors
         const searchStart = Date.now();
-        const knowledgeContext = await this.knowledgeRepo.searchAdminKnowledge(
+        const rawChunks = await this.knowledgeRepo.searchAdminKnowledge(
             embedding,
             context,
             settings.scoreThreshold,
             extractedTags.length > 0 ? extractedTags : undefined,
         );
+
+        // Rerank: LLM judges relevance, picks best chunks
+        const reranked = await this.reranker.rerank(
+            message,
+            rawChunks.map(c => ({ ...c, vectorScore: c.score })),
+            5,
+        );
         const searchMs = Date.now() - searchStart;
+
+        const knowledgeContext = this.formatChunks(reranked);
 
         const llmStart = Date.now();
         const response = await this.generateResponse(
@@ -218,6 +230,23 @@ ${context || 'No specific information found in the knowledge base.'}`;
         const knownTags = await this.knowledgeRepo.getAdminTags();
         const lowerMessage = message.toLowerCase();
         return knownTags.filter(tag => lowerMessage.includes(tag));
+    }
+
+    private formatChunks(chunks: Array<{ content: string; title?: string; category?: string; technologies?: string[]; tags?: string[] }>): string {
+        return chunks
+            .map((chunk) => {
+                const metaParts = [
+                    chunk.category,
+                    ...(chunk.technologies || []),
+                    ...(chunk.tags || []),
+                ].filter(Boolean);
+                const meta = metaParts.length > 0 ? ` [${metaParts.join(', ')}]` : '';
+                if (chunk.title) {
+                    return `### ${chunk.title}\n${chunk.content}${meta}`;
+                }
+                return chunk.content + meta;
+            })
+            .join('\n\n');
     }
 
     private anonymizeSessionId(sessionId: string): string {

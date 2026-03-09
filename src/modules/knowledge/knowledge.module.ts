@@ -9,6 +9,8 @@ import { KNOWLEDGE_REPO_PORT } from './domain/ports/knowledge-repo.port';
 import { QdrantKnowledgeRepoAdapter } from './infrastructure/adapters/qdrant-knowledge-repo.adapter';
 import { EMBEDDING_PROVIDER_PORT } from './domain/ports/embedding-provider.port';
 import { GoogleEmbeddingAdapter } from './infrastructure/adapters/google-embedding.adapter';
+import { RERANKING_PORT } from './domain/ports/reranking.port';
+import { GeminiRerankingAdapter } from './infrastructure/adapters/gemini-reranking.adapter';
 import { ConfirmAdminIndexUseCase } from './application/use-cases/confirm-admin-index.use-case';
 import { AdminSettingsService } from './application/services/admin-settings.service';
 import { FirestoreModule } from '../../core/firestore/firestore.module';
@@ -25,6 +27,10 @@ import { FirestoreModule } from '../../core/firestore/firestore.module';
             provide: EMBEDDING_PROVIDER_PORT,
             useClass: GoogleEmbeddingAdapter
         },
+        {
+            provide: RERANKING_PORT,
+            useClass: GeminiRerankingAdapter
+        },
         IngestBatchUseCase,
         DeleteKnowledgeUseCase,
         GetKnowledgeStatsUseCase,
@@ -34,6 +40,7 @@ import { FirestoreModule } from '../../core/firestore/firestore.module';
     exports: [
         KNOWLEDGE_REPO_PORT,
         EMBEDDING_PROVIDER_PORT,
+        RERANKING_PORT,
         AdminSettingsService,
     ]
 })

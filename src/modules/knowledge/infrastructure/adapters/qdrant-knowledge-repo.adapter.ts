@@ -1,6 +1,6 @@
 import { ForbiddenException, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { QdrantClient } from '@qdrant/js-client-rest';
-import { KnowledgeFilter, KnowledgePoint, KnowledgeRepoPort, RagSecurityContext } from '../../domain/ports/knowledge-repo.port';
+import { KnowledgeFilter, KnowledgePoint, KnowledgeRepoPort, RagSecurityContext, SearchResultChunk } from '../../domain/ports/knowledge-repo.port';
 import { QDRANT_CLIENT } from '../../../qdrant/qdrant.provider';
 
 interface QdrantFilterCondition {
@@ -220,7 +220,7 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
         context: RagSecurityContext,
         scoreThreshold = 0.7,
         tags?: string[],
-    ): Promise<string> {
+    ): Promise<SearchResultChunk[]> {
         this.validateContext(context);
 
         if (context.role !== 'admin') {
@@ -234,25 +234,25 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
         const filter = this.buildAdminFilter();
 
         try {
-            // Phase 1: Standard vector search
+            // Phase 1: Standard vector search — wider net for reranking
             const vectorResults = await this.qdrantClient.search(this.COLLECTION_NAME, {
                 vector: query,
-                limit: 5,
+                limit: 12,
                 with_payload: true,
                 with_vector: false,
-                score_threshold: scoreThreshold,
+                score_threshold: Math.max(scoreThreshold - 0.15, 0.1),
                 filter,
             });
 
-            // Phase 2: Tag-boosted search (experimental) — find chunks matching extracted tags
+            // Phase 2: Tag-boosted search — find chunks matching extracted tags
             let tagResults: typeof vectorResults = [];
             if (tags && tags.length > 0) {
                 tagResults = await this.qdrantClient.search(this.COLLECTION_NAME, {
                     vector: query,
-                    limit: 3,
+                    limit: 5,
                     with_payload: true,
                     with_vector: false,
-                    score_threshold: Math.max(scoreThreshold - 0.15, 0.1),
+                    score_threshold: Math.max(scoreThreshold - 0.25, 0.1),
                     filter: {
                         must: [
                             { key: 'role', match: { value: 'admin' } },
@@ -283,14 +283,14 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
                 topScore: vectorResults[0]?.score ?? null,
             });
 
-            return this.formatSearchResults(merged);
+            return this.toSearchResultChunks(merged);
         } catch (error) {
             this.logger.error({
                 msg: 'Admin knowledge search failed',
                 error: error instanceof Error ? error.message : 'Unknown error',
                 userId: context.userId,
             });
-            return '';
+            return [];
         }
     }
 
@@ -300,7 +300,8 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
         context: RagSecurityContext,
         scoreThreshold = 0.7,
         chunkingStrategy?: 'llm' | 'heuristic' | 'all',
-    ): Promise<string> {
+        tags?: string[],
+    ): Promise<SearchResultChunk[]> {
         this.validateContext(context);
 
         // Strict isolation: requester must match target user
@@ -323,32 +324,62 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
         const filter = this.buildUserFilter(userId, chunkingStrategy);
 
         try {
-            const results = await this.qdrantClient.search(this.COLLECTION_NAME, {
+            // Phase 1: Standard vector search — wider net for reranking
+            const vectorResults = await this.qdrantClient.search(this.COLLECTION_NAME, {
                 vector: query,
-                limit: 5,
+                limit: 12,
                 with_payload: true,
                 with_vector: false,
-                score_threshold: scoreThreshold,
+                score_threshold: Math.max(scoreThreshold - 0.15, 0.1),
                 filter,
             });
+
+            // Phase 2: Tag-boosted search — find chunks matching user's tags
+            let tagResults: typeof vectorResults = [];
+            if (tags && tags.length > 0) {
+                const tagFilter = this.buildUserFilter(userId, chunkingStrategy);
+                const tagMust = [...(tagFilter.must || []), { key: 'tags', match: { any: tags } }];
+
+                tagResults = await this.qdrantClient.search(this.COLLECTION_NAME, {
+                    vector: query,
+                    limit: 5,
+                    with_payload: true,
+                    with_vector: false,
+                    score_threshold: Math.max(scoreThreshold - 0.25, 0.1),
+                    filter: { ...tagFilter, must: tagMust },
+                });
+            }
+
+            // Merge & deduplicate
+            const seenIds = new Set(vectorResults.map(r => r.id));
+            const merged = [...vectorResults];
+            for (const tagResult of tagResults) {
+                if (!seenIds.has(tagResult.id)) {
+                    merged.push(tagResult);
+                    seenIds.add(tagResult.id);
+                }
+            }
 
             this.logger.log({
                 msg: 'User knowledge search performed',
                 userId,
-                resultsCount: results.length,
+                vectorHits: vectorResults.length,
+                tagHits: tagResults.length,
+                mergedTotal: merged.length,
+                tags: tags || [],
                 scoreThreshold,
                 chunkingStrategy: chunkingStrategy || 'all',
-                topScore: results[0]?.score ?? null,
+                topScore: vectorResults[0]?.score ?? null,
             });
 
-            return this.formatSearchResults(results);
+            return this.toSearchResultChunks(merged);
         } catch (error) {
             this.logger.error({
                 msg: 'User knowledge search failed',
                 error: error instanceof Error ? error.message : 'Unknown error',
                 userId,
             });
-            return '';
+            return [];
         }
     }
 
@@ -508,32 +539,50 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
         }
     }
 
-    private formatSearchResults(results: Array<{
-        payload?: Record<string, unknown>;
-        score?: number;
-    }>): string {
-        return results
-            .map((res) => {
-                const title = res.payload?.title as string | undefined;
-                const content = res.payload?.content as string || '';
-                const category = res.payload?.category as string | undefined;
-                const techs = res.payload?.technologies as string[] | undefined;
-                const tags = res.payload?.tags as string[] | undefined;
+    async getUserTags(userId: string, context: RagSecurityContext): Promise<string[]> {
+        this.validateContext(context);
 
-                const metaParts = [
-                    category,
-                    ...(techs || []),
-                    ...(tags || []),
-                ].filter(Boolean);
+        if (context.userId !== userId) {
+            throw new ForbiddenException('Cannot access tags belonging to another user');
+        }
 
-                const meta = metaParts.length > 0 ? ` [${metaParts.join(', ')}]` : '';
+        try {
+            const filter = this.buildUserFilter(userId);
+            const response = await this.qdrantClient.scroll(this.COLLECTION_NAME, {
+                limit: 500,
+                with_payload: true,
+                with_vector: false,
+                filter,
+            });
 
-                // QA Atom format: title acts as the question, content as the answer
-                if (title) {
-                    return `### ${title}\n${content}${meta}`;
+            const tags = new Set<string>();
+            for (const point of response.points) {
+                const pointTags = point.payload?.tags as string[] | undefined;
+                if (pointTags) {
+                    pointTags.forEach(t => tags.add(t.toLowerCase()));
                 }
-                return content + meta;
-            })
-            .join('\n\n');
+            }
+
+            return [...tags];
+        } catch (error) {
+            this.logger.warn({ error: (error as Error).message, userId }, 'Failed to fetch user tags');
+            return [];
+        }
+    }
+
+    private toSearchResultChunks(results: Array<{
+        id: string | number;
+        payload?: Record<string, unknown> | null;
+        score?: number;
+    }>): SearchResultChunk[] {
+        return results.map((res) => ({
+            id: res.id,
+            content: (res.payload?.content as string) || '',
+            title: (res.payload?.title as string) || undefined,
+            category: (res.payload?.category as string) || undefined,
+            technologies: (res.payload?.technologies as string[]) || undefined,
+            tags: (res.payload?.tags as string[]) || undefined,
+            score: res.score ?? 0,
+        }));
     }
 }

@@ -26,6 +26,16 @@ export interface KnowledgePoint {
     createdAt?: string;
 }
 
+export interface SearchResultChunk {
+    id: string | number;
+    content: string;
+    title?: string;
+    category?: string;
+    technologies?: string[];
+    tags?: string[];
+    score: number;
+}
+
 export interface KnowledgeRepoPort {
     checkDuplicate(hash: string): Promise<boolean>;
     upsertPoints(points: any[]): Promise<void>;
@@ -35,11 +45,11 @@ export interface KnowledgeRepoPort {
     /** Browse admin knowledge points with pagination. */
     browsePoints(category?: string, limit?: number, offset?: string): Promise<{ points: KnowledgePoint[]; nextOffset?: string }>;
 
-    /** Searches strictly admin-only vectors. Optional tags for hybrid tag-boosted search. */
-    searchAdminKnowledge(query: number[], context: RagSecurityContext, scoreThreshold?: number, tags?: string[]): Promise<string>;
+    /** Searches strictly admin-only vectors. Optional tags for hybrid tag-boosted search. Returns raw structured results. */
+    searchAdminKnowledge(query: number[], context: RagSecurityContext, scoreThreshold?: number, tags?: string[]): Promise<SearchResultChunk[]>;
 
-    /** Searches strictly user-owned vectors (isolated by userId). */
-    searchUserKnowledge(query: number[], userId: string, context: RagSecurityContext, scoreThreshold?: number, chunkingStrategy?: 'llm' | 'heuristic' | 'all'): Promise<string>;
+    /** Searches strictly user-owned vectors (isolated by userId). Optional tags for tag-boosted search. Returns raw structured results. */
+    searchUserKnowledge(query: number[], userId: string, context: RagSecurityContext, scoreThreshold?: number, chunkingStrategy?: 'llm' | 'heuristic' | 'all', tags?: string[]): Promise<SearchResultChunk[]>;
 
     /** Browse user-owned knowledge points with pagination. */
     browseUserPoints(userId: string, context: RagSecurityContext, limit?: number, offset?: string): Promise<{ points: KnowledgePoint[]; nextOffset?: string }>;
@@ -49,4 +59,7 @@ export interface KnowledgeRepoPort {
 
     /** Returns all unique technology tags from admin knowledge (cached). */
     getAdminTags(): Promise<string[]>;
+
+    /** Returns all unique tags from user's knowledge. */
+    getUserTags(userId: string, context: RagSecurityContext): Promise<string[]>;
 }
