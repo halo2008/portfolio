@@ -43,6 +43,11 @@ class ChunkDto {
     @IsOptional()
     @IsString()
     title?: string;
+
+    @IsOptional()
+    @IsArray()
+    @IsString({ each: true })
+    tags?: string[];
 }
 
 class ConfirmIndexDto {
@@ -224,6 +229,7 @@ export class LabController {
         const chunks: SemanticChunk[] = body.chunks.map((chunk) => ({
             content: chunk.content,
             title: chunk.title,
+            tags: chunk.tags,
         }));
 
         this.logger.log({

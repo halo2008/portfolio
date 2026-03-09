@@ -12,6 +12,7 @@ import { LabUsageService } from '../services/lab-usage.service';
 export interface SemanticChunk {
     content: string;
     title?: string;
+    tags?: string[];
 }
 
 export interface ConfirmIndexInput {
@@ -144,6 +145,7 @@ export class ConfirmIndexUseCase {
                     role: 'demo',
                     title: chunk.title || '',
                     content: chunk.content,
+                    tags: chunk.tags?.slice(0, 10) || [],
                     language,
                     chunking_strategy: chunkingStrategy || 'llm',
                     created_at: now,

@@ -518,11 +518,15 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
                 const content = res.payload?.content as string || '';
                 const category = res.payload?.category as string | undefined;
                 const techs = res.payload?.technologies as string[] | undefined;
+                const tags = res.payload?.tags as string[] | undefined;
 
-                let meta = '';
-                if (category || techs) {
-                    meta = ` [${[category, ...(techs || [])].filter(Boolean).join(', ')}]`;
-                }
+                const metaParts = [
+                    category,
+                    ...(techs || []),
+                    ...(tags || []),
+                ].filter(Boolean);
+
+                const meta = metaParts.length > 0 ? ` [${metaParts.join(', ')}]` : '';
 
                 // QA Atom format: title acts as the question, content as the answer
                 if (title) {

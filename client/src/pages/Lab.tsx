@@ -385,7 +385,7 @@ const Lab: React.FC = () => {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          chunks: chunks.map((c) => ({ content: c.content, title: c.title || '' })),
+          chunks: chunks.map((c) => ({ content: c.content, title: c.title || '', tags: c.suggestedTags || [] })),
           language: analysisResult.detectedLanguage,
           chunkingStrategy: uploadStrategy,
         }),
@@ -451,6 +451,28 @@ const Lab: React.FC = () => {
 
   const updateChunk = (index: number, field: 'title' | 'content', value: string) => {
     setChunks((prev) => prev.map((chunk, i) => (i === index ? { ...chunk, [field]: value } : chunk)));
+  };
+
+  const updateChunkTags = (index: number, tags: string[]) => {
+    setChunks((prev) => prev.map((chunk, i) => (i === index ? { ...chunk, suggestedTags: tags } : chunk)));
+  };
+
+  const addTagToChunk = (index: number, tag: string) => {
+    const trimmed = tag.trim().toLowerCase();
+    if (!trimmed) return;
+    setChunks((prev) => prev.map((chunk, i) => {
+      if (i !== index) return chunk;
+      const existing = chunk.suggestedTags || [];
+      if (existing.includes(trimmed)) return chunk;
+      return { ...chunk, suggestedTags: [...existing, trimmed] };
+    }));
+  };
+
+  const removeTagFromChunk = (index: number, tagToRemove: string) => {
+    setChunks((prev) => prev.map((chunk, i) => {
+      if (i !== index) return chunk;
+      return { ...chunk, suggestedTags: (chunk.suggestedTags || []).filter(t => t !== tagToRemove) };
+    }));
   };
 
   const handleCancel = () => {
@@ -921,15 +943,39 @@ const Lab: React.FC = () => {
                           <p className="text-xs text-slate-400 bg-darker/50 p-2 rounded-sm">{chunk.rationale}</p>
                         </div>
                       )}
-                      {chunk.suggestedTags && chunk.suggestedTags.length > 0 && (
-                        <div className="flex gap-1 flex-wrap">
-                          {chunk.suggestedTags.map((tag, i) => (
-                            <span key={i} className="text-[10px] text-primary bg-primary/10 px-1.5 py-0.5 rounded-sm border border-primary/20">
+                      <div>
+                        <label className="block text-xs text-slate-500 mb-1">
+                          {language === 'pl' ? 'Tagi' : 'Tags'}
+                        </label>
+                        <div className="flex gap-1 flex-wrap items-center">
+                          {(chunk.suggestedTags || []).map((tag, i) => (
+                            <span
+                              key={i}
+                              className="text-[10px] text-primary bg-primary/10 px-1.5 py-0.5 rounded-sm border border-primary/20 inline-flex items-center gap-1 group/tag"
+                            >
                               {tag}
+                              <button
+                                onClick={() => removeTagFromChunk(index, tag)}
+                                className="text-primary/40 hover:text-red-400 transition-colors"
+                              >
+                                <X size={10} />
+                              </button>
                             </span>
                           ))}
+                          <input
+                            type="text"
+                            placeholder={language === 'pl' ? '+ dodaj tag' : '+ add tag'}
+                            className="text-[10px] bg-transparent border border-dashed border-slate-600 rounded-sm px-1.5 py-0.5 text-slate-400 placeholder-slate-600 focus:border-primary focus:outline-none w-20 transition-colors"
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                addTagToChunk(index, (e.target as HTMLInputElement).value);
+                                (e.target as HTMLInputElement).value = '';
+                              }
+                            }}
+                          />
                         </div>
-                      )}
+                      </div>
                     </div>
                   ))}
                 </div>
