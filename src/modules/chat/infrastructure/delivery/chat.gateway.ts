@@ -48,7 +48,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, Ch
 
   @SubscribeMessage('messageToServer')
   async handleMessage(
-    @MessageBody() payload: { text: string; sessionId?: string; captcha?: string },
+    @MessageBody() payload: { text: string; sessionId?: string; captcha?: string; language?: 'pl' | 'en' },
     @ConnectedSocket() client: Socket,
   ): Promise<void> {
     try {
@@ -112,7 +112,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, Ch
       const context: RagSecurityContext = {
         userId: 'system_main_page',
         role: 'admin',
-        language: this.detectLanguage(payload.text),
+        language: payload.language || this.detectLanguage(payload.text),
       };
 
       const result = await this.chatWithAdminKnowledge.execute(

@@ -56,6 +56,11 @@ class ChatRequestDto {
     @IsString()
     @IsIn(['llm', 'heuristic', 'all'])
     chunkingStrategy?: 'llm' | 'heuristic' | 'all';
+
+    @IsOptional()
+    @IsString()
+    @IsIn(['pl', 'en'])
+    language?: 'pl' | 'en';
 }
 
 class SourceDto {
@@ -97,7 +102,7 @@ export class ChatController {
     async chatMainPage(
         @Body() body: ChatRequestDto,
     ): Promise<ChatResponseDto> {
-        const detectedLanguage = this.detectLanguage(body.message);
+        const detectedLanguage = body.language || this.detectLanguage(body.message);
 
         // Main page is public, so we use a synthetic admin context
         const context: RagSecurityContext = {
@@ -184,7 +189,10 @@ export class ChatController {
             );
         }
 
-        const detectedLanguage = this.detectLanguage(body.message);
+        const detectedLanguage = body.language || this.detectLanguage(body.message);
+
+        // Override context language with UI language
+        context.language = detectedLanguage;
 
         this.logger.log({
             msg: 'Lab chat request',

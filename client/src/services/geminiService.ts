@@ -1,11 +1,11 @@
-export const generateResponse = async (userMessage: string): Promise<string> => {
+export const generateResponse = async (userMessage: string, language?: string): Promise<string> => {
   try {
     const response = await fetch('/api/chat', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ message: userMessage }),
+      body: JSON.stringify({ message: userMessage, language }),
     });
 
     if (!response.ok) {

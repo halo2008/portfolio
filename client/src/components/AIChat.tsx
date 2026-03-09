@@ -123,6 +123,7 @@ const AIChat: React.FC = () => {
         text: messageText,
         sessionId: sessionIdRef.current,
         captcha: token,
+        language,
       });
     } catch (error) {
       console.error('Chat request failed:', error);

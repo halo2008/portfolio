@@ -259,6 +259,7 @@ const LabChat: React.FC = () => {
           message: userMessage.content,
           sessionId: user?.uid || 'unknown',
           scoreThreshold,
+          language,
           ...(searchStrategy !== 'all' && { chunkingStrategy: searchStrategy }),
           ...(systemContext.trim() && { systemContext: systemContext.trim() }),
         }),
