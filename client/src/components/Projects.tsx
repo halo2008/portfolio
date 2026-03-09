@@ -88,9 +88,6 @@ const Projects: React.FC = () => {
             };
             return (
               <TiltCard key={project.id} onClick={handleClick} delay={index * 100} isVisible={isVisible}>
-                {/* Header Decoration */}
-                <div className="h-1 w-full bg-slate-800 group-hover:bg-primary transition-colors"></div>
-
                 {project.image ? (
                   <div className="h-56 overflow-hidden relative border-b border-slate-800">
                     <img
