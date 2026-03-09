@@ -25,14 +25,14 @@ const TiltCard: React.FC<{ children: React.ReactNode; onClick: () => void; delay
   return (
     <GlowCard
       onClick={onClick}
-      className={`group relative bg-surface border border-slate-800 rounded-sm overflow-hidden hover:border-primary/50 transition-all duration-300 cursor-pointer flex flex-col ${isVisible ? 'reveal-visible' : 'reveal-hidden'}`}
+      className={`group relative bg-surface border border-slate-800 rounded-sm hover:border-primary/50 transition-all duration-300 cursor-pointer flex flex-col ${isVisible ? 'reveal-visible' : 'reveal-hidden'}`}
       style={{ animationDelay: `${delay}ms` }}
     >
       <div
         ref={ref}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        className="flex flex-col flex-grow"
+        className="flex flex-col flex-grow overflow-hidden rounded-sm"
       >
         {children}
       </div>

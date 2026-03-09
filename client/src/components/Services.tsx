@@ -10,10 +10,10 @@ const ServiceCard: React.FC<{ children: React.ReactNode; delay: number; isVisibl
 
     return (
         <GlowCard
-            className={`bg-surface border border-slate-700 rounded-sm hover:border-primary/50 transition-all duration-300 group relative overflow-hidden ${isVisible ? 'reveal-visible' : 'reveal-hidden'}`}
+            className={`bg-surface border border-slate-700 rounded-sm hover:border-primary/50 transition-all duration-300 group relative ${isVisible ? 'reveal-visible' : 'reveal-hidden'}`}
             style={{ animationDelay: `${delay}ms` }}
         >
-            <div ref={ref} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} className="p-8">
+            <div ref={ref} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} className="p-8 overflow-hidden rounded-sm">
                 {children}
             </div>
         </GlowCard>
