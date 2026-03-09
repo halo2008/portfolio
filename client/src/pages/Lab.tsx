@@ -560,7 +560,16 @@ const Lab: React.FC = () => {
   // RENDER
   // ══════════════════════════════════════════════════════
   return (
-    <div className="min-h-screen bg-dark text-white flex flex-col">
+    <div className="min-h-screen bg-dark text-white flex flex-col relative">
+      {/* Lab background effects */}
+      <div className="lab-scanline fixed inset-0 z-0 pointer-events-none" />
+      <div className="fixed inset-0 z-0 pointer-events-none opacity-[0.03]"
+        style={{
+          backgroundImage: 'linear-gradient(#f59e0b 1px, transparent 1px), linear-gradient(90deg, #f59e0b 1px, transparent 1px)',
+          backgroundSize: '60px 60px'
+        }}
+      />
+
       <nav className="fixed top-0 left-0 right-0 z-40 backdrop-blur-md bg-darker/80 border-b border-slate-800 h-16 flex items-center justify-between px-6 lg:px-12">
         <div className="flex items-center gap-4">
           <a href="/" className="font-mono font-bold text-xl text-white tracking-tighter hover:text-primary transition-colors">
@@ -615,7 +624,7 @@ const Lab: React.FC = () => {
         {/* ╔══════════════════════════════════════════════╗
            ║  LEFT PANEL — Upload / Analyze / Index       ║
            ╚══════════════════════════════════════════════╝ */}
-        <div className="lg:w-1/2 w-full overflow-y-auto border-r border-slate-800/50 p-6 lg:p-8 flex flex-col gap-6">
+        <div className="lab-panel-left lg:w-1/2 w-full overflow-y-auto border-r border-slate-800/50 p-6 lg:p-8 flex flex-col gap-6">
 
           {sessionInfo && (
             <LabStatsPanel
@@ -1060,7 +1069,7 @@ const Lab: React.FC = () => {
         {/* ╔══════════════════════════════════════════════╗
            ║  RIGHT PANEL — Chat                          ║
            ╚══════════════════════════════════════════════╝ */}
-        <div className="lg:w-1/2 w-full flex flex-col bg-darker/30">
+        <div className="lab-panel-right lg:w-1/2 w-full flex flex-col bg-darker/30">
           <div className="px-6 py-4 border-b border-slate-800 bg-darker/50 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <MessageSquare className="text-primary" size={22} />
@@ -1086,7 +1095,7 @@ const Lab: React.FC = () => {
             ) : (
               <>
                 {messages.map((message) => (
-                  <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div key={message.id} className={`lab-message flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                     <div
                       className={`max-w-[85%] rounded-sm px-4 py-3 ${message.role === 'user'
                         ? 'bg-primary text-darker'

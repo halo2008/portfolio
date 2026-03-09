@@ -1,18 +1,20 @@
 import React from 'react';
 import { Activity } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
+import { useScrollReveal } from '../hooks/useScrollReveal';
 
 const LiveTelemetry: React.FC = () => {
     const { content } = useLanguage();
     const { telemetry } = content;
+    const { ref, isVisible } = useScrollReveal();
 
     return (
         <section id="telemetry" className="py-24 px-6 md:px-12 lg:px-24 bg-darker relative overflow-hidden border-t border-slate-800">
             {/* Background elements */}
             <div className="absolute top-0 right-0 w-1/2 h-full bg-primary/5 blur-[120px] pointer-events-none" />
 
-            <div className="max-w-7xl mx-auto relative z-10">
-                <div className="text-center mb-16">
+            <div ref={ref} className="max-w-7xl mx-auto relative z-10">
+                <div className={`text-center mb-16 ${isVisible ? 'reveal-visible' : 'reveal-hidden'}`}>
                     <div className="flex items-center justify-center gap-2 mb-4">
                         <Activity className="text-primary animate-pulse" size={24} />
                         <span className="text-primary font-mono text-sm tracking-widest uppercase">// LIVE SYSTEM</span>
@@ -25,7 +27,7 @@ const LiveTelemetry: React.FC = () => {
                     </p>
                 </div>
 
-                <div className="w-full max-w-4xl mx-auto p-1 bg-gradient-to-r from-primary/30 to-secondary/30 rounded-2xl shadow-[0_0_40px_rgba(6,182,212,0.15)] relative group cursor-pointer transition-all duration-300 hover:shadow-[0_0_60px_rgba(6,182,212,0.3)]">
+                <div className={`w-full max-w-4xl mx-auto p-1 bg-gradient-to-r from-primary/30 to-secondary/30 rounded-2xl shadow-[0_0_40px_rgba(6,182,212,0.15)] relative group cursor-pointer transition-all duration-300 hover:shadow-[0_0_60px_rgba(6,182,212,0.3)] ${isVisible ? 'reveal-visible' : 'reveal-hidden'}`} style={{ animationDelay: '200ms' }}>
                     <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 rounded-2xl blur-xl group-hover:opacity-100 opacity-0 transition-opacity duration-500"></div>
                     <a
                         href="https://ksedkowski.grafana.net/public-dashboards/b3d49d0548d447a2b84d5c04a000b0b1"

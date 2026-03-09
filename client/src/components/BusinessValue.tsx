@@ -1,10 +1,29 @@
 import React from 'react';
 import { Zap, ShieldCheck, Layers, TrendingUp } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
+import { useTilt } from '../hooks/useTilt';
+import { useScrollReveal } from '../hooks/useScrollReveal';
+
+const ValueCard: React.FC<{ children: React.ReactNode; delay: number; isVisible: boolean }> = ({ children, delay, isVisible }) => {
+    const { ref, handleMouseMove, handleMouseLeave } = useTilt({ maxRotation: 5, scale: 1.01 });
+
+    return (
+        <div
+            ref={ref}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            className={`glow-card bg-darker/50 backdrop-blur border border-slate-800 p-8 rounded-sm hover:border-primary/50 transition-all duration-300 group relative overflow-hidden ${isVisible ? 'reveal-visible' : 'reveal-hidden'}`}
+            style={{ animationDelay: `${delay}ms` }}
+        >
+            {children}
+        </div>
+    );
+};
 
 const BusinessValue: React.FC = () => {
     const { content } = useLanguage();
     const { businessValue } = content;
+    const { ref, isVisible } = useScrollReveal();
 
     const getIcon = (iconName: string) => {
         switch (iconName) {
@@ -21,8 +40,8 @@ const BusinessValue: React.FC = () => {
             {/* Mesh Background */}
             <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:20px_20px] opacity-[0.2]"></div>
 
-            <div className="max-w-7xl mx-auto relative z-10">
-                <div className="text-center mb-16">
+            <div ref={ref} className="max-w-7xl mx-auto relative z-10">
+                <div className={`text-center mb-16 ${isVisible ? 'reveal-visible' : 'reveal-hidden'}`}>
                     <span className="text-primary font-mono text-sm tracking-widest uppercase mb-2 block">// VALUE</span>
                     <h2 className="text-3xl md:text-5xl font-bold text-white">
                         {businessValue.title}
@@ -31,10 +50,7 @@ const BusinessValue: React.FC = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     {businessValue.items.map((item, index) => (
-                        <div
-                            key={index}
-                            className="bg-darker/50 backdrop-blur border border-slate-800 p-8 rounded-sm hover:border-primary/50 hover:shadow-[0_0_20px_rgba(6,182,212,0.1)] transition-all duration-300 group relative overflow-hidden"
-                        >
+                        <ValueCard key={index} delay={index * 100} isVisible={isVisible}>
                             {/* Hover corner accent */}
                             <div className="absolute top-0 right-0 w-0 h-0 border-t-[40px] border-r-[40px] border-t-transparent border-r-slate-800 group-hover:border-r-primary transition-all duration-300"></div>
 
@@ -49,7 +65,7 @@ const BusinessValue: React.FC = () => {
                             <p className="text-slate-400 leading-relaxed font-light text-sm">
                                 {item.description}
                             </p>
-                        </div>
+                        </ValueCard>
                     ))}
                 </div>
             </div>

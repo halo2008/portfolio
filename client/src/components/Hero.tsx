@@ -2,11 +2,17 @@ import React from 'react';
 import { ChevronDown, Terminal, Briefcase, Zap, Beaker } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
 import { useNavigate } from 'react-router-dom';
+import { useTypewriter } from '../hooks/useTypewriter';
 
 const Hero: React.FC = () => {
   const { content, language } = useLanguage();
   const navigate = useNavigate();
   const { name, title, hero, availability, philosophy, contact } = content;
+
+  const typewriterTexts = language === 'en'
+    ? ['Kubernetes', 'DevOps', 'Full-Stack', 'IoT', 'AI / RAG']
+    : ['Kubernetes', 'DevOps', 'Full-Stack', 'IoT', 'AI / RAG'];
+  const { displayText } = useTypewriter({ texts: typewriterTexts, typeSpeed: 100, deleteSpeed: 50, pauseDuration: 2500 });
 
   const handleTryLab = () => {
     navigate('/lab');
@@ -39,6 +45,11 @@ const Hero: React.FC = () => {
             {name}
             <span className="block text-slate-400 mt-2 text-2xl md:text-4xl lg:text-5xl font-light">
               {hero.headline}
+            </span>
+            <span className="block mt-3 text-xl md:text-2xl font-mono font-normal">
+              <span className="text-primary">&gt; </span>
+              <span className="text-amber-300">{displayText}</span>
+              <span className="typewriter-cursor text-primary">|</span>
             </span>
           </h1>
 

@@ -1,10 +1,29 @@
 import React from 'react';
 import { Rocket, Brain, Wifi, Shield, Server, Cloud } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
+import { useTilt } from '../hooks/useTilt';
+import { useScrollReveal } from '../hooks/useScrollReveal';
+
+const ServiceCard: React.FC<{ children: React.ReactNode; delay: number; isVisible: boolean }> = ({ children, delay, isVisible }) => {
+    const { ref, handleMouseMove, handleMouseLeave } = useTilt({ maxRotation: 5, scale: 1.01 });
+
+    return (
+        <div
+            ref={ref}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            className={`glow-card bg-surface border border-slate-700 p-8 rounded-sm hover:border-primary transition-all duration-300 group relative overflow-hidden ${isVisible ? 'reveal-visible' : 'reveal-hidden'}`}
+            style={{ animationDelay: `${delay}ms` }}
+        >
+            {children}
+        </div>
+    );
+};
 
 const Services: React.FC = () => {
     const { content } = useLanguage();
     const { services } = content;
+    const { ref, isVisible } = useScrollReveal();
 
     const getIcon = (iconName: string) => {
         switch (iconName) {
@@ -23,8 +42,8 @@ const Services: React.FC = () => {
             {/* Mesh Background */}
             <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:20px_20px] opacity-[0.2]"></div>
 
-            <div className="max-w-7xl mx-auto relative z-10">
-                <div className="text-center mb-16">
+            <div ref={ref} className="max-w-7xl mx-auto relative z-10">
+                <div className={`text-center mb-16 ${isVisible ? 'reveal-visible' : 'reveal-hidden'}`}>
                     <span className="text-primary font-mono text-sm tracking-widest uppercase mb-2 block">// OFFERING</span>
                     <h2 className="text-3xl md:text-5xl font-bold text-white">
                         {services.title}
@@ -33,10 +52,7 @@ const Services: React.FC = () => {
 
                 <div className="grid md:grid-cols-3 gap-6">
                     {services.items.map((item, index) => (
-                        <div
-                            key={index}
-                            className="bg-surface border border-slate-700 p-8 rounded-sm hover:border-primary transition-all duration-300 group relative overflow-hidden"
-                        >
+                        <ServiceCard key={index} delay={index * 120} isVisible={isVisible}>
                             {/* Hover corner accent */}
                             <div className="absolute top-0 right-0 w-0 h-0 border-t-[40px] border-r-[40px] border-t-transparent border-r-slate-800 group-hover:border-r-primary transition-all duration-300"></div>
 
@@ -51,7 +67,7 @@ const Services: React.FC = () => {
                             <p className="text-slate-400 leading-relaxed font-light text-sm">
                                 {item.description}
                             </p>
-                        </div>
+                        </ServiceCard>
                     ))}
                 </div>
             </div>

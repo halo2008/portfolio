@@ -3,6 +3,8 @@ import { Server, Bot, Shield, Smartphone, Brain, Cloud, Wifi, X, CheckCircle2, C
 import { useNavigate } from 'react-router-dom';
 import { useLanguage } from '../LanguageContext';
 import { Project } from '../types';
+import { useTilt } from '../hooks/useTilt';
+import { useScrollReveal } from '../hooks/useScrollReveal';
 
 const iconMap: Record<string, React.ElementType> = {
   'Server': Server,
@@ -16,11 +18,29 @@ const iconMap: Record<string, React.ElementType> = {
   'FlaskConical': FlaskConical
 };
 
+const TiltCard: React.FC<{ children: React.ReactNode; onClick: () => void; delay: number; isVisible: boolean }> = ({ children, onClick, delay, isVisible }) => {
+  const { ref, handleMouseMove, handleMouseLeave } = useTilt({ maxRotation: 6, scale: 1.01 });
+
+  return (
+    <div
+      ref={ref}
+      onClick={onClick}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className={`glow-card group relative bg-surface border border-slate-800 rounded-sm overflow-hidden hover:border-primary transition-all duration-300 cursor-pointer flex flex-col ${isVisible ? 'reveal-visible' : 'reveal-hidden'}`}
+      style={{ animationDelay: `${delay}ms` }}
+    >
+      {children}
+    </div>
+  );
+};
+
 const Projects: React.FC = () => {
   const { content, language } = useLanguage();
   const { projects } = content;
   const navigate = useNavigate();
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const { ref: sectionRef, isVisible } = useScrollReveal();
 
   useEffect(() => {
     if (selectedProject) {
@@ -43,8 +63,8 @@ const Projects: React.FC = () => {
         }}>
       </div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        <div className="flex flex-col items-center mb-16">
+      <div ref={sectionRef} className="max-w-7xl mx-auto relative z-10">
+        <div className={`flex flex-col items-center mb-16 ${isVisible ? 'reveal-visible' : 'reveal-hidden'}`}>
           <span className="text-primary font-mono text-sm tracking-widest uppercase mb-2">[ WORK_LOG ]</span>
           <h2 className="text-3xl md:text-5xl font-bold text-white text-center">
             {projects.title}
@@ -52,7 +72,7 @@ const Projects: React.FC = () => {
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
-          {projects.items.map((project) => {
+          {projects.items.map((project, index) => {
             const Icon = iconMap[project.iconName] || Rocket;
             const handleClick = () => {
               if (project.link) {
@@ -62,11 +82,7 @@ const Projects: React.FC = () => {
               }
             };
             return (
-              <div
-                key={project.id}
-                onClick={handleClick}
-                className="group relative bg-surface border border-slate-800 rounded-sm overflow-hidden hover:border-primary transition-all duration-300 cursor-pointer hover:shadow-[0_0_20px_rgba(0,0,0,0.5)] flex flex-col"
-              >
+              <TiltCard key={project.id} onClick={handleClick} delay={index * 100} isVisible={isVisible}>
                 {/* Header Decoration */}
                 <div className="h-1 w-full bg-slate-800 group-hover:bg-primary transition-colors"></div>
 
@@ -75,7 +91,7 @@ const Projects: React.FC = () => {
                     <img
                       src={project.image}
                       alt={project.title}
-                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 opacity-80 group-hover:opacity-100"
+                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 opacity-80 group-hover:opacity-100 group-hover:scale-105"
                     />
                     <div className="absolute top-4 right-4 bg-darker/90 backdrop-blur border border-slate-700 p-2 rounded-sm text-primary">
                       <Icon size={18} />
@@ -104,7 +120,7 @@ const Projects: React.FC = () => {
                   <p className="text-slate-400 text-sm leading-relaxed mb-6 line-clamp-3 font-light">
                     {project.challenge}
                   </p>
-                  
+
                   {project.languageBadge && language === project.languageBadge && (
                     <div className="mb-4">
                       <span className="text-[10px] font-mono bg-primary/10 text-primary px-2 py-1 rounded-sm border border-primary/30 uppercase tracking-tight">
@@ -129,7 +145,7 @@ const Projects: React.FC = () => {
                     <ChevronRight size={20} />
                   </div>
                 </div>
-              </div>
+              </TiltCard>
             );
           })}
         </div>

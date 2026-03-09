@@ -7,6 +7,7 @@ import BusinessValue from '../components/BusinessValue';
 import Contact from '../components/Contact';
 import LiveTelemetry from '../components/LiveTelemetry';
 import AIChat from '../components/AIChat';
+import ScrollProgressBar from '../components/ScrollProgressBar';
 import { useLanguage } from '../LanguageContext';
 import { Globe } from 'lucide-react';
 
@@ -30,6 +31,8 @@ const HomePage: React.FC = () => {
                 {/* Noise Texture */}
                 <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03]"></div>
             </div>
+
+            <ScrollProgressBar />
 
             {/* Navbar */}
             <nav className="fixed top-0 left-0 right-0 z-40 backdrop-blur-md bg-darker/80 border-b border-slate-800 h-16 flex items-center justify-between px-6 lg:px-24 transition-all duration-300">
