@@ -276,14 +276,17 @@ export class ChatWithUserKnowledgeUseCase {
 
             return text;
         } catch (error) {
+            const errorMsg = error instanceof Error ? error.message : 'Unknown error';
             this.logger.error({
                 msg: 'Lab response generation failed',
-                error: error instanceof Error ? error.message : 'Unknown error',
+                error: errorMsg,
+                model,
+                stack: error instanceof Error ? error.stack : undefined,
             });
 
             return language === 'pl'
-                ? 'Przepraszam, wystąpił błąd podczas generowania odpowiedzi. Spróbuj ponownie później.'
-                : 'Sorry, an error occurred while generating the response. Please try again later.';
+                ? `Przepraszam, wystąpił błąd: ${errorMsg}`
+                : `Sorry, an error occurred: ${errorMsg}`;
         }
     }
 

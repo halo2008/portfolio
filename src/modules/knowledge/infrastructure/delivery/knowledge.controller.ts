@@ -10,7 +10,7 @@ import { GetKnowledgeStatsUseCase } from '../../application/use-cases/get-knowle
 import { ANALYSIS_PORT, AnalysisPort } from '../../../lab/domain/ports/analysis.port';
 import { ConfirmAdminIndexUseCase, ConfirmAdminIndexInput, AdminIndexResultDto } from '../../application/use-cases/confirm-admin-index.use-case';
 import { ConfirmIndexUseCase } from '../../../lab/application/use-cases/confirm-index.use-case';
-import { Throttle } from '@nestjs/throttler';
+import { Throttle, SkipThrottle } from '@nestjs/throttler';
 import { RagSecurityContext, KNOWLEDGE_REPO_PORT, KnowledgeRepoPort } from '../../domain/ports/knowledge-repo.port';
 import { SecurityInterceptor } from '../../../lab/infrastructure/security/security.interceptor';
 import { UseInterceptors, forwardRef } from '@nestjs/common';
@@ -99,7 +99,7 @@ export class KnowledgeController {
 
     @Post('analyze')
     @UseGuards(FirebaseAuthGuard)
-    @Throttle({ short: { ttl: 60000, limit: 10 } })
+    @SkipThrottle()
     @Roles('admin')
     async analyzeText(
         @Body('text') text: string,
@@ -121,6 +121,7 @@ export class KnowledgeController {
 
     @Post('confirm-index')
     @UseGuards(FirebaseAuthGuard)
+    @SkipThrottle()
     @Roles('admin')
     async confirmIndex(
         @Body() data: ConfirmAdminIndexInput,
@@ -130,6 +131,7 @@ export class KnowledgeController {
 
     @Post('batch')
     @UseGuards(FirebaseAuthGuard)
+    @SkipThrottle()
     @Roles('admin')
     async ingestBatch(
         @Body() data: KnowledgeAtomDto[],
@@ -175,6 +177,7 @@ export class KnowledgeController {
 
     @Get('browse')
     @UseGuards(FirebaseAuthGuard)
+    @SkipThrottle()
     @Roles('admin')
     async browseKnowledge(
         @Query('category') category?: string,
@@ -187,6 +190,7 @@ export class KnowledgeController {
 
     @Delete('knowledge')
     @UseGuards(FirebaseAuthGuard)
+    @SkipThrottle()
     @Roles('admin')
     async deleteKnowledge(
         @Query('category') category?: string,
@@ -208,6 +212,7 @@ export class KnowledgeController {
 
     @Get('settings')
     @UseGuards(FirebaseAuthGuard)
+    @SkipThrottle()
     @Roles('admin')
     async getSettings() {
         return await this.adminSettingsService.getSettings();
@@ -215,6 +220,7 @@ export class KnowledgeController {
 
     @Put('settings')
     @UseGuards(FirebaseAuthGuard)
+    @SkipThrottle()
     @Roles('admin')
     async updateSettings(@Body() body: AdminSettingsDto) {
         return await this.adminSettingsService.updateSettings(body);
@@ -222,6 +228,7 @@ export class KnowledgeController {
 
     @Get('stats')
     @UseGuards(FirebaseAuthGuard)
+    @SkipThrottle()
     @UseInterceptors(SecurityInterceptor)
     async getStats(@Req() req: RequestWithRagContext) {
         const context = req.RAG_CONTEXT;

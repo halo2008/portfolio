@@ -11,6 +11,7 @@ import { Firestore } from '@google-cloud/firestore';
 import * as admin from 'firebase-admin';
 import * as crypto from 'crypto';
 import { FIRESTORE_DB } from '../../../../core/firestore/firestore.provider';
+import { KNOWLEDGE_REPO_PORT, KnowledgeRepoPort } from '../../../knowledge/domain/ports/knowledge-repo.port';
 
 const SESSION_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
@@ -27,6 +28,7 @@ export class LabSessionController {
 
     constructor(
         @Inject(FIRESTORE_DB) private readonly firestore: Firestore,
+        @Inject(KNOWLEDGE_REPO_PORT) private readonly knowledgeRepo: KnowledgeRepoPort,
     ) { }
 
     @Post('session')
@@ -84,10 +86,20 @@ export class LabSessionController {
             return;
         }
 
-        // If existing session already expired, refresh it
+        // If existing session already expired, clean old vectors and refresh
         const data = doc.data();
         const existingExpiry = data?.expiresAt?.toDate?.() ?? data?.expiresAt;
         if (existingExpiry && existingExpiry < now) {
+            this.logger.log({ uid }, 'Expired session detected, cleaning old vectors');
+            try {
+                await this.knowledgeRepo.deleteByUserId(uid, {
+                    userId: uid,
+                    role: 'demo',
+                    language: 'en',
+                });
+            } catch (e) {
+                this.logger.warn({ uid, error: (e as Error).message }, 'Failed to clean old vectors on session refresh');
+            }
             await docRef.update({ expiresAt, createdAt: now });
         }
     }

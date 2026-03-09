@@ -165,19 +165,30 @@ export class QdrantKnowledgeRepoAdapter implements KnowledgeRepoPort, OnModuleIn
     }
 
     async getStats(): Promise<Record<string, number>> {
-        const response = await this.qdrantClient.scroll(this.COLLECTION_NAME, {
-            limit: 1000,
-            with_payload: true,
-            with_vector: false,
-        });
-
         const stats: Record<string, number> = {};
-        for (const point of response.points) {
-            const category = point.payload?.category as string;
-            if (category) {
-                stats[category] = (stats[category] || 0) + 1;
+        let offset: string | number | Record<string, unknown> | undefined = undefined;
+
+        // Paginate through all admin points
+        do {
+            const response = await this.qdrantClient.scroll(this.COLLECTION_NAME, {
+                limit: 100,
+                with_payload: ['category'],
+                with_vector: false,
+                filter: { must: [{ key: 'role', match: { value: 'admin' } }] },
+                ...(offset !== undefined ? { offset } : {}),
+            });
+
+            for (const point of response.points) {
+                const category = point.payload?.category as string;
+                if (category) {
+                    stats[category] = (stats[category] || 0) + 1;
+                }
             }
-        }
+
+            offset = response.next_page_offset ?? undefined;
+        } while (offset !== undefined);
+
+        this.logger.log(`Stats fetched: ${JSON.stringify(stats)}`);
         return stats;
     }
 

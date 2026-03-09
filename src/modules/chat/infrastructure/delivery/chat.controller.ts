@@ -11,7 +11,7 @@ import {
     Logger,
     Inject,
 } from '@nestjs/common';
-import { Throttle } from '@nestjs/throttler';
+import { Throttle, SkipThrottle } from '@nestjs/throttler';
 import { IsString, IsOptional, IsNumber, IsIn, Min, Max, MaxLength } from 'class-validator';
 import { Request } from 'express';
 import { GenerateChatResponseUseCase } from '../../application/generate-chat-response.use-case';
@@ -91,7 +91,7 @@ export class ChatController {
     ) { }
 
     @Post('chat')
-    @Throttle({ short: { ttl: 60000, limit: 5 } })
+    @SkipThrottle()
     @UseGuards(CaptchaGuard)
     @HttpCode(HttpStatus.OK)
     async chatMainPage(
