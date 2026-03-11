@@ -106,10 +106,12 @@ export interface PortfolioContent {
     buttons: {
       cv: string;
       linkedin: string;
+      github: string;
       email: string;
       tryLab: string;
     };
     linkedinUrl: string;
+    githubUrl: string;
     emailUrl: string;
   };
   aiChat: {

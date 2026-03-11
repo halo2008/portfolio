@@ -229,8 +229,9 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
         contact: {
             cta: "Ready to optimize your infrastructure?",
             sub: "Available for B2B contracts.",
-            buttons: { cv: "Technical Portfolio (PDF)", linkedin: "Contact on LinkedIn", email: "Email Me", tryLab: "Try Personal AI Lab (24h Session)" },
+            buttons: { cv: "Technical Portfolio (PDF)", linkedin: "Contact on LinkedIn", github: "GitHub", email: "Email Me", tryLab: "Try Personal AI Lab (24h Session)" },
             linkedinUrl: "www.linkedin.com/in/konrad-sędkowski-329644176",
+            githubUrl: "https://github.com/halo2008",
             emailUrl: "ksedkowski@gmail.com"
         },
         aiChat: {
@@ -498,8 +499,9 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
         contact: {
             cta: "Gotowy na optymalizację?",
             sub: "Dostępny na kontrakty B2B.",
-            buttons: { cv: "Portfolio Techniczne (PDF)", linkedin: "Kontakt na LinkedIn", email: "Napisz Email", tryLab: "Wypróbuj AI Lab (24h sesja)" },
+            buttons: { cv: "Portfolio Techniczne (PDF)", linkedin: "Kontakt na LinkedIn", github: "GitHub", email: "Napisz Email", tryLab: "Wypróbuj AI Lab (24h sesja)" },
             linkedinUrl: "www.linkedin.com/in/konrad-sędkowski-329644176",
+            githubUrl: "https://github.com/halo2008",
             emailUrl: "ksedkowski@gmail.com"
         },
         aiChat: {

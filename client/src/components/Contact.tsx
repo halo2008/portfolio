@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mail, Linkedin, Briefcase } from 'lucide-react';
+import { Mail, Linkedin, Briefcase, Github } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
 import { useScrollReveal } from '../hooks/useScrollReveal';
 
@@ -41,9 +41,19 @@ const Contact: React.FC = () => {
             {contact.buttons.linkedin}
           </a>
           <a
+            href={contact.githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`inline-flex items-center justify-center gap-2 px-8 py-4 bg-[#24292e] !text-white font-bold rounded hover:bg-[#1b1f23] transition-all min-w-[220px] hover:scale-105 hover:shadow-[0_0_20px_rgba(36,41,46,0.3)] ${isVisible ? 'reveal-visible' : 'reveal-hidden'}`}
+            style={{ animationDelay: '350ms' }}
+          >
+            <Github size={20} />
+            {contact.buttons.github}
+          </a>
+          <a
             href={`mailto:${contact.emailUrl}`}
             className={`inline-flex items-center justify-center gap-2 px-8 py-4 bg-slate-800 text-white font-bold rounded hover:bg-slate-700 transition-all border border-slate-700 min-w-[220px] hover:scale-105 hover:shadow-[0_0_20px_rgba(100,116,139,0.2)] ${isVisible ? 'reveal-visible' : 'reveal-hidden'}`}
-            style={{ animationDelay: '400ms' }}
+            style={{ animationDelay: '450ms' }}
           >
             <Mail size={20} />
             {contact.buttons.email}
