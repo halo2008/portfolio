@@ -15,8 +15,6 @@ export class GoogleEmbeddingAdapter implements EmbeddingProviderPort {
         try {
             const embeddings: number[][] = [];
 
-            // API expects individual calls or a proper batch format. 
-            // Looping sequentially (or via Promise.all) is safest for arbitrary chunk sizes.
             for (let i = 0; i < chunks.length; i++) {
                 const chunk = chunks[i];
                 const response = await this.ai.models.embedContent({

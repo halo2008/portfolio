@@ -42,14 +42,11 @@ export class LabSessionController {
             throw new InternalServerErrorException('Could not determine client identity');
         }
 
-        // Deterministic UID from IP — same IP always gets the same session
         const uid = this.ipToUid(ip);
 
         try {
             const customToken = await admin.auth().createCustomToken(uid);
 
-            // Ensure ephemeral_users doc exists with expiresAt for cleanup scheduler.
-            // Uses merge to not overwrite existing sessions (same IP = same UID).
             await this.ensureEphemeralUserDoc(uid);
 
             this.logger.log({ uid, ip: this.maskIp(ip) }, 'Session token created for IP');
@@ -86,7 +83,6 @@ export class LabSessionController {
             return;
         }
 
-        // If existing session already expired, clean old vectors and refresh
         const data = doc.data();
         const existingExpiry = data?.expiresAt?.toDate?.() ?? data?.expiresAt;
         if (existingExpiry && existingExpiry < now) {
@@ -105,7 +101,6 @@ export class LabSessionController {
     }
 
     private extractIp(req: Request): string | undefined {
-        // Cloud Run sets x-forwarded-for
         const forwarded = req.headers['x-forwarded-for'];
         if (typeof forwarded === 'string') {
             return forwarded.split(',')[0].trim();
@@ -117,19 +112,16 @@ export class LabSessionController {
     }
 
     private ipToUid(ip: string): string {
-        // SHA-256 hash → take first 28 chars for a valid Firebase UID
         const hash = crypto.createHash('sha256').update(`lab-session:${ip}`).digest('hex');
         return `lab_${hash.substring(0, 28)}`;
     }
 
     private maskIp(ip: string): string {
-        // Mask last octet for logging privacy
         const parts = ip.split('.');
         if (parts.length === 4) {
             parts[3] = 'xxx';
             return parts.join('.');
         }
-        // IPv6 — just show first segment
         return ip.split(':').slice(0, 3).join(':') + ':...';
     }
 }

@@ -230,8 +230,8 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             cta: "Ready to optimize your infrastructure?",
             sub: "Available for B2B contracts.",
             buttons: { cv: "Technical Portfolio (PDF)", linkedin: "Contact on LinkedIn", email: "Email Me", tryLab: "Try Personal AI Lab (24h Session)" },
-            linkedinUrl: "https://linkedin.com/in/placeholder",
-            emailUrl: "konrad@example.com"
+            linkedinUrl: "www.linkedin.com/in/konrad-sędkowski-329644176",
+            emailUrl: "ksedkowski@gmail.com"
         },
         aiChat: {
             trigger: "Ask AI About Me",
@@ -275,7 +275,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 name: "Konrad Sędkowski",
                 role: "Senior DevOps & Founder",
                 image: asset("portrait.webp"),
-                linkedin: "https://linkedin.com/in/placeholder"
+                linkedin: "www.linkedin.com/in/konrad-sędkowski-329644176"
             }
         }
     },
@@ -499,8 +499,8 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             cta: "Gotowy na optymalizację?",
             sub: "Dostępny na kontrakty B2B.",
             buttons: { cv: "Portfolio Techniczne (PDF)", linkedin: "Kontakt na LinkedIn", email: "Napisz Email", tryLab: "Wypróbuj AI Lab (24h sesja)" },
-            linkedinUrl: "https://linkedin.com/in/placeholder",
-            emailUrl: "konrad@example.com"
+            linkedinUrl: "www.linkedin.com/in/konrad-sędkowski-329644176",
+            emailUrl: "ksedkowski@gmail.com"
         },
         aiChat: {
             trigger: "Zapytaj AI o mnie",
@@ -544,7 +544,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 name: "Konrad Sędkowski",
                 role: "Senior DevOps & Founder",
                 image: asset("portrait.webp"),
-                linkedin: "https://linkedin.com/in/placeholder"
+                linkedin: "www.linkedin.com/in/konrad-sędkowski-329644176"
             }
         }
     }

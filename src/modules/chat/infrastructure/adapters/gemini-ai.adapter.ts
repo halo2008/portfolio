@@ -18,12 +18,7 @@ export class GeminiAiAdapter implements ChatProviderPort {
         this.logger.setContext(GeminiAiAdapter.name);
     }
 
-    /**
-     * Explaining: Implements the new streaming pattern.
-     * The generateContentStream method now returns an AsyncIterable directly.
-     */
     async *generateResponseStream(message: string, context: string, history: ChatMessage[]): AsyncGenerator<string> {
-        // Explaining: Mapping our Domain History to the SDK's Content structure.
         const contents = [
             ...history.map(h => ({
                 role: h.role,
@@ -61,7 +56,6 @@ export class GeminiAiAdapter implements ChatProviderPort {
             let tokenCount = 0;
             let hasReceivedChunks = false;
 
-            // Explaining: Iterating over the response stream chunks.
             for await (const chunk of response) {
                 if (chunk.text) {
                     hasReceivedChunks = true;
@@ -89,10 +83,6 @@ export class GeminiAiAdapter implements ChatProviderPort {
         }
     }
 
-    /**
-     * Explaining: Vector embedding generation using the new models.embedContent method.
-     * CRITICAL: Must use SAME model as ingestion (text-embedding-004)!
-     */
     async generateEmbedding(text: string): Promise<number[]> {
         try {
             this.logger.info({ msg: 'Generating embedding', textLength: text.length });

@@ -8,16 +8,15 @@ export class CaptchaGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const token = request.body.captcha; // Explaining: Captcha token from frontend.
+    const token = request.body.captcha;
 
     if (!token && process.env.NODE_ENV === 'production') {
        throw new HttpException('Captcha missing', HttpStatus.FORBIDDEN);
     }
 
     const secretKey = process.env.RECAPTCHA_SECRET_KEY;
-    if (!secretKey) return true; // Explaining: Skip in dev if no key.
+    if (!secretKey) return true;
 
-    // Explaining: Verifying with Google API before allowing request to proceed.
     const { data } = await firstValueFrom(
       this.httpService.post(`https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`)
     );

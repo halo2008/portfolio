@@ -14,7 +14,6 @@ export class LabUsageService {
     private readonly logger = new Logger(LabUsageService.name);
     private readonly COLLECTION_NAME = 'lab_usage';
 
-    // Configurable rate limit per session (default 50)
     public readonly MAX_REQUESTS_PER_SESSION = 50;
 
     constructor(
@@ -96,7 +95,6 @@ export class LabUsageService {
      */
     async getSessionExpiresAt(userId: string): Promise<string> {
         try {
-            // Read from lab_usage (where incrementUsage writes expiresAt)
             const doc = await this.firestore.collection(this.COLLECTION_NAME).doc(userId).get();
             if (doc.exists) {
                 const data = doc.data();
@@ -110,7 +108,6 @@ export class LabUsageService {
         } catch (error) {
             this.logger.error({ userId, error: (error as Error).message }, 'Failed to get session expiresAt');
         }
-        // Fallback: 24h from now (first visit, no doc yet)
         return new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
     }
 
@@ -148,7 +145,6 @@ export class LabUsageService {
             if (increments.indexingOps !== undefined) updates.indexingOps = FieldValue.increment(increments.indexingOps);
             if (increments.chatTokens !== undefined) updates.chatTokens = FieldValue.increment(increments.chatTokens);
 
-            // expiresAt set only on first write — not refreshed on activity
             if (!doc.exists || !doc.data()?.expiresAt) {
                 updates.expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000);
             }
@@ -165,8 +161,6 @@ export class LabUsageService {
                 { userId, error: (error as Error).message },
                 'Failed to increment lab usage stats',
             );
-            // Non-blocking error - we don't want to fail the user request if tracking fails
-            // but we log it for monitoring.
         }
     }
 }

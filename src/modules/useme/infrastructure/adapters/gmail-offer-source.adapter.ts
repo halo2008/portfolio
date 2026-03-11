@@ -22,7 +22,6 @@ export class GmailOfferSourceAdapter implements OfferSourcePort {
   async fetchNewOffers(): Promise<JobOffer[]> {
     const gmail = this.getGmailClient();
 
-    // Search for Useme notification emails (unread, last 1 day)
     const res = await gmail.users.messages.list({
       userId: 'me',
       q: 'from:useme.com is:unread newer_than:1d',
@@ -47,7 +46,6 @@ export class GmailOfferSourceAdapter implements OfferSourcePort {
           offers.push(offer);
         }
 
-        // Mark as read so we don't process again
         await gmail.users.messages.modify({
           userId: 'me',
           id: msg.id!,

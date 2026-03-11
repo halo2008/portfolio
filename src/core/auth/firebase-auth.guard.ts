@@ -3,9 +3,6 @@ import { Reflector } from '@nestjs/core';
 import * as admin from 'firebase-admin';
 import { ROLES_KEY } from './roles.decorator';
 
-// firebase-admin is initialized by the global FirestoreModule.
-// No need to call admin.initializeApp() here.
-
 @Injectable()
 export class FirebaseAuthGuard implements CanActivate {
     private readonly logger = new Logger(FirebaseAuthGuard.name);

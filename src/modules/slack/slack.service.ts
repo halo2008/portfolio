@@ -7,7 +7,6 @@ export class SlackService {
     private readonly logger = new Logger(SlackService.name);
     private readonly CHANNEL_ID = process.env.SLACK_CHANNEL_ID;
 
-    // Explaining: Injecting the pre-configured Slack client via our custom token.
     constructor(@Inject(SLACK_CLIENT) private readonly slackClient: WebClient) {}
 
     async logNewConversation(userMessage: string, socketId?: string): Promise<string | null> {

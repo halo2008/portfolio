@@ -31,9 +31,7 @@ export class FirestorePersistenceAdapter implements PersistencePort {
   }
 
   async linkThread(threadTs: string, socketId: string): Promise<void> {
-    // Explaining: Store bidirectional mapping for easy lookups
     await this.firestore.collection('threads').doc(threadTs).set({ socketId, threadTs });
-    // Also store reverse mapping
     await this.firestore.collection('chat_sessions').doc(socketId).set({ threadTs, socketId }, { merge: true });
   }
 
@@ -42,13 +40,11 @@ export class FirestorePersistenceAdapter implements PersistencePort {
     return doc.data()?.socketId || null;
   }
 
-  // Explaining: Get thread timestamp by socket session ID (reverse lookup)
   async getThreadBySocketId(socketId: string): Promise<string | null> {
     const doc = await this.firestore.collection('chat_sessions').doc(socketId).get();
     return doc.data()?.threadTs || null;
   }
 
-  // Explaining: Human-in-the-loop mode management.
   async setHumanMode(sessionId: string, enabled: boolean): Promise<void> {
     await this.firestore.collection('chats').doc(sessionId).set(
       { humanMode: enabled, humanModeUpdatedAt: new Date() },

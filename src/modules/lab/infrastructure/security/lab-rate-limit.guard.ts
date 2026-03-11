@@ -13,8 +13,6 @@ export class LabRateLimitGuard implements CanActivate {
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest<RequestWithRagContext>();
 
-        // Context might not be injected yet if this guard runs before interceptor,
-        // but we can extract user directly from Firebase auth (request.user)
         const user = request.user as { uid?: string } | undefined;
         const uid = user?.uid || request.RAG_CONTEXT?.userId;
 
@@ -43,7 +41,6 @@ export class LabRateLimitGuard implements CanActivate {
                 throw error;
             }
             this.logger.error({ uid, error: (error as Error).message }, 'Error checking rate limit');
-            // Fail closed: deny request if rate limit check fails
             return false;
         }
     }

@@ -30,19 +30,16 @@ export class SlackController {
     @HttpCode(HttpStatus.OK)
     @UsePipes(new ValidationPipe({ transform: false, whitelist: false, forbidNonWhitelisted: false }))
     async handleEvent(@Body() body: SlackEventPayload) {
-        // Explaining: Slack URL verification challenge.
         if (body.type === 'url_verification') return { challenge: body.challenge };
 
         const event = body.event;
         if (!event) return;
 
-        // Explaining: Security - ignore bot messages to prevent loops.
         if (event.bot_id) {
             this.logger.debug('Ignoring bot message');
             return;
         }
 
-        // Explaining: Handle slash commands or direct mentions in threads
         const text = event.text?.toLowerCase()?.trim();
 
         // Command: /takeover - Enable human mode for this thread
@@ -57,7 +54,6 @@ export class SlackController {
             return;
         }
 
-        // Explaining: Handle human replies in existing threads (only if not a command)
         if (event.thread_ts) {
             try {
                 this.logger.log(`Human reply detected in thread ${event.thread_ts}`);

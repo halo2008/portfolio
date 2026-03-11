@@ -22,7 +22,6 @@ export class QdrantVectorDbAdapter implements VectorDbPort {
 
     async search(vector: number[], threshold: number, filters?: SearchFilters): Promise<string> {
         try {
-            // Explaining: Build filter conditions based on metadata
             const filter: any = {};
 
             if (filters?.category) {
@@ -35,14 +34,12 @@ export class QdrantVectorDbAdapter implements VectorDbPort {
 
             if (filters?.technologies && filters.technologies.length > 0) {
                 filter.must = filter.must || [];
-                // Match any of the specified technologies
                 filter.must.push({
                     key: 'technologies',
                     match: { any: filters.technologies },
                 });
             }
 
-            // Explaining: Performing vector search with score threshold and optional metadata filtering.
             const results = await this.client.search(this.COLLECTION_NAME, {
                 vector,
                 limit: 5,
@@ -59,7 +56,6 @@ export class QdrantVectorDbAdapter implements VectorDbPort {
                 filters: filters || 'none',
             });
 
-            // Explaining: Aggregating retrieved fragments into a single context string with metadata.
             return results
                 .map((res) => {
                     const content = res.payload?.content || '';

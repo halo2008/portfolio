@@ -11,14 +11,12 @@ export const QdrantProvider: Provider = {
     const url = process.env.QDRANT_URL;
     const apiKey = process.env.QDRANT_API_KEY;
 
-    // Explaining: Standard SRE validation. Do not leak secrets in logs.
     if (!url || !apiKey) {
       logger.error('CRITICAL: Qdrant configuration is incomplete. Check environment variables.');
       throw new Error('QDRANT_CONFIG_ERROR');
     }
 
     try {
-      // Explaining: Returning a pre-configured client for the entire system.
       return new QdrantClient({
         url,
         apiKey,

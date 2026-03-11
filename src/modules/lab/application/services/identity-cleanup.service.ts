@@ -12,10 +12,6 @@ import {
 import { EphemeralUser } from '../../domain/entities/ephemeral-user.entity';
 import { LabUsageService } from '../services/lab-usage.service';
 
-/**
- * CleanupReport
- * Explaining: Structured report of the cleanup operation results.
- */
 export interface CleanupReport {
     processed: number;
     succeeded: number;
@@ -23,18 +19,6 @@ export interface CleanupReport {
     errors: string[];
 }
 
-/**
- * IdentityCleanupService
- * Explaining: Service for deleting expired demo users and their data.
- * Implements the "24h Reaper" pattern - deletes users after their 24h demo session expires.
- *
- * Cleanup sequence (all-or-nothing per user):
- * 1. Delete all Qdrant vectors where payload.user_id == uid
- * 2. If Step 1 succeeds, delete Firebase Auth account via Admin SDK
- * 3. Delete Firestore ephemeral user document
- *
- * Data consistency: Never delete Auth or Firestore if Step 1 fails.
- */
 @Injectable()
 export class IdentityCleanupService {
     private readonly logger = new Logger(IdentityCleanupService.name);
@@ -47,15 +31,6 @@ export class IdentityCleanupService {
         private readonly labUsageService: LabUsageService,
     ) {}
 
-    /**
-     * Cleanup expired users.
-     * Explaining: Finds all expired demo users and deletes their data.
-     * Queries Firestore for users where expiresAt < now(), then for each:
-     * - Deletes Qdrant vectors
-     * - Deletes Firebase Auth account
-     * - Deletes Firestore document
-     * @returns Promise with cleanup report containing processed/succeeded/failed counts
-     */
     async cleanupExpiredUsers(): Promise<CleanupReport> {
         const now = new Date();
         const report: CleanupReport = {
@@ -70,7 +45,6 @@ export class IdentityCleanupService {
             'Starting expired user cleanup',
         );
 
-        // Find all expired users
         let expiredUsers: EphemeralUser[];
         try {
             expiredUsers = await this.ephemeralUserRepo.findExpired(now);
@@ -91,7 +65,6 @@ export class IdentityCleanupService {
             `Found ${expiredUsers.length} expired users to cleanup`,
         );
 
-        // Process each expired user
         for (const user of expiredUsers) {
             const userId = user.uid.toString();
             try {
@@ -124,18 +97,6 @@ export class IdentityCleanupService {
         return report;
     }
 
-    /**
-     * Cleanup a single user.
-     * Explaining: Deletes all data for a single user with consistency guarantees.
-     * Steps (all-or-nothing):
-     * 1. Delete Qdrant vectors with user_id filter
-     * 2. Delete Firebase Auth account
-     * 3. Delete Firestore document
-     *
-     * If Step 1 fails, no other steps are executed (data consistency).
-     * @param user The expired ephemeral user to cleanup
-     * @throws Error if any step fails (caller handles error reporting)
-     */
     private async cleanupSingleUser(user: EphemeralUser): Promise<void> {
         const userId = user.uid.toString();
 
@@ -144,20 +105,9 @@ export class IdentityCleanupService {
             'Starting cleanup for user',
         );
 
-        // Step 1: Delete Qdrant vectors
-        // Explaining: Must succeed before proceeding (data consistency)
         await this.deleteUserVectors(userId);
-
-        // Step 2: Delete Firebase Auth account
-        // Explaining: Only executes if Step 1 succeeded
         await this.deleteFirebaseAuthUser(userId);
-
-        // Step 3: Delete Firestore ephemeral_users document
-        // Explaining: Final cleanup step
         await this.deleteFirestoreDocument(user.uid);
-
-        // Step 4: Delete lab_usage document
-        // Explaining: Prevents orphaned usage tracking documents from accumulating
         await this.labUsageService.cleanupUserData(userId);
 
         this.logger.debug(
@@ -166,21 +116,12 @@ export class IdentityCleanupService {
         );
     }
 
-    /**
-     * Delete all Qdrant vectors for a user.
-     * Explaining: Uses knowledgeRepo.deleteByUserId with security context.
-     * Creates a synthetic security context for cleanup operations.
-     * @param userId The user's Firebase UID
-     * @throws Error if deletion fails
-     */
     private async deleteUserVectors(userId: string): Promise<void> {
         this.logger.debug(
             { userId },
             'Step 1: Deleting Qdrant vectors for user',
         );
 
-        // Create synthetic security context for cleanup
-        // Explaining: Cleanup service acts on behalf of the user being deleted
         const context: RagSecurityContext = {
             userId,
             role: 'demo',
@@ -205,13 +146,6 @@ export class IdentityCleanupService {
         }
     }
 
-    /**
-     * Delete Firebase Auth account.
-     * Explaining: Uses Firebase Admin SDK to delete the user's Auth account.
-     * Only called if Step 1 (Qdrant deletion) succeeded.
-     * @param userId The user's Firebase UID
-     * @throws Error if deletion fails
-     */
     private async deleteFirebaseAuthUser(userId: string): Promise<void> {
         this.logger.debug(
             { userId },
@@ -233,13 +167,6 @@ export class IdentityCleanupService {
         }
     }
 
-    /**
-     * Delete Firestore ephemeral user document.
-     * Explaining: Removes the user's document from ephemeral_users collection.
-     * Final step in the cleanup sequence.
-     * @param uid The user's UID value object
-     * @throws Error if deletion fails
-     */
     private async deleteFirestoreDocument(uid: {
         toString(): string;
     }): Promise<void> {
