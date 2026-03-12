@@ -241,7 +241,8 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             initialMessage: "Hi! I'm Konrad's AI Assistant. Ask me about my projects or experience.",
             thinking: "Thinking...",
             error: "Error.",
-            status: "Online"
+            status: "Online",
+            rateLimitNote: "Note: Using free-tier API. If you see a 503 error, the rate limit has been reached. Try again in a minute."
         },
         telemetry: {
             title: "Live Infrastructure Telemetry",
@@ -511,7 +512,8 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             initialMessage: "Cześć! Jestem Asystentem AI Konrada. Zapytaj mnie o projekty lub doświadczenie.",
             thinking: "Myślę...",
             error: "Błąd.",
-            status: "Online"
+            status: "Online",
+            rateLimitNote: "Uwaga: Korzystam z darmowego API. Jeśli zobaczysz błąd 503, oznacza to, że osiągnięto limit zapytań. Spróbuj ponownie za minutę."
         },
         telemetry: {
             title: "Telemetria Infrastruktury na Żywo",

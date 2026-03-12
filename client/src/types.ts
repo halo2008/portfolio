@@ -122,6 +122,7 @@ export interface PortfolioContent {
     thinking: string;
     error: string;
     status: string;
+    rateLimitNote: string;
   };
   telemetry: {
     title: string;

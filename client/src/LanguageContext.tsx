@@ -80,6 +80,7 @@ export interface LabTranslations {
   chunkingHeuristic: string;
   chunkingLlmDesc: string;
   chunkingHeuristicDesc: string;
+  rateLimitNote: string;
 }
 
 interface LabContent {
@@ -166,6 +167,7 @@ const LAB_CONTENT: Record<Language, LabContent> = {
       chunkingHeuristic: 'Heuristic',
       chunkingLlmDesc: 'AI analyzes content semantically — best quality, costs tokens',
       chunkingHeuristicDesc: 'Rule-based splitting by headings and paragraphs — free, fast',
+      rateLimitNote: 'Note: Using free-tier API. If you see a 503 error, the rate limit has been reached. Try again in a minute.',
     },
   },
   pl: {
@@ -247,6 +249,7 @@ const LAB_CONTENT: Record<Language, LabContent> = {
       chunkingHeuristic: 'Heurystyczny',
       chunkingLlmDesc: 'AI analizuje treść semantycznie — najlepsza jakość, kosztuje tokeny',
       chunkingHeuristicDesc: 'Podział regułowy po nagłówkach i akapitach — darmowy, szybki',
+      rateLimitNote: 'Uwaga: Korzystam z darmowego API. Jeśli zobaczysz błąd 503, oznacza to, że osiągnięto limit zapytań. Spróbuj ponownie za minutę.',
     },
   },
 };

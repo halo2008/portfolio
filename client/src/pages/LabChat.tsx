@@ -410,8 +410,8 @@ const LabChat: React.FC = () => {
                   >
                     <div
                       className={`max-w-[80%] rounded-sm px-4 py-3 ${message.role === 'user'
-                          ? 'bg-primary text-darker'
-                          : 'bg-surface border border-slate-700 text-white'
+                        ? 'bg-primary text-darker'
+                        : 'bg-surface border border-slate-700 text-white'
                         }`}
                     >
                       <div className="text-sm whitespace-pre-wrap">{message.content}</div>
@@ -455,7 +455,10 @@ const LabChat: React.FC = () => {
             )}
           </div>
 
-          <div className="px-6 py-4 border-t border-slate-800 bg-darker/30">
+          <div className="px-6 py-2 border-t border-slate-800 bg-darker/30">
+            <div className="text-[10px] text-amber-500/40 text-center mb-2">
+              {t.rateLimitNote}
+            </div>
             <div className="flex gap-3">
               <input
                 ref={inputRef}
