@@ -456,7 +456,7 @@ const LabChat: React.FC = () => {
           </div>
 
           <div className="px-6 py-2 border-t border-slate-800 bg-darker/30">
-            <div className="text-[10px] text-amber-500/40 text-center mb-2">
+            <div className="text-[10px] text-amber-500/40 text-center mb-1">
               {t.rateLimitNote}
             </div>
             <div className="flex gap-3">
@@ -537,6 +537,9 @@ const LabChat: React.FC = () => {
                 <BrainCircuit size={14} className="text-primary" />
                 <span className="text-xs text-slate-400">{t.systemContext}</span>
                 <span className="text-[10px] text-slate-600 ml-auto">{systemContext.length}/500</span>
+              </div>
+              <div className="mb-2 text-[9px] text-amber-500/30">
+                {t.rateLimitNote}
               </div>
               <textarea
                 value={systemContext}

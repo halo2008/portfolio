@@ -790,6 +790,9 @@ const Lab: React.FC = () => {
                 <span className="text-xs text-slate-400">{t.systemContext}</span>
                 <span className="text-[10px] text-slate-600 ml-auto">{systemContext.length}/500</span>
               </div>
+              <div className="mb-2 text-[9px] text-amber-500/30">
+                {t.rateLimitNote}
+              </div>
               <textarea
                 value={systemContext}
                 onChange={(e) => setSystemContext(e.target.value.slice(0, 500))}
@@ -804,6 +807,9 @@ const Lab: React.FC = () => {
             <div className="flex items-center gap-3 mb-4">
               <FileText className="text-primary" size={20} />
               <h2 className="text-lg font-bold text-white">{t.uploadTitle}</h2>
+            </div>
+            <div className="mb-4 text-[9px] text-amber-500/30 text-center">
+              {t.rateLimitNote}
             </div>
 
             {uploadState.status === 'idle' && (
@@ -1215,6 +1221,9 @@ const Lab: React.FC = () => {
           )}
 
           <div className="px-6 py-4 border-t border-slate-800 bg-darker/50">
+            <div className="text-[10px] text-amber-500/40 text-center mb-1">
+              {t.rateLimitNote}
+            </div>
             <div className="flex gap-3">
               <input
                 ref={inputRef}

@@ -205,6 +205,9 @@ const AIChat: React.FC = () => {
           </div>
 
           {/* Input */}
+          <div className="px-4 py-2 text-[10px] text-center border-t border-slate-700 bg-slate-800/50">
+            <p className="text-amber-500/40">{aiChat.rateLimitNote}</p>
+          </div>
           <form onSubmit={handleSend} className="p-3 bg-slate-800 border-t border-slate-700 flex gap-2">
             <input
               type="text"
@@ -221,13 +224,10 @@ const AIChat: React.FC = () => {
               <Send size={18} />
             </button>
           </form>
-          <div className="bg-slate-800 px-4 pb-2 text-[10px] text-slate-500 text-center space-y-1">
-            <p className="text-amber-500/40">{aiChat.rateLimitNote}</p>
-            <div>
-              This site is protected by reCAPTCHA and the Google
-              <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer" className="text-slate-400 hover:text-primary mx-1">Privacy Policy</a> and
-              <a href="https://policies.google.com/terms" target="_blank" rel="noreferrer" className="text-slate-400 hover:text-primary mx-1">Terms of Service</a> apply.
-            </div>
+          <div className="bg-slate-800 px-4 pb-2 text-[10px] text-slate-500 text-center">
+            This site is protected by reCAPTCHA and the Google
+            <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer" className="text-slate-400 hover:text-primary mx-1">Privacy Policy</a> and
+            <a href="https://policies.google.com/terms" target="_blank" rel="noreferrer" className="text-slate-400 hover:text-primary mx-1">Terms of Service</a> apply.
           </div>
         </div>
       )}
