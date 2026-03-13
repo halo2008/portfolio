@@ -42,7 +42,7 @@ graph TD
 ## 🚀 Key Features
 
 ### 🤖 AI-Powered RAG (Retrieval-Augmented Generation)
-- **Knowledge Lab**: Interactive chat system that uses Gemini 1.5 Pro to answer questions based on my CV and projects.
+- **Knowledge Lab**: Interactive chat system that uses Gemini 2.5 Flash lite to answer questions based on my CV and projects.
 - **Vector Search**: High-speed retrieval using **Qdrant** and Google Embeddings for context-aware responses.
 - **Document Analysis**: Automated PDF parsing and knowledge extraction.
 
