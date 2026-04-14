@@ -28,7 +28,7 @@ import {
     METRIC_LAB_LLM_DURATION,
     METRIC_LAB_CHAT_TOTAL_DURATION,
 } from './infrastructure/metrics/lab-metrics.service';
-import { LabCleanupScheduler } from './infrastructure/scheduling/lab-cleanup.scheduler';
+import { ScheduledCleanupController } from './infrastructure/delivery/scheduled-cleanup.controller';
 
 const securityInterceptorProvider: Provider = {
     provide: APP_INTERCEPTOR,
@@ -37,7 +37,7 @@ const securityInterceptorProvider: Provider = {
 
 @Module({
     imports: [forwardRef(() => KnowledgeModule)],
-    controllers: [LabController, LabSessionController, CleanupController],
+    controllers: [LabController, LabSessionController, CleanupController, ScheduledCleanupController],
     providers: [
         securityInterceptorProvider,
         makeCounterProvider({
@@ -96,7 +96,6 @@ const securityInterceptorProvider: Provider = {
         IdentityCleanupService,
         LabUsageService,
         LabRateLimitGuard,
-        LabCleanupScheduler,
     ],
     exports: [
         AnalyzeDocumentUseCase,
