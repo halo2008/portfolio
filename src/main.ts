@@ -14,7 +14,12 @@ async function bootstrap(): Promise<void> {
         // Low-level blocker for unwanted crawlers/monitors
         app.use((req: any, res: any, next: any) => {
             const ua = req.headers['user-agent'] || '';
-            if (ua.includes('UptimeRobot')) {
+            const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '';
+            
+            const blockedIps = ['74.63.225.228', '64.251.27.142'];
+            const isBlockedIp = blockedIps.some(blocked => ip.includes(blocked));
+
+            if (ua.includes('UptimeRobot') || isBlockedIp) {
                 return res.status(410).end();
             }
             next();
