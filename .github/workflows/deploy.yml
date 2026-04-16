@@ -8,7 +8,7 @@ on:
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   REGION: europe-west1
-  SERVICE_NAME: ks-portfolio
+  SERVICE_NAME: ks-site
   REPOSITORY: ks-portfolio-repo
 
 jobs:
