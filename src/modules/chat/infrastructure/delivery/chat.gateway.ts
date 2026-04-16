@@ -23,6 +23,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, Ch
   server: Server;
 
   private readonly logger = new Logger(ChatGateway.name);
+  private readonly inactivityTimeouts = new Map<string, NodeJS.Timeout>();
+  private readonly IDLE_TIMEOUT_MS = 10 * 60 * 1000; // 10 minutes
 
   constructor(
     @Inject(ChatWithAdminKnowledgeUseCase)
@@ -39,11 +41,35 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, Ch
   handleConnection(client: Socket) {
     this.logger.log(`Client connected: ${client.id}`);
     this.telemetry.incrementActiveWebSockets();
+    this.resetInactivityTimeout(client);
   }
 
   handleDisconnect(client: Socket) {
     this.logger.log(`Client disconnected: ${client.id}`);
+    const timeout = this.inactivityTimeouts.get(client.id);
+    if (timeout) {
+      clearTimeout(timeout);
+      this.inactivityTimeouts.delete(client.id);
+    }
     this.telemetry.decrementActiveWebSockets();
+  }
+
+  private resetInactivityTimeout(client: Socket) {
+    const existing = this.inactivityTimeouts.get(client.id);
+    if (existing) {
+      clearTimeout(existing);
+    }
+
+    const timeout = setTimeout(() => {
+      this.logger.log(`Disconnecting idle client: ${client.id}`);
+      client.emit('messageToClient', {
+        sender: 'System',
+        message: 'Disconnected due to inactivity. Please refresh the page to reconnect.',
+      });
+      client.disconnect(true);
+    }, this.IDLE_TIMEOUT_MS);
+
+    this.inactivityTimeouts.set(client.id, timeout);
   }
 
   @SubscribeMessage('messageToServer')
@@ -51,6 +77,7 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, Ch
     @MessageBody() payload: { text: string; sessionId?: string; captcha?: string; language?: 'pl' | 'en' },
     @ConnectedSocket() client: Socket,
   ): Promise<void> {
+    this.resetInactivityTimeout(client);
     try {
       const sessionId = payload.sessionId || client.id;
       const token = payload.captcha;

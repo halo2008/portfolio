@@ -6,7 +6,7 @@ import { pushTimeseries } from 'prometheus-remote-write';
 export class MetricsPushService implements OnModuleInit, OnModuleDestroy {
     private readonly logger = new Logger(MetricsPushService.name);
     private intervalHandle?: ReturnType<typeof setInterval>;
-    private readonly pushIntervalMs = 15_000;
+    private readonly pushIntervalMs = 14_400_000; // 4 hours
 
     private readonly remoteWriteUrl = process.env.GRAFANA_REMOTE_WRITE_URL;
     private readonly user = process.env.GRAFANA_METRICS_USER;
@@ -18,7 +18,7 @@ export class MetricsPushService implements OnModuleInit, OnModuleDestroy {
             return;
         }
 
-        this.logger.log('Starting metrics push to Grafana Cloud (every 15s)');
+        this.logger.log('Starting metrics push to Grafana Cloud (every 4h)');
         this.push();
         this.intervalHandle = setInterval(() => this.push(), this.pushIntervalMs);
     }
