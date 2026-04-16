@@ -10,6 +10,16 @@ async function bootstrap(): Promise<void> {
         const app = await NestFactory.create(AppModule, { bufferLogs: true });
 
         app.useLogger(app.get(Logger));
+
+        // Low-level blocker for unwanted crawlers/monitors
+        app.use((req: any, res: any, next: any) => {
+            const ua = req.headers['user-agent'] || '';
+            if (ua.includes('UptimeRobot')) {
+                return res.status(403).end();
+            }
+            next();
+        });
+
         const logger = app.get(Logger);
 
         app.enableCors({
@@ -49,7 +59,7 @@ async function bootstrap(): Promise<void> {
             logger.warn('Metrics authentication credentials missing. The /metrics endpoint might be exposed or broken.');
         }
 
-        app.setGlobalPrefix('api', { exclude: ['/metrics', '/internal/status'] });
+        app.setGlobalPrefix('api', { exclude: ['/metrics'] });
 
         app.enableShutdownHooks();
 

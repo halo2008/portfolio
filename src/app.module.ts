@@ -61,17 +61,6 @@ import { GenAiModule } from './core/genai/genai.module';
 })
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
-        consumer
-            .apply((req, res, next) => {
-                const ua = req.headers['user-agent'] || '';
-                if (ua.includes('UptimeRobot')) {
-                    // Drop the request immediately to save resources
-                    return res.status(403).end();
-                }
-                next();
-            })
-            .forRoutes({ path: '*', method: RequestMethod.ALL });
-
         consumer.apply(HttpMetricsMiddleware).forRoutes('*');
     }
 }
