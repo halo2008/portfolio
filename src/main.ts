@@ -15,7 +15,7 @@ async function bootstrap(): Promise<void> {
         app.use((req: any, res: any, next: any) => {
             const ua = req.headers['user-agent'] || '';
             if (ua.includes('UptimeRobot')) {
-                return res.status(403).end();
+                return res.status(410).end();
             }
             next();
         });
