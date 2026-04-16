@@ -14,7 +14,7 @@ const clientDistPath = resolve(__dirname, '..', 'dist', 'static');
 import { AppController } from './app.controller';
 import { HealthController } from './health.controller';
 import { HttpMetricsMiddleware, METRIC_HTTP_DURATION } from './core/metrics/http-metrics.middleware';
-import { MiddlewareConsumer, NestModule } from '@nestjs/common';
+import { MiddlewareConsumer, NestModule, RequestMethod } from '@nestjs/common';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { FirestoreModule } from './core/firestore/firestore.module';
@@ -61,6 +61,17 @@ import { GenAiModule } from './core/genai/genai.module';
 })
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer) {
+        consumer
+            .apply((req, res, next) => {
+                const ua = req.headers['user-agent'] || '';
+                if (ua.includes('UptimeRobot')) {
+                    // Drop the request immediately to save resources
+                    return res.status(403).end();
+                }
+                next();
+            })
+            .forRoutes({ path: '*', method: RequestMethod.ALL });
+
         consumer.apply(HttpMetricsMiddleware).forRoutes('*');
     }
 }

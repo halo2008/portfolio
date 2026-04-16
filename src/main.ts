@@ -49,7 +49,7 @@ async function bootstrap(): Promise<void> {
             logger.warn('Metrics authentication credentials missing. The /metrics endpoint might be exposed or broken.');
         }
 
-        app.setGlobalPrefix('api', { exclude: ['/metrics', '/health'] });
+        app.setGlobalPrefix('api', { exclude: ['/metrics', '/internal/status'] });
 
         app.enableShutdownHooks();
 
