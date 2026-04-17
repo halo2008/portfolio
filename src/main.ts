@@ -15,7 +15,17 @@ async function bootstrap(): Promise<void> {
         app.use((req: any, res: any, next: any) => {
             const ua = req.headers['user-agent'] || '';
             const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || '';
+            const host = req.headers['host'] || '';
             
+            // Allow only specific hosts to prevent direct .run.app access from keeping instance alive
+            const allowedHosts = ['ks-infra.dev', 'localhost', '127.0.0.1'];
+            const isInternalHealthCheck = req.path === '/internal/status' && (ua.includes('GoogleHC') || !host.includes('.run.app'));
+            const isAllowedHost = allowedHosts.some(allowed => host.includes(allowed)) || isInternalHealthCheck;
+
+            if (host.includes('.run.app') && !isAllowedHost) {
+                return res.status(403).send('Forbidden: Access via direct Cloud Run URL is disabled.');
+            }
+
             const blockedIps = ['74.63.225.228', '64.251.27.142'];
             const isBlockedIp = blockedIps.some(blocked => ip.includes(blocked));
 
