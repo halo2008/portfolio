@@ -24,7 +24,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect, Ch
 
   private readonly logger = new Logger(ChatGateway.name);
   private readonly inactivityTimeouts = new Map<string, NodeJS.Timeout>();
-  private readonly IDLE_TIMEOUT_MS = 10 * 60 * 1000; // 10 minutes
+  // Aggressive 30-second timeout to save costs since this is just a CV demo
+  private readonly IDLE_TIMEOUT_MS = 30 * 1000; // 30 seconds
 
   constructor(
     @Inject(ChatWithAdminKnowledgeUseCase)
