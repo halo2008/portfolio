@@ -41,7 +41,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     challenge: "Migrating an ERP system from a fragile VPS infrastructure (Single Point of Failure, backup issues) to a scalable cloud environment.",
                     solution: "Designed a GKE cluster from scratch. Implemented HashiCorp Vault for secrets, Calico for Default Deny network policies, and WAF at Ingress. Automated deployment with Helm and Bash scripts.",
                     tech: ["Kubernetes", "DevSecOps", "GKE", "Terraform", "Vault"],
-                    result: "Eliminated downtime (Zero Downtime Deployments), fully automated Disaster Recovery, and ensured security compliance.",
+                    result: "Removed the single-VPS point of failure: HA control plane, automated backups/DR, and a hardened, policy-enforced cluster.",
                     iconName: 'Cloud',
                     image: asset("img/gke.webp")
                 },
@@ -85,7 +85,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     challenge: "Low accuracy of classic OCR (Tesseract) with Polish invoices and LLM hallucinations when analyzing entire documents.",
                     solution: "Moved from OCR to raw PDF analysis via LLM. Developed a system of dynamic prompts selected based on the recognized Invoice Issuer NIP.",
                     tech: ["AI", "Computer Vision", "R&D", "Process Automation"],
-                    result: "Data extraction accuracy increased from 75% to 95%.",
+                    result: "Sharply reduced manual correction vs. classic OCR (internal results, not an audited benchmark).",
                     iconName: 'Brain',
                     image: asset("img/invoice.webp")
                 },
@@ -187,7 +187,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 },
                 {
                     title: "Operational Continuity (SRE)",
-                    description: "I translate industrial-grade reliability into 99.9% uptime for your cloud services, mitigating the risk of business-critical interruptions.",
+                    description: "An industrial reliability mindset: idempotent IaC, observability and DR — I design for failure instead of assuming uptime.",
                     iconName: "ShieldCheck"
                 },
                 {
@@ -276,7 +276,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 title: "Built by an Engineer, not an Agency",
                 bio: "Hi, I'm Konrad. I design infrastructure for industry daily. I built this tool because I was tired of searching through 500-page PDFs. I prioritize reliability and security over hype.",
                 name: "Konrad Sędkowski",
-                role: "Senior DevOps & Founder",
+                role: "Platform / DevOps Engineer",
                 image: asset("portrait.webp"),
                 linkedin: "www.linkedin.com/in/konrad-sędkowski-329644176"
             }
@@ -313,7 +313,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     challenge: "Migracja systemu ERP z awaryjnej infrastruktury VPS (Single Point of Failure, problemy z backupami) do skalowalnego środowiska chmurowego.",
                     solution: "Zaprojektowanie klastra GKE od zera. Wdrożenie HashiCorp Vault do zarządzania sekretami, polityk sieciowych Calico (Default Deny) oraz WAF na warstwie Ingress. Automatyzacja wdrażania za pomocą skryptów Helm i Bash.",
                     tech: ["Kubernetes", "DevSecOps", "GKE", "Terraform", "Vault"],
-                    result: "Eliminacja przestojów (Zero Downtime Deployments), pełna automatyzacja odzyskiwania (Disaster Recovery) i zgodność ze standardami bezpieczeństwa.",
+                    result: "Usunięcie pojedynczego punktu awarii VPS: HA control plane, automatyczne backupy/DR i utwardzony, kontrolowany politykami klaster.",
                     iconName: 'Cloud',
                     image: asset("img/gke.webp")
                 },
@@ -357,7 +357,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     challenge: "Niska skuteczność klasycznych OCR (Tesseract) przy polskich fakturach i halucynacje modeli LLM przy analizie całych dokumentów.",
                     solution: "Odejście od OCR na rzecz analizy surowego PDF przez LLM. Opracowanie systemu dynamicznych promptów dobieranych na podstawie rozpoznanego NIP-u wystawcy faktury.",
                     tech: ["AI", "Computer Vision", "R&D", "Process Automation"],
-                    result: "Wzrost skuteczności ekstrakcji danych z 75% do 95%.",
+                    result: "Wyraźna redukcja ręcznych korekt względem klasycznego OCR (wyniki wewnętrzne, nie audytowany benchmark).",
                     iconName: 'Brain',
                     image: asset("img/invoice.webp")
                 },
@@ -459,7 +459,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 },
                 {
                     title: "Ciągłość Operacyjna (SRE)",
-                    description: "Przekładam rygor przemysłowy na 99.9% dostępności Twoich usług chmurowych, chroniąc Twój biznes przed kosztownymi przestojami.",
+                    description: "Przemysłowe podejście do niezawodności: idempotentny IaC, obserwowalność i DR — projektuję pod awarię, zamiast zakładać uptime.",
                     iconName: "ShieldCheck"
                 },
                 {
@@ -548,7 +548,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 title: "O Twórcy",
                 bio: "Cześć, jestem Konrad. Na co dzień projektuję infrastrukturę dla przemysłu. Zbudowałem to narzędzie, bo miałem dość szukania w PDF-ach. Stawiam na niezawodność, nie na hype.",
                 name: "Konrad Sędkowski",
-                role: "Senior DevOps & Founder",
+                role: "Platform / DevOps Engineer",
                 image: asset("portrait.webp"),
                 linkedin: "www.linkedin.com/in/konrad-sędkowski-329644176"
             }
