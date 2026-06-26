@@ -141,7 +141,7 @@ const Hero: React.FC = () => {
                 <div className="grid grid-cols-2 gap-x-4 gap-y-1">
                   <span className="text-slate-500">STATUS:</span> <span className="text-primary">ONLINE</span>
                   <span className="text-slate-500">REGION:</span> <span className="text-slate-300">EU-WEST</span>
-                  <span className="text-slate-500">UPTIME:</span> <span className="text-slate-300">99.9%</span>
+                  <span className="text-slate-500">STACK:</span> <span className="text-slate-300">GKE · IaC</span>
                 </div>
               </div>
             </div>
