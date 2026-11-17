@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { Suspense, lazy, useState, useRef, useEffect, useCallback } from 'react';
 import { X, Send, Loader2, Bot, BookOpen } from 'lucide-react';
 import { io, Socket } from 'socket.io-client';
 import { ChatMessage, LoadingState } from '../types';
@@ -6,6 +6,8 @@ import { useLanguage } from '../LanguageContext';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 const WS_URL = import.meta.env.VITE_WS_URL || '';
+// Loaded only when the chat opens, so the Markdown parser does not weigh on the page load.
+const ChatMarkdown = lazy(() => import('./ChatMarkdown'));
 
 const AIChat: React.FC = () => {
   const { content, language } = useLanguage();
@@ -160,7 +162,9 @@ const AIChat: React.FC = () => {
 
           <div className="aichat__log" aria-live="polite">
             {messages.map((msg, idx) => (
-              <div key={idx} className={msg.role === 'user' ? 'aichat__msg is-user' : 'aichat__msg'}>{msg.text}</div>
+              msg.role === 'user'
+                ? <div key={idx} className="aichat__msg is-user">{msg.text}</div>
+                : <div key={idx} className="aichat__msg aichat__md"><Suspense fallback={msg.text}><ChatMarkdown text={msg.text} /></Suspense></div>
             ))}
             {loading === LoadingState.LOADING && (
               <div className="aichat__msg aichat__thinking"><Loader2 size={14} aria-hidden="true" />{aiChat.thinking}</div>

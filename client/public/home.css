@@ -206,3 +206,21 @@ footer.closing > .wrap { height: auto; }
 .aichat__form button:disabled { opacity: .5; cursor: not-allowed; }
 @media (max-width: 639px) { .aichat { right: var(--s-4); bottom: calc(var(--bar, 0px) + var(--s-4)); } }
 @media (prefers-reduced-motion: no-preference) { .aichat__thinking svg { animation: aichat-spin 1s linear infinite; } @keyframes aichat-spin { to { transform: rotate(360deg); } } }
+.aichat__md { white-space: normal; }
+.aichat__md > :first-child { margin-top: 0; }
+.aichat__md > :last-child { margin-bottom: 0; }
+.aichat__md :is(p, ul, ol, pre, table, blockquote) { margin: 0 0 var(--s-2); }
+.aichat__md ul { list-style: disc; padding-left: 1.25em; }
+.aichat__md ol { list-style: decimal; padding-left: 1.4em; }
+.aichat__md li { display: list-item; }
+.aichat__md li::marker { color: var(--muted); }
+.aichat__md li + li { margin-top: 2px; }
+.aichat__md :is(h1, h2, h3, h4) { margin: var(--s-2) 0 var(--s-1); font: 600 15px/1.4 var(--font-text); letter-spacing: 0; }
+.aichat__md strong { font-weight: 600; color: var(--ink); }
+.aichat__md a { color: var(--action); text-decoration: underline; }
+.aichat__md code { padding: 1px 5px; border-radius: 4px; background: var(--bg); font: 13px/1.4 var(--font-mono); }
+.aichat__md pre { overflow-x: auto; padding: var(--s-2) var(--s-3); border-radius: 8px; background: var(--bg); }
+.aichat__md pre code { padding: 0; background: none; }
+.aichat__md blockquote { padding-left: var(--s-3); border-left: 2px solid var(--line-strong); color: var(--muted); }
+.aichat__md table { display: block; overflow-x: auto; border-collapse: collapse; font-size: 13px; }
+.aichat__md :is(th, td) { padding: 4px 8px; border: 1px solid var(--line); text-align: left; }
