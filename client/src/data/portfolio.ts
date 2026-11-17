@@ -398,12 +398,13 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             },
             product: {
                 title: "An ERP for companies, when programs are not enough",
-                lead: "When the data is spread across programs and spreadsheets, I propose the system I co-create: an ERP with a sales app and the Lemy voice assistant. letmework.ai holds the licence; I roll it out.",
+                lead: "When the data is spread across programs and spreadsheets, I propose the system I co-create, in one of two forms: in the letmework.ai cloud, with a sales app and the Lemy assistant, or locally on your server as an add-on to Subiekt GT. letmework.ai holds the licence; I roll it out.",
                 tabs: ["Sales", "Warehouse", "Logistics", "AI assistant"],
                 trackerTitle: "A sales app with the Lemy voice assistant",
                 trackerText: "The rep dictates a note after a meeting and Lemy saves it to the customer card after a yes. Calls and texts from new numbers wait to be assigned to a customer with one tap.",
                 cta: "Book a system demo",
-                topic: "ERP system and Tracker app"
+                topic: "ERP system and Tracker app",
+                subiekt: "The local version for Subiekt GT"
             },
             statement: {
                 label: "Results from public letmework.ai case studies",
@@ -916,12 +917,13 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             },
             product: {
                 title: "ERP dla firm, gdy programy już nie wystarczają",
-                lead: "Gdy dane są rozrzucone po programach i arkuszach, proponuję system, który współtworzę: ERP z aplikacją dla handlowców i asystentem głosowym Lemy. Licencję prowadzi letmework.ai, ja go wdrażam.",
+                lead: "Gdy dane są rozrzucone po programach i arkuszach, proponuję system, który współtworzę, w jednej z dwóch wersji: w chmurze letmework.ai, z aplikacją dla handlowców i asystentem Lemy, albo lokalnie, na Waszym serwerze, jako nakładka na Subiekt GT. Licencję prowadzi letmework.ai, ja go wdrażam.",
                 tabs: ["Sprzedaż", "Magazyn", "Logistyka", "Asystent AI"],
                 trackerTitle: "Aplikacja dla handlowców z asystentem głosowym Lemy",
                 trackerText: "Handlowiec dyktuje notatkę po spotkaniu, a Lemy zapisuje ją w karcie klienta po jego „tak”. Połączenia i SMS-y z nowych numerów czekają na przypisanie do klienta jednym dotknięciem.",
                 cta: "Umów pokaz systemu",
-                topic: "System ERP i aplikacja Tracker"
+                topic: "System ERP i aplikacja Tracker",
+                subiekt: "Wersja lokalna dla Subiekta GT"
             },
             statement: {
                 label: "Wyniki z publicznych case study letmework.ai",

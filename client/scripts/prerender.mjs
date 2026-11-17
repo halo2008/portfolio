@@ -5,7 +5,7 @@ import { resolve } from 'node:path';
 
 const SITE = 'https://ks-infra.dev';
 const ROOT = '<div id="root"></div>';
-const { render } = await import(pathToFileURL(resolve('dist-ssr/prerender.js')).href);
+const { render, renderSubiekt, SUBIEKT_PAGE } = await import(pathToFileURL(resolve('dist-ssr/prerender.js')).href);
 
 const swap = (html, from, to) => {
     if (html.split(from).length !== 2) throw new Error(`prerender: expected exactly one ${JSON.stringify(from.slice(0, 60))}`);
@@ -35,7 +35,27 @@ for (const [attr, name, value] of [
 }
 en = swap(en, `<link rel="canonical" href="${SITE}/" />`, `<link rel="canonical" href="${SITE}/en/" />`);
 
+// Subiekt GT page: Polish only, own title, description and canonical, no language alternates.
+let sub = swap(template, ROOT, `<div id="root"><div data-prerender>${renderSubiekt()}</div></div>`);
+sub = sub.replace(/<title>[^<]*<\/title>/, `<title>${SUBIEKT_PAGE.meta.title}</title>`);
+for (const [attr, name, value] of [
+    ['name', 'description', SUBIEKT_PAGE.meta.description],
+    ['property', 'og:title', SUBIEKT_PAGE.meta.title],
+    ['property', 'og:description', SUBIEKT_PAGE.meta.description],
+    ['property', 'og:url', `${SITE}${SUBIEKT_PAGE.path}`],
+    ['name', 'twitter:title', SUBIEKT_PAGE.meta.title],
+    ['name', 'twitter:description', SUBIEKT_PAGE.meta.description]
+]) {
+    const pattern = new RegExp(`(<meta\\s+${attr}="${name}"\\s+content=")[^"]*(")`);
+    if (!pattern.test(sub)) throw new Error(`prerender: no meta ${name}`);
+    sub = sub.replace(pattern, (_, a, b) => `${a}${value}${b}`);
+}
+sub = swap(sub, `<link rel="canonical" href="${SITE}/" />`, `<link rel="canonical" href="${SITE}${SUBIEKT_PAGE.path}" />`);
+sub = sub.replace(/\s*<link rel="alternate" hreflang="[^"]+" href="[^"]+" \/>/g, '');
+
 writeFileSync('dist/index.html', pl);
+mkdirSync('dist/nakladka-subiekt-gt', { recursive: true });
+writeFileSync('dist/nakladka-subiekt-gt/index.html', sub);
 mkdirSync('dist/en', { recursive: true });
 writeFileSync('dist/en/index.html', en);
 rmSync('dist-ssr', { recursive: true, force: true });

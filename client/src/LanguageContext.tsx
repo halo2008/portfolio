@@ -266,7 +266,8 @@ const isLanguage = (value: string | null): value is Language => value === 'pl' |
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 /** The home page has one URL per language: "/" is Polish, "/en/" is English. Other routes keep the saved choice. */
-export const homeLanguage = (path: string): Language | null => (/^\/en\/?$/.test(path) ? 'en' : path === '/' ? 'pl' : null);
+export const homeLanguage = (path: string): Language | null =>
+  /^\/en\/?$/.test(path) ? 'en' : path === '/' || /^\/nakladka-subiekt-gt\/?$/.test(path) ? 'pl' : null;
 
 const readSaved = (): Language | null => {
   try {

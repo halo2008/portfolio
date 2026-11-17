@@ -5,6 +5,7 @@ import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3';
 
 // Pages
 import HomePage from './pages/HomePage';
+import SubiektPage from './pages/SubiektPage';
 
 // Lazy loaded Lab routes
 const LabLayout = React.lazy(() => import('./pages/LabLayout'));
@@ -22,6 +23,7 @@ const AppContent: React.FC = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/en" element={<HomePage />} />
+        <Route path="/nakladka-subiekt-gt" element={<SubiektPage />} />
 
         {/* Lab Route with AuthProvider isolation */}
         <Route path="/lab" element={
