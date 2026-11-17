@@ -252,6 +252,7 @@ const HomePage: React.FC = () => {
                             <div className="section-head">
                                 <h2 id="erp-h">{product.title}</h2>
                                 <p>{product.lead}</p>
+                                <a className="link" href="/nakladka-subiekt-gt/">{product.subiekt}</a>
                             </div>
                             <div className="tabs" role="tablist" aria-label={product.title}>
                                 {product.tabs.map((tab, index) => (
@@ -337,6 +338,7 @@ const HomePage: React.FC = () => {
                             <ul>
                                 <li><a href="#services">{nav.services}</a></li>
                                 <li><a href="#work">{nav.work}</a></li>
+                                <li><a href="/nakladka-subiekt-gt/">{product.subiekt}</a></li>
                             </ul>
                         </div>
                         <div className="span-2 footer__col">
