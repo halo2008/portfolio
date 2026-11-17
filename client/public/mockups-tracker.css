@@ -275,6 +275,6 @@
 .trkm-lemy__stop { display: inline-flex; align-items: center; gap: 8px; height: 50px; padding: 0 24px; border-radius: 999px; background: var(--trkm-ink); color: var(--trkm-surface); font-size: 16px; font-weight: 500; }
 .trkm-lemy__mic { display: grid; place-items: center; width: 60px; height: 60px; border-radius: 50%; background: var(--trkm-primary); color: #0F172A; }
 @media screen and (prefers-reduced-motion: no-preference) {
-    .trkm-lemy__bars i { animation: trkm-lemy-level 3s ease-in-out infinite; animation-delay: calc(var(--i) * -0.27s); transform-origin: center; }
+    .trkm-lemy__bars:not(.is-idle) i { animation: trkm-lemy-level 3s ease-in-out infinite; animation-delay: calc(var(--i) * -0.27s); transform-origin: center; }
     @keyframes trkm-lemy-level { 0%, 100% { transform: scaleY(.6); } 25% { transform: scaleY(1.5); } 50% { transform: scaleY(.9); } 75% { transform: scaleY(1.25); } }
 }

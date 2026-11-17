@@ -367,17 +367,17 @@ const ZebraLabel: React.FC<{ data: TrackerMockupLocale['zebraLabel'] }> = ({ dat
 );
 
 const LevelBars: React.FC = () => (
-    <span className="trkm-lemy__bars" aria-hidden="true">
+    <span className="trkm-lemy__bars is-idle" aria-hidden="true">
         {Array.from({ length: 9 }, (_, index) => <i key={index} style={{ '--i': index } as CSSProperties} />)}
     </span>
 );
 
-const LemySheet: React.FC<{ status: string; hint?: string; children: React.ReactNode }> = ({ status, hint, children }) => (
+const LemySheet: React.FC<{ status: string; children: React.ReactNode }> = ({ status, children }) => (
     <div className="trkm-lemy">
         <div className="trkm-lemy__sheet">
             <div className="trkm-lemy__head">
                 <span className="trkm-lemy__avatar"><Icon name="sparkle" size={16} /></span>
-                <span className="trkm-lemy__status"><b>{status}</b>{hint && <span>{hint}</span>}</span>
+                <span className="trkm-lemy__status"><b>{status}</b></span>
                 <Icon name="close" size={20} className="trkm-lemy__close" />
             </div>
             {children}
@@ -390,7 +390,7 @@ const LemyListen: React.FC<{ data: TrackerMockupLocale }> = ({ data }) => {
     return (
         <>
             <div className="trkm-lemy-bg" data-cards="2"><CrmClient data={data.crmClient} /></div>
-            <LemySheet status={lemy.status} hint={lemy.hint}>
+            <LemySheet status={lemy.status}>
                 <LevelBars />
                 <span className="trkm-lemy__said">{lemy.said}</span>
                 <div className="trkm-lemy__row">

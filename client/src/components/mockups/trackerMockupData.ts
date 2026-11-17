@@ -102,7 +102,7 @@ export interface TrackerMockupLocale {
         print: string;
         nav: TrkNavItem[];
     };
-    lemyListen: { status: string; hint: string; said: string; keyboard: string; stop: string; nav: TrkNavItem[] };
+    lemyListen: { status: string; said: string; keyboard: string; stop: string; nav: TrkNavItem[] };
     lemyConfirm: {
         status: string;
         said: string;
@@ -171,7 +171,7 @@ export const TRACKER_MOCKUP: { pl: TrackerMockupLocale; en: TrackerMockupLocale 
             crmClient: 'Karta klienta w CRM ErpTracker: opiekun, osoba kontaktowa i sekcja Ostatni kontakt z połączeniami i SMS-ami zapisanymi automatycznie z telefonu handlowca (dane demonstracyjne).',
             printDoc: 'Dokument magazynowy WZ w ErpTracker z przyciskiem Drukuj w nagłówku, który otwiera PDF dokumentu do wydruku (dane demonstracyjne).',
             zebraLabel: 'Drukowanie etykiety z telefonu: produkt Profil DEMO 40x40, drukarka Zebra połączona przez Bluetooth, podgląd etykiety z kodem QR, 2 kopie i przycisk Wydrukuj (dane demonstracyjne).',
-            lemyListen: 'Lemy słucha na karcie klienta w CRM: handlowiec dyktuje notatkę do klienta Hurtownia Przykładowa (dane demonstracyjne).',
+            lemyListen: 'Lemy przetwarza polecenie na karcie klienta w CRM: handlowiec podyktował notatkę do klienta Hurtownia Przykładowa (dane demonstracyjne).',
             lemyConfirm: 'Lemy pyta o potwierdzenie: notatka do karty klienta Hurtownia Przykładowa z przyciskami Anuluj i Potwierdź (dane demonstracyjne).'
         },
         clock: '14:32',
@@ -297,8 +297,7 @@ export const TRACKER_MOCKUP: { pl: TrackerMockupLocale; en: TrackerMockupLocale 
             nav: WMS_NAV
         },
         lemyListen: {
-            status: 'Słucham…',
-            hint: 'Skończę, gdy przestaniesz mówić',
+            status: 'Myślę…',
             said: '„Dodaj notatkę do Hurtowni Przykładowej: chcą ofertę na 40 palet, oddzwonię w czwartek.”',
             keyboard: 'Pisz zamiast mówić',
             stop: 'Stop',
@@ -329,7 +328,7 @@ export const TRACKER_MOCKUP: { pl: TrackerMockupLocale; en: TrackerMockupLocale 
             crmClient: 'ErpTracker CRM client card: account manager, contact person and the Last contact section listing calls and texts logged automatically from the sales rep phone (demo data).',
             printDoc: 'ErpTracker warehouse issue document (WZ) with the Print action in its header, which opens the document PDF for printing (demo data).',
             zebraLabel: 'Printing a label from the phone: DEMO profile 40x40, a Zebra printer connected over Bluetooth, a QR label preview, 2 copies and the Print button (demo data).',
-            lemyListen: 'Lemy listening on a CRM customer card: the sales rep dictates a note for the customer Hurtownia Przykładowa (demo data).',
+            lemyListen: 'Lemy working on a command on a CRM customer card: the sales rep has dictated a note for the customer Hurtownia Przykładowa (demo data).',
             lemyConfirm: 'Lemy asks for confirmation: a note for the Hurtownia Przykładowa customer card with Cancel and Confirm buttons (demo data).'
         },
         clock: '14:32',
@@ -455,8 +454,7 @@ export const TRACKER_MOCKUP: { pl: TrackerMockupLocale; en: TrackerMockupLocale 
             nav: WMS_NAV
         },
         lemyListen: {
-            status: 'Listening…',
-            hint: 'I stop when you stop talking',
+            status: 'Thinking…',
             said: '“Add a note to Hurtownia Przykładowa: they want a quote for 40 pallets, I will call back on Thursday.”',
             keyboard: 'Type instead',
             stop: 'Stop',
