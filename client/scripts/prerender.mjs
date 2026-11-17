@@ -15,8 +15,8 @@ const swap = (html, from, to) => {
 const template = readFileSync('dist/index.html', 'utf8');
 const pl = swap(template, ROOT, `<div id="root"><div data-prerender>${render('pl')}</div></div>`);
 
-const EN_TITLE = 'Konrad Sędkowski: automation and AI for companies';
-const EN_DESC = 'AI that turns order emails into ERP drafts and answers from company documents, systems on Google Cloud, and scales and cameras connected to the ERP. The first 30-minute call is free.';
+const EN_TITLE = 'Konrad Sędkowski: automation for wholesale and distribution';
+const EN_DESC = 'Less manual work in wholesale: orders from emails, documents and devices in sales and the warehouse. I start with one process and the programs the company already has. The first call and the process analysis are free.';
 let en = swap(template, ROOT, `<div id="root"><div data-prerender>${render('en')}</div></div>`);
 en = swap(en, '<html lang="pl"', '<html lang="en"');
 en = en.replace(/<title>[^<]*<\/title>/, `<title>${EN_TITLE}</title>`);

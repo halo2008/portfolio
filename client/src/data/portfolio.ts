@@ -339,7 +339,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
         footer: "Konrad Sędkowski. Contracts and VAT invoices: letmework.ai sp. z o.o.",
         home: {
             meta: {
-                title: "Konrad Sędkowski: automation and AI for companies",
+                title: "Konrad Sędkowski: automation for wholesale and distribution",
                 skip: "Skip to content",
                 menu: "Menu",
                 navLabel: "Main"
@@ -351,18 +351,18 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 product: "ERP system",
                 questions: "Questions",
                 groups: ["AI in the company", "Infrastructure"],
-                hints: ["Orders from emails to ERP", "Answers from your documents", "Migration and upkeep", "Scales, cameras, printers"],
+                hints: ["Orders from emails, no retyping", "Answers from your procedures", "Migration and upkeep", "Scales, cameras, label printers"],
                 language: { label: "Polski", code: "pl" }
             },
             hero: {
-                title: "Automation and AI for companies",
-                lead: "Orders from emails reach the ERP as drafts to approve, staff get answers from company documents and systems run in Google Cloud. The first call, 30 minutes, is free.",
+                title: "Less manual work in wholesale",
+                lead: "I cut manual work around orders, documents and devices in sales and the warehouse. I start with one process and the programs the company already has. The first call, 30 minutes, is free.",
                 primary: "Book a free call",
                 secondary: "See the work",
                 inbox: {
                     label: "Orders-from-email panel: four drafts matched at 91 to 97 percent wait for approval, one matched at 58 percent needs a check",
                     app: "Orders from email",
-                    view: "To approve",
+                    view: "Pilot demo",
                     search: "Search",
                     folders: [{ name: "To approve", count: 4 }, { name: "To check", count: 1 }, { name: "Approved" }, { name: "Rejected" }],
                     columns: ["Sender and lines", "Match", "Action"],
@@ -387,41 +387,31 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 }
             },
             services: {
-                title: "Four services for companies",
-                lead: "From the first survey to documentation for your team.",
+                title: "Four automation services",
+                lead: "First I check what can be done in the programs you already use.",
                 items: [
-                    { title: "Office work automation", text: "An order from an email reaches the ERP as a draft to approve. A local or cloud model, depending on the data.", photo: { src: asset("assets/img/ai-office-automation.webp"), small: asset("assets/img/ai-office-automation-500.webp"), medium: asset("assets/img/ai-office-automation-960.webp"), alt: "A salesperson's hand on a mouse in front of a monitor listing orders from emails, some approved, some waiting", width: 1280, height: 853 } },
-                    { title: "AI assistant built on company documents", text: "It answers staff from company manuals, offers and procedures. The data can stay on your servers.", photo: { src: asset("assets/img/photo-f63536476.webp"), small: asset("assets/img/photo-f63536476-500.webp"), medium: asset("assets/img/photo-f63536476-960.webp"), alt: "Archive shelves holding labelled boxes of documents", width: 1280, height: 903 } },
-                    { title: "Google Cloud for company systems", text: "I move the ERP and other apps to the cloud and run them: backups, monitoring, a rollback plan.", photo: { src: asset("assets/img/photo-f6212692-960.webp"), small: asset("assets/img/photo-f6212692-500.webp"), medium: asset("assets/img/photo-f6212692-960.webp"), alt: "Rows of server cabinets in a bright data centre hall", width: 960, height: 640 } },
-                    { title: "Devices connected to the ERP", text: "Scales, cameras, readers and label printers send data straight to the system, with no retyping.", photo: { src: asset("assets/img/photo-f192577777.webp"), small: asset("assets/img/photo-f192577777-500.webp"), medium: asset("assets/img/photo-f192577777-960.webp"), alt: "A touch control panel mounted on a steel machine cabinet", width: 1280, height: 852 } }
+                    { title: "Office work automation", text: "An order from an email becomes a draft to approve instead of lines to retype. A local or cloud model, depending on the data.", photo: { src: asset("assets/img/ai-office-automation.webp"), small: asset("assets/img/ai-office-automation-500.webp"), medium: asset("assets/img/ai-office-automation-960.webp"), alt: "A salesperson's hand on a mouse in front of a monitor listing orders from emails, some approved, some waiting", width: 1280, height: 853 } },
+                    { title: "AI assistant built on company documents", text: "Staff ask about a procedure or an offer and get the answer from your documents. The data can stay on your servers.", photo: { src: asset("assets/img/photo-f63536476.webp"), small: asset("assets/img/photo-f63536476-500.webp"), medium: asset("assets/img/photo-f63536476-960.webp"), alt: "Archive shelves holding labelled boxes of documents", width: 1280, height: 903 } },
+                    { title: "Google Cloud for company systems", text: "I move company apps to the cloud and run them: backups, monitoring, a rollback plan.", photo: { src: asset("assets/img/photo-f6212692-960.webp"), small: asset("assets/img/photo-f6212692-500.webp"), medium: asset("assets/img/photo-f6212692-960.webp"), alt: "Rows of server cabinets in a bright data centre hall", width: 960, height: 640 } },
+                    { title: "Devices that write the data themselves", text: "A scale, camera, reader or label printer saves the data on its own: no paper slip, no second entry.", photo: { src: asset("assets/img/photo-f192577777.webp"), small: asset("assets/img/photo-f192577777-500.webp"), medium: asset("assets/img/photo-f192577777-960.webp"), alt: "A touch control panel mounted on a steel machine cabinet", width: 1280, height: 852 } }
                 ]
             },
             product: {
-                title: "An ERP system and an app for sales reps",
-                lead: "One system for HR, customers, the warehouse and invoices, with an AI assistant. It runs in the browser and on phones. letmework.ai holds the licence and the contract; I roll the system out in your company.",
+                title: "An ERP for companies, when programs are not enough",
+                lead: "When the data is spread across programs and spreadsheets, I propose the system I co-create: an ERP with a sales app and the Lemy voice assistant. letmework.ai holds the licence; I roll it out.",
                 tabs: ["Sales", "Warehouse", "Logistics", "AI assistant"],
-                trackerTitle: "The ERP Android app for sales reps",
-                trackerText: "A driver with a company phone runs the app, and logistics sees in the ERP where he is, which way he is going and how fast. Sales reps assign calls and texts to customers with one tap.",
+                trackerTitle: "A sales app with the Lemy voice assistant",
+                trackerText: "The rep dictates a note after a meeting and Lemy saves it to the customer card after a yes. Calls and texts from new numbers wait to be assigned to a customer with one tap.",
                 cta: "Book a system demo",
                 topic: "ERP system and Tracker app"
             },
-            lemy: {
-                title: "Lemy, a voice assistant for sales reps",
-                lead: "The rep talks to the phone and Lemy writes it into the ERP. It changes nothing without a confirmation.",
-                points: [
-                    { title: "A note after the meeting", text: "Dictated on the spot, it lands in the customer card." },
-                    { title: "Questions to the ERP", text: "Stock levels, the last order, leave in the team." },
-                    { title: "Saved only after a yes", text: "Lemy shows what it will save. The rep confirms." }
-                ],
-                cta: "See Lemy in a demo"
-            },
             statement: {
-                label: "Experience",
-                before: "I started at the machines: as a mechanic, operator and shift foreman in ceramics factories. Today I run an ERP platform that many companies use every day. I treat software as a tool: it should take ",
+                label: "Results from public letmework.ai case studies",
+                before: "I started at the machines: as a mechanic, operator and shift foreman in ceramics factories. That is why I start from how people work, not from technology. The systems I build take ",
                 facts: [
-                    { value: "34", label: "microservices on the ERP platform I run" },
-                    { value: "29 of 31", label: "production releases prepared by me, June to November 2026" },
-                    { value: "over 850", label: "merged changes across 5 repositories" }
+                    { value: "8×", label: "more regular customers per sales rep at Ulamex: up to 300 instead of a few dozen" },
+                    { value: "~10k zł", label: "for warehouse hardware at Ulamex, instead of about 1 m zł for an off-the-shelf WMS" },
+                    { value: "8 → 1", label: "tools in Marketstal's order handling, from import to goods receipt" }
                 ],
                 strong: "manual work",
                 after: " off people."
@@ -429,15 +419,15 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             process: {
                 title: "Working together in 4 steps",
                 steps: [
-                    { title: "Free call", text: "I tell you plainly whether and how I can help." },
-                    { title: "Scope and quote", text: "You get a written scope of work, a schedule and a price." },
-                    { title: "Delivery in stages", text: "After each stage you see a working result." },
+                    { title: "Free call, 30 minutes", text: "I tell you plainly whether and how I can help." },
+                    { title: "Analysis of one process, free", text: "A map of today's work, the places where data is retyped, access to the data and a pilot plan. The result stays with you, even without a further order." },
+                    { title: "Pilot or delivery in stages", text: "After each stage you see a working result." },
                     { title: "Handover and invoice", text: "Documentation, a walkthrough with your team and a VAT invoice from letmework.ai sp. z o.o." }
                 ]
             },
             work: {
-                title: "6 projects in companies",
-                lead: "From the cloud and a truck weighbridge to AI that writes offers.",
+                title: "6 projects: the problem and the result",
+                lead: "Each one started with a task someone repeated by hand every day.",
                 appsTitle: "Apps for sales and the warehouse",
                 open: "See the screen",
                 close: "Close",
@@ -454,11 +444,11 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 title: "5 questions before the call",
                 link: "Send an email",
                 items: [
+                    { question: "Does the company have to change its system?", answer: "No. I start from the programs you use today. I propose a new system only when the analysis shows it is needed, and I say plainly that I co-create it." },
                     { question: "Who does the company sign the contract with?", answer: "The contract and the VAT invoice come from letmework.ai sp. z o.o. I do the work myself." },
                     { question: "How much do the services cost?", answer: "It depends on the scope: a quote for a defined result or an hourly rate." },
-                    { question: "Do I work on site at the company?", answer: "Most of the work is remote. On-site work is agreed for device jobs." },
                     { question: "What about the company's confidential data?", answer: "We can sign a non-disclosure agreement before the first technical conversation. I ask only for the access the job requires." },
-                    { question: "What does the company get after go-live?", answer: "The code and the documentation. We can also agree on ongoing support." }
+                    { question: "What does the company get after go-live?", answer: "For work made to order: the code and the documentation. For the ERP: a letmework.ai licence. Ongoing support is possible too." }
                 ]
             },
             about: {
@@ -478,6 +468,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     email: "Work email",
                     service: "Subject of the call",
                     serviceOther: "Another subject",
+                    analysis: "Free analysis of one process",
                     message: "The problem",
                     nameError: "Write your full name.",
                     emailError: "Write an email address with an @.",
@@ -491,7 +482,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             },
             close: {
                 title: "The first call takes 30 minutes",
-                lead: "It is free. After it you get a written scope of work and a quote."
+                lead: "It is free, and so is the analysis of one process that follows it."
             },
             footer: {
                 lede: "Contracts and VAT invoices are issued by letmework.ai sp. z o.o.",
@@ -866,7 +857,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
         footer: "Konrad Sędkowski. Umowy i faktury VAT: letmework.ai sp. z o.o.",
         home: {
             meta: {
-                title: "Konrad Sędkowski: automatyzacja i AI dla firm",
+                title: "Konrad Sędkowski: automatyzacja dla hurtowni i dystrybucji",
                 skip: "Przejdź do treści",
                 menu: "Menu",
                 navLabel: "Główna"
@@ -878,18 +869,18 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 product: "System ERP",
                 questions: "Pytania",
                 groups: ["AI w firmie", "Infrastruktura"],
-                hints: ["Zamówienia z maili do ERP", "Odpowiada z dokumentów firmy", "Migracja i utrzymanie systemów", "Wagi, kamery, drukarki w ERP"],
+                hints: ["Zamówienia z maili bez przepisywania", "Odpowiedzi z procedur i instrukcji", "Migracja i utrzymanie systemów", "Wagi, kamery, drukarki etykiet"],
                 language: { label: "English", code: "en" }
             },
             hero: {
-                title: "Automatyzacja i AI dla firm",
-                lead: "Zamówienia z maili trafiają do ERP jako propozycje do zatwierdzenia, pracownicy dostają odpowiedzi z dokumentów firmy, a systemy działają w chmurze Google. Pierwsza rozmowa, 30 minut, jest bezpłatna.",
+                title: "Mniej ręcznej pracy w hurtowni",
+                lead: "Ograniczam ręczną pracę przy zamówieniach, dokumentach i urządzeniach w sprzedaży i magazynie. Zaczynam od jednego procesu i programów, które firma już ma. Pierwsza rozmowa, 30 minut, jest bezpłatna.",
                 primary: "Umów bezpłatną rozmowę",
                 secondary: "Zobacz realizacje",
                 inbox: {
                     label: "Panel zamówień z maili: cztery propozycje z pewnością dopasowania od 91 do 97 procent czekają na zatwierdzenie, jedna z pewnością 58 procent jest do sprawdzenia",
                     app: "Zamówienia z maili",
-                    view: "Do zatwierdzenia",
+                    view: "Demo z pilotażu",
                     search: "Szukaj",
                     folders: [{ name: "Do zatwierdzenia", count: 4 }, { name: "Do sprawdzenia", count: 1 }, { name: "Zatwierdzone" }, { name: "Odrzucone" }],
                     columns: ["Nadawca i pozycje", "Pewność", "Akcja"],
@@ -914,41 +905,31 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 }
             },
             services: {
-                title: "Cztery usługi dla firm",
-                lead: "Od rozpoznania do dokumentacji dla Twojego zespołu.",
+                title: "Cztery usługi automatyzacji",
+                lead: "Najpierw sprawdzam, co da się zrobić w programach, których już używacie.",
                 items: [
-                    { title: "Automatyzacja pracy biurowej", text: "Zamówienie z maila trafia do ERP jako propozycja do zatwierdzenia. Model lokalny albo chmurowy, zależnie od danych.", photo: { src: asset("assets/img/ai-office-automation.webp"), small: asset("assets/img/ai-office-automation-500.webp"), medium: asset("assets/img/ai-office-automation-960.webp"), alt: "Dłoń handlowca na myszce przed monitorem z listą zamówień z maili, część zatwierdzona, część czeka", width: 1280, height: 853 } },
-                    { title: "Asystent AI z dokumentów firmy", text: "Odpowiada pracownikom z instrukcji, ofert i procedur firmy. Dane mogą zostać na Twoich serwerach.", photo: { src: asset("assets/img/photo-f63536476.webp"), small: asset("assets/img/photo-f63536476-500.webp"), medium: asset("assets/img/photo-f63536476-960.webp"), alt: "Regały archiwum z opisanymi pudłami dokumentów", width: 1280, height: 903 } },
-                    { title: "Chmura Google dla systemów firmy", text: "Przenoszę ERP i aplikacje do chmury i je utrzymuję: kopie zapasowe, monitoring, plan wycofania zmian.", photo: { src: asset("assets/img/photo-f6212692-960.webp"), small: asset("assets/img/photo-f6212692-500.webp"), medium: asset("assets/img/photo-f6212692-960.webp"), alt: "Rzędy szaf serwerowych w jasnej hali centrum danych", width: 960, height: 640 } },
-                    { title: "Urządzenia podłączone do ERP", text: "Wagi, kamery, czytniki i drukarki etykiet wysyłają dane prosto do systemu, bez przepisywania.", photo: { src: asset("assets/img/photo-f192577777.webp"), small: asset("assets/img/photo-f192577777-500.webp"), medium: asset("assets/img/photo-f192577777-960.webp"), alt: "Panel dotykowy sterowania zamontowany na stalowej szafie maszyny", width: 1280, height: 852 } }
+                    { title: "Automatyzacja pracy biurowej", text: "Zamówienie z maila zamienia się w propozycję do zatwierdzenia zamiast w przepisywanie. Model lokalny albo chmurowy, zależnie od danych.", photo: { src: asset("assets/img/ai-office-automation.webp"), small: asset("assets/img/ai-office-automation-500.webp"), medium: asset("assets/img/ai-office-automation-960.webp"), alt: "Dłoń handlowca na myszce przed monitorem z listą zamówień z maili, część zatwierdzona, część czeka", width: 1280, height: 853 } },
+                    { title: "Asystent AI z dokumentów firmy", text: "Pracownik pyta o procedurę albo ofertę i dostaje odpowiedź z dokumentów firmy. Dane mogą zostać na Waszych serwerach.", photo: { src: asset("assets/img/photo-f63536476.webp"), small: asset("assets/img/photo-f63536476-500.webp"), medium: asset("assets/img/photo-f63536476-960.webp"), alt: "Regały archiwum z opisanymi pudłami dokumentów", width: 1280, height: 903 } },
+                    { title: "Chmura Google dla systemów firmy", text: "Przenoszę aplikacje firmy do chmury i je utrzymuję: kopie zapasowe, monitoring, plan wycofania zmian.", photo: { src: asset("assets/img/photo-f6212692-960.webp"), small: asset("assets/img/photo-f6212692-500.webp"), medium: asset("assets/img/photo-f6212692-960.webp"), alt: "Rzędy szaf serwerowych w jasnej hali centrum danych", width: 960, height: 640 } },
+                    { title: "Urządzenia, które same zapisują dane", text: "Waga, kamera, czytnik albo drukarka etykiet zapisują dane same: bez kartki i bez drugiego wpisywania.", photo: { src: asset("assets/img/photo-f192577777.webp"), small: asset("assets/img/photo-f192577777-500.webp"), medium: asset("assets/img/photo-f192577777-960.webp"), alt: "Panel dotykowy sterowania zamontowany na stalowej szafie maszyny", width: 1280, height: 852 } }
                 ]
             },
             product: {
-                title: "System ERP i aplikacja dla handlowców",
-                lead: "Jeden system na kadry, klientów, magazyn i faktury, z asystentem AI. Działa w przeglądarce i na telefonie. Licencję i umowę prowadzi letmework.ai, ja wdrażam system w Twojej firmie.",
+                title: "ERP dla firm, gdy programy już nie wystarczają",
+                lead: "Gdy dane są rozrzucone po programach i arkuszach, proponuję system, który współtworzę: ERP z aplikacją dla handlowców i asystentem głosowym Lemy. Licencję prowadzi letmework.ai, ja go wdrażam.",
                 tabs: ["Sprzedaż", "Magazyn", "Logistyka", "Asystent AI"],
-                trackerTitle: "Aplikacja ERP na Androida dla handlowców",
-                trackerText: "Kierowca ze służbowym telefonem ma aplikację, a logistyka widzi w ERP, gdzie jest, którędy jedzie i z jaką prędkością. Handlowiec jednym przyciskiem przypisuje połączenia i SMS-y do klienta.",
+                trackerTitle: "Aplikacja dla handlowców z asystentem głosowym Lemy",
+                trackerText: "Handlowiec dyktuje notatkę po spotkaniu, a Lemy zapisuje ją w karcie klienta po jego „tak”. Połączenia i SMS-y z nowych numerów czekają na przypisanie do klienta jednym dotknięciem.",
                 cta: "Umów pokaz systemu",
                 topic: "System ERP i aplikacja Tracker"
             },
-            lemy: {
-                title: "Lemy, asystent głosowy dla handlowców",
-                lead: "Handlowiec mówi do telefonu, a Lemy zapisuje to w ERP. Bez potwierdzenia niczego nie zmienia.",
-                points: [
-                    { title: "Notatka po spotkaniu", text: "Podyktowana od razu trafia do karty klienta." },
-                    { title: "Pytania do ERP", text: "Stan towaru, ostatnie zamówienie, urlopy w zespole." },
-                    { title: "Zapis dopiero po „tak”", text: "Lemy pokazuje, co zapisze. Handlowiec potwierdza." }
-                ],
-                cta: "Zobacz Lemy na pokazie"
-            },
             statement: {
-                label: "Doświadczenie",
-                before: "Zaczynałem przy maszynach: jako mechanik, operator i mistrz zmiany w fabrykach ceramiki. Dziś prowadzę platformę ERP, z której codziennie korzysta wiele firm. Oprogramowanie traktuję jak narzędzie: ma zdjąć z ludzi ",
+                label: "Wyniki z publicznych case study letmework.ai",
+                before: "Zaczynałem przy maszynach: jako mechanik, operator i mistrz zmiany w fabrykach ceramiki. Dlatego zaczynam od tego, jak pracują ludzie, a nie od technologii. Systemy, które buduję, zdejmują z ludzi ",
                 facts: [
-                    { value: "34", label: "mikroserwisy na platformie ERP, którą prowadzę" },
-                    { value: "29 z 31", label: "wydań produkcyjnych przygotowałem sam, od czerwca do listopada 2026" },
-                    { value: "ponad 850", label: "scalonych zmian w 5 repozytoriach" }
+                    { value: "8×", label: "więcej stałych klientów na handlowca w Ulamexie: do 300 zamiast kilkudziesięciu" },
+                    { value: "ok. 10 tys. zł", label: "za sprzęt do magazynu w Ulamexie, zamiast ok. 1 mln zł za gotowy WMS" },
+                    { value: "8 → 1", label: "narzędzi w obsłudze zamówienia w Marketstal, od importu po przyjęcie" }
                 ],
                 strong: "ręczną pracę",
                 after: "."
@@ -956,15 +937,15 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             process: {
                 title: "Współpraca w 4 krokach",
                 steps: [
-                    { title: "Bezpłatna rozmowa", text: "Mówię wprost, czy i jak mogę pomóc." },
-                    { title: "Zakres i wycena", text: "Dostajesz pisemny zakres prac, harmonogram i cenę." },
-                    { title: "Realizacja etapami", text: "Po każdym etapie widzisz działający wynik." },
+                    { title: "Bezpłatna rozmowa, 30 minut", text: "Mówię wprost, czy i jak mogę pomóc." },
+                    { title: "Analiza jednego procesu, bezpłatnie", text: "Mapa obecnej pracy, miejsca ręcznego przepisywania, dostęp do danych i plan pilotażu. Wynik zostaje u Was, nawet bez dalszego zlecenia." },
+                    { title: "Pilotaż albo wdrożenie etapami", text: "Po każdym etapie widzisz działający wynik." },
                     { title: "Przekazanie i faktura", text: "Dokumentacja, omówienie z Twoim zespołem i faktura VAT od letmework.ai sp. z o.o." }
                 ]
             },
             work: {
-                title: "6 realizacji w firmach",
-                lead: "Od chmury i wagi dla TIR-ów po AI, które pisze oferty.",
+                title: "6 realizacji: problem i wynik",
+                lead: "Każda zaczynała się od czynności, którą ktoś codziennie powtarzał ręcznie.",
                 appsTitle: "Aplikacje dla handlowców i magazynu",
                 open: "Zobacz ekran",
                 close: "Zamknij",
@@ -981,11 +962,11 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 title: "5 pytań przed rozmową",
                 link: "Napisz e-mail",
                 items: [
+                    { question: "Czy firma musi zmieniać system?", answer: "Nie. Zaczynam od programów, których używacie dziś. Nowy system proponuję tylko, gdy analiza pokaże, że jest potrzebny, i mówię wprost, że go współtworzę." },
                     { question: "Z kim firma podpisuje umowę?", answer: "Umowę i fakturę VAT wystawia letmework.ai sp. z o.o. Prace wykonuję osobiście." },
                     { question: "Ile kosztują usługi?", answer: "Zależy od zakresu: wycena za konkretny efekt albo stawka godzinowa." },
-                    { question: "Czy pracuję na miejscu w firmie?", answer: "Większość prac wykonuję zdalnie. Pracę na miejscu ustalamy przy urządzeniach." },
                     { question: "Co z poufnością danych firmy?", answer: "Przed pierwszą rozmową techniczną możemy podpisać umowę o poufności. Proszę tylko o dostępy, których wymaga zlecenie." },
-                    { question: "Co firma dostaje po wdrożeniu?", answer: "Kod i dokumentację. Możemy też umówić się na stałe wsparcie." }
+                    { question: "Co firma dostaje po wdrożeniu?", answer: "Przy pracach na zamówienie: kod i dokumentację. Przy ERP: licencję letmework.ai. Możliwe też stałe wsparcie." }
                 ]
             },
             about: {
@@ -1005,6 +986,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     email: "E-mail firmowy",
                     service: "Temat rozmowy",
                     serviceOther: "Inny temat",
+                    analysis: "Bezpłatna analiza jednego procesu",
                     message: "Opis problemu",
                     nameError: "Wpisz imię i nazwisko.",
                     emailError: "Wpisz adres e-mail ze znakiem @.",
@@ -1018,7 +1000,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             },
             close: {
                 title: "Pierwsza rozmowa trwa 30 minut",
-                lead: "Jest bezpłatna. Po niej dostajesz pisemny zakres prac i wycenę."
+                lead: "Jest bezpłatna, tak jak analiza jednego procesu, która po niej następuje."
             },
             footer: {
                 lede: "Umowy i faktury VAT wystawia letmework.ai sp. z o.o.",

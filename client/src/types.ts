@@ -114,7 +114,6 @@ export interface HomeContent {
   hero: { title: string; lead: string; primary: string; secondary: string; inbox: Inbox };
   services: { title: string; lead: string; items: PhotoRow[] };
   product: { title: string; lead: string; tabs: string[]; trackerTitle: string; trackerText: string; cta: string; topic: string };
-  lemy: { title: string; lead: string; points: { title: string; text: string }[]; cta: string };
   statement: { label: string; before: string; strong: string; after: string; facts: { label: string; value: string }[] };
   process: { title: string; steps: { title: string; text: string }[] };
   work: { title: string; lead: string; appsTitle: string; open: string; close: string; items: PhotoRow[] };
@@ -128,6 +127,7 @@ export interface HomeContent {
       email: string;
       service: string;
       serviceOther: string;
+      analysis: string;
       message: string;
       nameError: string;
       emailError: string;

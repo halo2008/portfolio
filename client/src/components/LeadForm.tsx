@@ -84,6 +84,7 @@ const LeadForm: React.FC = () => {
         <label htmlFor="lead-service">{form.service}</label>
         <select id="lead-service" name="service" defaultValue="">
           <option value="">{form.serviceOther}</option>
+          <option value={form.analysis}>{form.analysis}</option>
           {content.home.services.items.map(item => (
             <option key={item.title} value={item.title}>{item.title}</option>
           ))}
