@@ -409,7 +409,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 label: "Results from public letmework.ai case studies",
                 before: "I started at the machines: as a mechanic, operator and shift foreman in ceramics factories. That is why I start from how people work, not from technology. The systems I build take ",
                 facts: [
-                    { value: "8×", label: "more regular customers per sales rep at Ulamex: up to 300 instead of a few dozen" },
+                    { value: "8×", label: "more regular customers per sales rep at Ulamex: up to 300, eight times more than before" },
                     { value: "~10k zł", label: "for warehouse hardware at Ulamex, instead of about 1 m zł for an off-the-shelf WMS" },
                     { value: "8 → 1", label: "tools in Marketstal's order handling, from import to goods receipt" }
                 ],
@@ -927,7 +927,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 label: "Wyniki z publicznych case study letmework.ai",
                 before: "Zaczynałem przy maszynach: jako mechanik, operator i mistrz zmiany w fabrykach ceramiki. Dlatego zaczynam od tego, jak pracują ludzie, a nie od technologii. Systemy, które buduję, zdejmują z ludzi ",
                 facts: [
-                    { value: "8×", label: "więcej stałych klientów na handlowca w Ulamexie: do 300 zamiast kilkudziesięciu" },
+                    { value: "8×", label: "więcej stałych klientów na handlowca w Ulamexie: do 300, osiem razy więcej niż wcześniej" },
                     { value: "ok. 10 tys. zł", label: "za sprzęt do magazynu w Ulamexie, zamiast ok. 1 mln zł za gotowy WMS" },
                     { value: "8 → 1", label: "narzędzi w obsłudze zamówienia w Marketstal, od importu po przyjęcie" }
                 ],
