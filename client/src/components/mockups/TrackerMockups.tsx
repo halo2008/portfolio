@@ -41,6 +41,9 @@ const ICONS: Record<TrkIcon, string> = {
     print: 'M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z',
     lock: 'M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z',
     bluetooth: 'M17.71 7.71 12 2h-1v7.59L6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 11 14.41V22h1l5.71-5.71-4.3-4.29 4.3-4.29zM13 5.83l1.88 1.88L13 9.59V5.83zm1.88 10.46L13 18.17v-3.76l1.88 1.88z',
+    keyboard: 'M20 5H4c-1.1 0-1.99.9-1.99 2L2 17c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-9 3h2v2h-2V8zm0 3h2v2h-2v-2zM8 8h2v2H8V8zm0 3h2v2H8v-2zm-1 2H5v-2h2v2zm0-3H5V8h2v2zm9 7H8v-2h8v2zm0-4h-2v-2h2v2zm0-3h-2V8h2v2zm3 3h-2v-2h2v2zm0-3h-2V8h2v2z',
+    stop: 'M6 6h12v12H6z',
+    mic: 'M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z',
     map: 'm20.5 3-.16.03L15 5.1 9 3 3.36 4.9c-.21.07-.36.25-.36.48V20.5c0 .28.22.5.5.5l.16-.03L9 18.9l6 2.1 5.64-1.9c.21-.07.36-.25.36-.48V3.5c0-.28-.22-.5-.5-.5zM15 19l-6-2.11V5l6 2.11V19z'
 };
 
@@ -363,13 +366,80 @@ const ZebraLabel: React.FC<{ data: TrackerMockupLocale['zebraLabel'] }> = ({ dat
     </div>
 );
 
+const LevelBars: React.FC = () => (
+    <span className="trkm-lemy__bars" aria-hidden="true">
+        {Array.from({ length: 9 }, (_, index) => <i key={index} style={{ '--i': index } as CSSProperties} />)}
+    </span>
+);
+
+const LemySheet: React.FC<{ status: string; hint?: string; children: React.ReactNode }> = ({ status, hint, children }) => (
+    <div className="trkm-lemy">
+        <div className="trkm-lemy__sheet">
+            <div className="trkm-lemy__head">
+                <span className="trkm-lemy__avatar"><Icon name="sparkle" size={16} /></span>
+                <span className="trkm-lemy__status"><b>{status}</b>{hint && <span>{hint}</span>}</span>
+                <Icon name="close" size={20} className="trkm-lemy__close" />
+            </div>
+            {children}
+        </div>
+    </div>
+);
+
+const LemyListen: React.FC<{ data: TrackerMockupLocale }> = ({ data }) => {
+    const lemy = data.lemyListen;
+    return (
+        <>
+            <div className="trkm-lemy-bg" data-cards="2"><CrmClient data={data.crmClient} /></div>
+            <LemySheet status={lemy.status} hint={lemy.hint}>
+                <LevelBars />
+                <span className="trkm-lemy__said">{lemy.said}</span>
+                <div className="trkm-lemy__row">
+                    <span className="trkm-lemy__round" title={lemy.keyboard}><Icon name="keyboard" size={22} /></span>
+                    <span className="trkm-lemy__stop"><Icon name="stop" size={20} />{lemy.stop}</span>
+                    <span className="trkm-lemy__gap" />
+                </div>
+            </LemySheet>
+        </>
+    );
+};
+
+const LemyConfirm: React.FC<{ data: TrackerMockupLocale }> = ({ data }) => {
+    const lemy = data.lemyConfirm;
+    return (
+        <>
+            <div className="trkm-lemy-bg" data-cards="1"><CrmClient data={data.crmClient} /></div>
+            <LemySheet status={lemy.status}>
+                <span className="trkm-lemy__said">{lemy.said}</span>
+                <div className="trkm-lemy__card">
+                    <span className="trkm-lemy__pill">{lemy.card.title}</span>
+                    <b>{lemy.card.target}</b>
+                    <span className="trkm-lemy__preview">{lemy.card.preview}</span>
+                    <span className="trkm-lemy__expires">{lemy.card.expires}</span>
+                    <span className="trkm-lemy__buttons">
+                        <span className="trkm-lemy__cancel">{lemy.card.cancel}</span>
+                        <span className="trkm-lemy__confirm">{lemy.card.confirm}</span>
+                    </span>
+                    <span className="trkm-lemy__voice">{lemy.card.voiceHint}</span>
+                </div>
+                <div className="trkm-lemy__row">
+                    <span className="trkm-lemy__round" title={lemy.keyboard}><Icon name="keyboard" size={22} /></span>
+                    <span className="trkm-lemy__mic" title={lemy.mic}><Icon name="mic" size={26} /></span>
+                    <span className="trkm-lemy__gap" />
+                </div>
+            </LemySheet>
+        </>
+    );
+};
+
 const SCREENS: Record<TrkScreen, React.FC<{ data: TrackerMockupLocale }>> = {
     dashboard: ({ data }) => <Dashboard data={data.dashboard} />,
     calls: ({ data }) => <Calls data={data.calls} />,
     route: ({ data }) => <Route data={data.route} />,
     crmClient: ({ data }) => <CrmClient data={data.crmClient} />,
     printDoc: ({ data }) => <PrintDoc data={data.printDoc} />,
-    zebraLabel: ({ data }) => <ZebraLabel data={data.zebraLabel} />
+    zebraLabel: ({ data }) => <ZebraLabel data={data.zebraLabel} />,
+    lemyListen: LemyListen,
+    lemyConfirm: LemyConfirm
 };
 
 export const TrackerPhone: React.FC<{ screen: TrkScreen; data: TrackerMockupLocale }> = ({ screen, data }) => {

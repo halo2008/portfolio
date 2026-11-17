@@ -405,6 +405,16 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 cta: "Book a system demo",
                 topic: "ERP system and Tracker app"
             },
+            lemy: {
+                title: "Lemy, a voice assistant for sales reps",
+                lead: "The rep talks to the phone and Lemy writes it into the ERP. It changes nothing without a confirmation.",
+                points: [
+                    { title: "A note after the meeting", text: "Dictated on the spot, it lands in the customer card." },
+                    { title: "Questions to the ERP", text: "Stock levels, the last order, leave in the team." },
+                    { title: "Saved only after a yes", text: "Lemy shows what it will save. The rep confirms." }
+                ],
+                cta: "See Lemy in a demo"
+            },
             statement: {
                 label: "Experience",
                 before: "I started at the machines: as a mechanic, operator and shift foreman in ceramics factories. Today I run an ERP platform that many companies use every day. I treat software as a tool: it should take ",
@@ -921,6 +931,16 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 trackerText: "Kierowca ze służbowym telefonem ma aplikację, a logistyka widzi w ERP, gdzie jest, którędy jedzie i z jaką prędkością. Handlowiec jednym przyciskiem przypisuje połączenia i SMS-y do klienta.",
                 cta: "Umów pokaz systemu",
                 topic: "System ERP i aplikacja Tracker"
+            },
+            lemy: {
+                title: "Lemy, asystent głosowy dla handlowców",
+                lead: "Handlowiec mówi do telefonu, a Lemy zapisuje to w ERP. Bez potwierdzenia niczego nie zmienia.",
+                points: [
+                    { title: "Notatka po spotkaniu", text: "Podyktowana od razu trafia do karty klienta." },
+                    { title: "Pytania do ERP", text: "Stan towaru, ostatnie zamówienie, urlopy w zespole." },
+                    { title: "Zapis dopiero po „tak”", text: "Lemy pokazuje, co zapisze. Handlowiec potwierdza." }
+                ],
+                cta: "Zobacz Lemy na pokazie"
             },
             statement: {
                 label: "Doświadczenie",

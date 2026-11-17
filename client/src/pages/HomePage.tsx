@@ -19,6 +19,7 @@ const TWO_SCREENS = { '--h': 2, '--hm': 2 } as React.CSSProperties;
 const INBOX_FIT = { '--fit-max': '600px' } as React.CSSProperties;
 const ERP_SCREENS = [ErpPipeline, ErpPicking, ErpTracking, ErpAssistant];
 const PHONE_SCREENS = ['route', 'calls'] as const;
+const LEMY_SCREENS = ['lemyListen', 'lemyConfirm'] as const;
 const THIRD_SIZES = '(max-width: 1023px) 100vw, (min-width: 1280px) 720px, 420px';
 
 const loadKit = () => {
@@ -89,7 +90,7 @@ const selectTopic = (topic: string) => {
 const HomePage: React.FC = () => {
     const { content, language } = useLanguage();
     const { home, contact, name } = content;
-    const { nav, hero, services, product, statement, process, work, faq, about, call, close, footer } = home;
+    const { nav, hero, services, product, lemy, statement, process, work, faq, about, call, close, footer } = home;
     const [preview, setPreview] = useState<number | null>(null);
     const mailto = `mailto:${contact.emailUrl}`;
     const linkedin = `https://${contact.linkedinUrl}`;
@@ -223,6 +224,34 @@ const HomePage: React.FC = () => {
                                 <div className="erp-phone span-3" key={screen}>
                                     <TrackerPhone screen={screen} data={TRACKER_MOCKUP[language]} />
                                 </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                <section className="section ground-surface" id="lemy" style={PHONE_TWO_SCREENS} aria-labelledby="lemy-h">
+                    {/* Client slot: the first 9:16 clip of Lemy recorded on a demo account goes here as a <video> once it exists. */}
+                    <div className="wrap grid grid--top">
+                        <div className="lemy-text span-6">
+                            <div className="section-head">
+                                <h2 id="lemy-h">{lemy.title}</h2>
+                                <p>{lemy.lead}</p>
+                            </div>
+                            <ul className="rows">
+                                {lemy.points.map(point => (
+                                    <li key={point.title}>
+                                        <span className="rows__name">{point.title}</span>
+                                        <p>{point.text}</p>
+                                    </li>
+                                ))}
+                            </ul>
+                            <div className="btn-row">
+                                <a className="btn btn--primary" href="#call" onClick={() => selectTopic(product.topic)}>{lemy.cta}</a>
+                            </div>
+                        </div>
+                        <div className="lemy-phones span-6 start-7">
+                            {LEMY_SCREENS.map(screen => (
+                                <TrackerPhone screen={screen} data={TRACKER_MOCKUP[language]} key={screen} />
                             ))}
                         </div>
                     </div>

@@ -168,3 +168,12 @@ footer.closing > .wrap { height: auto; }
 .erp-mobile > .span-6 > .btn-row { margin-top: auto; padding-top: var(--s-6); }
 @media (min-width: 640px) and (min-height: 860px) { .preview__stage .trkm { --trkm-scale: .9; } }
 @media (max-width: 639px) { #services .frame--fill { height: 720px; } }
+.lemy-text { display: flex; flex-direction: column; align-self: stretch; }
+.lemy-text .rows { margin-top: var(--s-5); }
+.lemy-text > .btn-row { margin-top: auto; padding-top: var(--s-6); }
+.lemy-phones { display: flex; justify-content: flex-start; gap: var(--s-5); }
+.lemy-phones .trkm { --trkm-scale: .76; }
+@media (max-width: 1279px) { .lemy-phones .trkm { --trkm-scale: .62; } }
+@media (max-width: 1023px) { .lemy-phones { justify-content: flex-start; margin-top: var(--s-6); } }
+@media (max-width: 639px) { .lemy-phones > :first-child { display: none; } .lemy-phones .trkm { --trkm-scale: .8; } }
+@media (max-width: 359px) { .lemy-phones .trkm { --trkm-scale: .7; } }

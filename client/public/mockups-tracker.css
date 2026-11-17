@@ -242,3 +242,39 @@
 @media (max-width: 360px) {
     .trkm { --trkm-scale: .72; }
 }
+
+/* Lemy: the voice card at the bottom of the screen, as in features/lemy LemyVoiceCard + ConfirmationCardView */
+.trkm-lemy { position: absolute; inset: 0; z-index: 2; display: flex; flex-direction: column; justify-content: flex-end; background: rgba(2, 6, 23, .55); }
+.trkm-lemy__sheet { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 12px 20px 16px; border-radius: 24px 24px 0 0; background: var(--trkm-surface); box-shadow: 0 -12px 28px rgba(0, 0, 0, .45); }
+.trkm-lemy__head { display: flex; align-items: center; gap: 10px; align-self: stretch; }
+.trkm-lemy__avatar { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--trkm-primary-container); color: var(--trkm-on-primary-container); }
+.trkm-lemy__status { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+.trkm-lemy__status b { font-size: 14px; font-weight: 500; }
+.trkm-lemy__status span { font-size: 12px; line-height: 16px; color: var(--trkm-muted); }
+.trkm-lemy__close { color: var(--trkm-muted); }
+.trkm-lemy__bars { display: flex; align-items: center; gap: 5px; height: 36px; }
+.trkm-lemy__bars i { width: 5px; height: 30%; border-radius: 3px; background: var(--trkm-primary); }
+.trkm-lemy__bars i:nth-child(3n + 1) { height: 55%; }
+.trkm-lemy__bars i:nth-child(4n + 2) { height: 85%; }
+.trkm-lemy-bg { height: 100%; }
+.trkm-lemy-bg[data-cards="1"] .trkm-cli__card:nth-of-type(n+2), .trkm-lemy-bg[data-cards="2"] .trkm-cli__card:nth-of-type(n+3) { display: none; }
+.trkm-lemy__said { display: block; margin: 0; font-size: 16px; line-height: 24px; font-weight: 500; text-align: center; }
+.trkm-lemy__card { display: flex; flex-direction: column; gap: 6px; align-self: stretch; padding: 14px 16px; border: 1px solid var(--trkm-outline); border-radius: 20px; background: var(--trkm-bg); }
+.trkm-lemy__pill { align-self: flex-start; padding: 2px 10px; border-radius: 999px; background: #FFEDD5; color: #EA580C; font-size: 11px; line-height: 16px; font-weight: 600; }
+.trkm-lemy__card b { font-size: 15px; font-weight: 500; }
+.trkm-lemy__preview { font-size: 13px; line-height: 18px; color: var(--trkm-muted); }
+.trkm-lemy__expires { font-size: 11px; color: var(--trkm-muted); }
+.trkm-lemy__buttons { display: flex; gap: 10px; margin-top: 6px; }
+.trkm-lemy__buttons > span { display: grid; flex: 1; place-items: center; height: 40px; border-radius: 999px; font-size: 14px; font-weight: 500; }
+.trkm-lemy__cancel { border: 1px solid var(--trkm-outline); color: var(--trkm-primary); }
+.trkm-lemy__confirm { background: var(--trkm-primary); color: #0F172A; }
+.trkm-lemy__voice { align-self: center; font-size: 11px; color: var(--trkm-muted); }
+.trkm-lemy__row { display: flex; align-items: center; justify-content: space-between; align-self: stretch; }
+.trkm-lemy__round, .trkm-lemy__gap { width: 44px; height: 44px; }
+.trkm-lemy__round { display: grid; place-items: center; border-radius: 50%; background: var(--trkm-tertiary); color: var(--trkm-ink); }
+.trkm-lemy__stop { display: inline-flex; align-items: center; gap: 8px; height: 50px; padding: 0 24px; border-radius: 999px; background: var(--trkm-ink); color: var(--trkm-surface); font-size: 16px; font-weight: 500; }
+.trkm-lemy__mic { display: grid; place-items: center; width: 60px; height: 60px; border-radius: 50%; background: var(--trkm-primary); color: #0F172A; }
+@media screen and (prefers-reduced-motion: no-preference) {
+    .trkm-lemy__bars i { animation: trkm-lemy-level 3s ease-in-out infinite; animation-delay: calc(var(--i) * -0.27s); transform-origin: center; }
+    @keyframes trkm-lemy-level { 0%, 100% { transform: scaleY(.6); } 25% { transform: scaleY(1.5); } 50% { transform: scaleY(.9); } 75% { transform: scaleY(1.25); } }
+}

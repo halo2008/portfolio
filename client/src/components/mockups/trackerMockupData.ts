@@ -1,11 +1,11 @@
-export type TrkScreen = 'dashboard' | 'calls' | 'route' | 'crmClient' | 'printDoc' | 'zebraLabel';
+export type TrkScreen = 'dashboard' | 'calls' | 'route' | 'crmClient' | 'printDoc' | 'zebraLabel' | 'lemyListen' | 'lemyConfirm';
 
 export type TrkIcon =
     | 'home' | 'badge' | 'personSearch' | 'calendar' | 'handshake' | 'inventory' | 'storefront' | 'cart'
     | 'shipping' | 'warehouse' | 'quiz' | 'support' | 'news' | 'inbox' | 'route' | 'more' | 'sparkle'
     | 'person' | 'personAdd' | 'sort' | 'search' | 'call' | 'sms' | 'back' | 'refresh' | 'chevronLeft'
     | 'chevronRight' | 'dropDown' | 'edit' | 'close' | 'add' | 'star' | 'mail' | 'description' | 'download'
-    | 'print' | 'lock' | 'map' | 'bluetooth';
+    | 'print' | 'lock' | 'map' | 'bluetooth' | 'keyboard' | 'stop' | 'mic';
 
 export type TrkCallType = 'incoming' | 'outgoing' | 'missed' | 'rejected';
 
@@ -102,6 +102,15 @@ export interface TrackerMockupLocale {
         print: string;
         nav: TrkNavItem[];
     };
+    lemyListen: { status: string; hint: string; said: string; keyboard: string; stop: string; nav: TrkNavItem[] };
+    lemyConfirm: {
+        status: string;
+        said: string;
+        card: { title: string; target: string; preview: string; expires: string; cancel: string; confirm: string; voiceHint: string };
+        keyboard: string;
+        mic: string;
+        nav: TrkNavItem[];
+    };
 }
 
 const MODULE_COLORS = {
@@ -161,7 +170,9 @@ export const TRACKER_MOCKUP: { pl: TrackerMockupLocale; en: TrackerMockupLocale 
             route: 'Szczegóły przejazdu w ErpTracker: aktywne śledzenie GPS z ostatnim pomiarem, dokładnością i prędkością oraz dane wykonawcy (dane demonstracyjne).',
             crmClient: 'Karta klienta w CRM ErpTracker: opiekun, osoba kontaktowa i sekcja Ostatni kontakt z połączeniami i SMS-ami zapisanymi automatycznie z telefonu handlowca (dane demonstracyjne).',
             printDoc: 'Dokument magazynowy WZ w ErpTracker z przyciskiem Drukuj w nagłówku, który otwiera PDF dokumentu do wydruku (dane demonstracyjne).',
-            zebraLabel: 'Drukowanie etykiety z telefonu: produkt Profil DEMO 40x40, drukarka Zebra połączona przez Bluetooth, podgląd etykiety z kodem QR, 2 kopie i przycisk Wydrukuj (dane demonstracyjne).'
+            zebraLabel: 'Drukowanie etykiety z telefonu: produkt Profil DEMO 40x40, drukarka Zebra połączona przez Bluetooth, podgląd etykiety z kodem QR, 2 kopie i przycisk Wydrukuj (dane demonstracyjne).',
+            lemyListen: 'Lemy słucha na karcie klienta w CRM: handlowiec dyktuje notatkę do klienta Hurtownia Przykładowa (dane demonstracyjne).',
+            lemyConfirm: 'Lemy pyta o potwierdzenie: notatka do karty klienta Hurtownia Przykładowa z przyciskami Anuluj i Potwierdź (dane demonstracyjne).'
         },
         clock: '14:32',
         dashboard: {
@@ -284,6 +295,30 @@ export const TRACKER_MOCKUP: { pl: TrackerMockupLocale; en: TrackerMockupLocale 
             cancel: 'Anuluj',
             print: 'Wydrukuj',
             nav: WMS_NAV
+        },
+        lemyListen: {
+            status: 'Słucham…',
+            hint: 'Skończę, gdy przestaniesz mówić',
+            said: '„Dodaj notatkę do Hurtowni Przykładowej: chcą ofertę na 40 palet, oddzwonię w czwartek.”',
+            keyboard: 'Pisz zamiast mówić',
+            stop: 'Stop',
+            nav: CLIENT_NAV
+        },
+        lemyConfirm: {
+            status: 'Czeka na Twoje potwierdzenie',
+            said: 'Dodam notatkę w karcie klienta Hurtownia Przykładowa.',
+            card: {
+                title: 'Wymagane potwierdzenie',
+                target: 'CRM · Hurtownia Przykładowa',
+                preview: 'Notatka: oferta na 40 palet, telefon w czwartek 20.11.',
+                expires: 'Ważne do 14:42',
+                cancel: 'Anuluj',
+                confirm: 'Potwierdź',
+                voiceHint: 'Możesz też powiedzieć „tak” albo „nie”'
+            },
+            keyboard: 'Pisz zamiast mówić',
+            mic: 'Mów do Lemy',
+            nav: CLIENT_NAV
         }
     },
     en: {
@@ -293,7 +328,9 @@ export const TRACKER_MOCKUP: { pl: TrackerMockupLocale; en: TrackerMockupLocale 
             route: 'ErpTracker trip detail: live GPS tracking with the last reading, accuracy and speed, plus the executor details (demo data).',
             crmClient: 'ErpTracker CRM client card: account manager, contact person and the Last contact section listing calls and texts logged automatically from the sales rep phone (demo data).',
             printDoc: 'ErpTracker warehouse issue document (WZ) with the Print action in its header, which opens the document PDF for printing (demo data).',
-            zebraLabel: 'Printing a label from the phone: DEMO profile 40x40, a Zebra printer connected over Bluetooth, a QR label preview, 2 copies and the Print button (demo data).'
+            zebraLabel: 'Printing a label from the phone: DEMO profile 40x40, a Zebra printer connected over Bluetooth, a QR label preview, 2 copies and the Print button (demo data).',
+            lemyListen: 'Lemy listening on a CRM customer card: the sales rep dictates a note for the customer Hurtownia Przykładowa (demo data).',
+            lemyConfirm: 'Lemy asks for confirmation: a note for the Hurtownia Przykładowa customer card with Cancel and Confirm buttons (demo data).'
         },
         clock: '14:32',
         dashboard: {
@@ -416,6 +453,30 @@ export const TRACKER_MOCKUP: { pl: TrackerMockupLocale; en: TrackerMockupLocale 
             cancel: 'Cancel',
             print: 'Print',
             nav: WMS_NAV
+        },
+        lemyListen: {
+            status: 'Listening…',
+            hint: 'I stop when you stop talking',
+            said: '“Add a note to Hurtownia Przykładowa: they want a quote for 40 pallets, I will call back on Thursday.”',
+            keyboard: 'Type instead',
+            stop: 'Stop',
+            nav: CLIENT_NAV
+        },
+        lemyConfirm: {
+            status: 'Waiting for your confirmation',
+            said: 'I will add a note to the Hurtownia Przykładowa customer card.',
+            card: {
+                title: 'Confirmation required',
+                target: 'CRM · Hurtownia Przykładowa',
+                preview: 'Note: a quote for 40 pallets, call back on Thursday 20.11.',
+                expires: 'Valid until 14:42',
+                cancel: 'Cancel',
+                confirm: 'Confirm',
+                voiceHint: 'You can also say “yes” or “no”'
+            },
+            keyboard: 'Type instead',
+            mic: 'Speak to Lemy',
+            nav: CLIENT_NAV
         }
     }
 };
