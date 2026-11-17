@@ -281,7 +281,10 @@ export const LanguageProvider: React.FC<{ children: ReactNode; initialLanguage?:
   const [language, setLanguageState] = React.useState<Language>(() => {
     if (initialLanguage) return initialLanguage;
     const fromPath = homeLanguage(window.location.pathname);
-    if (fromPath) return fromPath;
+    if (fromPath) {
+      try { localStorage.setItem('language', fromPath); } catch { /* storage blocked: the path still decides */ }
+      return fromPath;
+    }
     const requested = new URLSearchParams(window.location.search).get('lang');
     if (isLanguage(requested)) {
       localStorage.setItem('language', requested);
