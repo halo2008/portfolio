@@ -12,6 +12,7 @@ const LeadForm: React.FC = () => {
   const { executeRecaptcha } = useGoogleReCaptcha();
   const statusRef = useRef<HTMLParagraphElement>(null);
   const [sending, setSending] = useState(false);
+  const inFlight = useRef(false);
 
   const say = (text: string, withEmail = false) => {
     const status = statusRef.current;
@@ -28,10 +29,12 @@ const LeadForm: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     if (event.defaultPrevented) return;
     event.preventDefault();
+    if (inFlight.current) return;
     const formElement = event.currentTarget;
     if (!formElement.checkValidity()) return;
     const data = new FormData(formElement);
     const service = String(data.get('service') || '');
+    inFlight.current = true;
     setSending(true);
     say(form.sending);
 
@@ -60,6 +63,7 @@ const LeadForm: React.FC = () => {
     } catch {
       say(form.failed, true);
     } finally {
+      inFlight.current = false;
       setSending(false);
     }
   };
@@ -92,7 +96,7 @@ const LeadForm: React.FC = () => {
         <p className="field__error" id="lead-message-error" hidden>{form.messageError}</p>
       </div>
       <div className="btn-row">
-        <button className="btn btn--primary" type="submit" aria-busy={sending || undefined}>{content.home.hero.primary}</button>
+        <button className="btn btn--primary" type="submit" aria-busy={sending || undefined} disabled={sending}>{content.home.hero.primary}</button>
       </div>
       <p className="form__status" role="status" data-form-status ref={statusRef} />
       <p className="t-small muted">{form.privacy}</p>
