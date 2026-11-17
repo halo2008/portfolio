@@ -53,8 +53,8 @@ function App() {
     <GoogleReCaptchaProvider
       reCaptchaKey={import.meta.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || "PLACEHOLDER_SITE_KEY"}
       scriptProps={{
-        async: false,
-        defer: false,
+        async: true,
+        defer: true,
         appendTo: "head",
         nonce: undefined,
       }}
