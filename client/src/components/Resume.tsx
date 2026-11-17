@@ -13,6 +13,14 @@ const Resume: React.FC = () => {
         <section id="resume" className="py-24 px-6 md:px-12 lg:px-24 bg-dark overflow-hidden border-t border-slate-800">
             <div className="max-w-7xl mx-auto">
 
+                <div className="grid lg:grid-cols-2 gap-10 mb-24">
+                    <h2 className="text-3xl md:text-5xl font-bold text-white">{content.philosophy.title}</h2>
+                    <div className="space-y-5 text-slate-400 leading-relaxed">
+                        <p>{content.philosophy.description}</p>
+                        <p className="border-l-2 border-primary pl-5 text-slate-300">{content.philosophy.differentiator}</p>
+                    </div>
+                </div>
+
                 {/* Timeline Section */}
                 <div ref={ref} className="mb-24 px-4 md:px-0">
                     <div className={`flex items-center gap-3 mb-10 text-white font-bold text-2xl ${isVisible ? 'reveal-visible' : 'reveal-hidden'}`}>

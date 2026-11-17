@@ -9,6 +9,16 @@ export class SlackService {
 
     constructor(@Inject(SLACK_CLIENT) private readonly slackClient: WebClient) {}
 
+    async postMessage(text: string): Promise<boolean> {
+        try {
+            await this.slackClient.chat.postMessage({ channel: this.CHANNEL_ID!, text });
+            return true;
+        } catch (error) {
+            this.logger.error('Slack message delivery failed', error);
+            return false;
+        }
+    }
+
     async logNewConversation(userMessage: string, socketId?: string): Promise<string | null> {
         try {
             const result = await this.slackClient.chat.postMessage({

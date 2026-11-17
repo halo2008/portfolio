@@ -47,12 +47,12 @@ async function bootstrap(): Promise<void> {
             contentSecurityPolicy: {
                 directives: {
                     defaultSrc: ["'self'"],
-                    scriptSrc: ["'self'", "'unsafe-inline'", "https://www.google.com", "https://www.gstatic.com"],
+                    scriptSrc: ["'self'", "'unsafe-inline'", "https://www.google.com", "https://www.gstatic.com", "https://www.googletagmanager.com"],
                     styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
                     fontSrc: ["'self'", "https://fonts.gstatic.com"],
                     imgSrc: ["'self'", "data:", "https://grainy-gradients.vercel.app"],
                     frameSrc: ["'self'", "https://www.google.com", "https://www.recaptcha.net"],
-                    connectSrc: ["'self'", "https://www.google.com", "https://identitytoolkit.googleapis.com", "https://securetoken.googleapis.com", "https://firestore.googleapis.com"],
+                    connectSrc: ["'self'", "https://www.google.com", "https://*.google-analytics.com", "https://*.analytics.google.com", "https://www.googletagmanager.com", "https://identitytoolkit.googleapis.com", "https://securetoken.googleapis.com", "https://firestore.googleapis.com"],
                 },
             },
         }));

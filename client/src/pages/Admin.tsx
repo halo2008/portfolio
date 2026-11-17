@@ -1,3 +1,4 @@
+import '../index.css';
 import React from 'react';
 import { useAuth } from '../core/auth/AuthContext';
 import { AdminLogin } from '../components/AdminLogin';

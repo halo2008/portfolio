@@ -1,0 +1,103 @@
+.trkc {
+    --trkc-scale: .79;
+    --trkc-statusbar: #6650A4;
+    --trkc-bg: #FFFBFE;
+    position: relative;
+    flex: none;
+    width: calc(380px * var(--trkc-scale));
+    height: calc(786px * var(--trkc-scale));
+    text-align: left;
+}
+.trkc *, .trkc *::before, .trkc *::after { box-sizing: border-box; }
+.trkc svg { display: block; flex: none; }
+
+.trkc__phone {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 380px;
+    height: 786px;
+    padding: 10px;
+    border-radius: 48px;
+    background: linear-gradient(160deg, #2a3348, #11172a 55%, #1c2438);
+    box-shadow: 0 0 0 1px rgba(148, 163, 184, .22), 0 30px 60px -20px rgba(0, 0, 0, .7), inset 0 0 0 2px #05080f;
+    transform: scale(var(--trkc-scale));
+    transform-origin: 0 0;
+}
+.trkc__phone::after {
+    content: "";
+    position: absolute;
+    top: 22px;
+    left: 50%;
+    width: 12px;
+    height: 12px;
+    margin-left: -6px;
+    border-radius: 50%;
+    background: #05080f;
+    box-shadow: inset 0 0 0 2px #1b2236;
+}
+.trkc__screen {
+    display: flex;
+    flex-direction: column;
+    width: 360px;
+    height: 766px;
+    overflow: hidden;
+    border-radius: 38px;
+    background: var(--trkc-bg);
+    color: #1C1B1F;
+    font-family: Roboto, "Segoe UI", system-ui, -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 24px;
+    letter-spacing: .5px;
+    -webkit-font-smoothing: antialiased;
+}
+.trkc b { font-weight: 700; }
+
+.trkc__status { display: flex; align-items: center; justify-content: space-between; flex: none; height: 32px; padding: 4px 26px 0; background: var(--trkc-statusbar); font-size: 13px; font-weight: 500; letter-spacing: normal; color: #fff; }
+.trkc__sysicons { display: flex; gap: 5px; align-items: center; }
+.trkc__sysicons svg { width: 14px; height: 14px; fill: #fff; }
+.trkc__body { position: relative; flex: 1; min-height: 0; overflow: hidden; }
+.trkc__sysnav { display: flex; justify-content: space-around; align-items: center; flex: none; height: 40px; padding: 0 56px; background: #000; }
+.trkc__sysnav svg { width: 18px; height: 18px; fill: none; stroke: #fff; stroke-width: 2; stroke-linejoin: round; opacity: .85; }
+
+.trkc-log { position: relative; height: 100%; }
+.trkc-log__list { display: flex; flex-direction: column; }
+.trkc-log__card { display: flex; align-items: center; flex: none; width: calc(100% - 16px); margin: 8px; padding: 8px; border-radius: 12px; background: #E7E0EC; color: #49454F; }
+.trkc-log__text { display: flex; flex-direction: column; flex: 1; min-width: 0; white-space: nowrap; }
+.trkc-log__type { align-self: flex-end; width: 48px; height: 48px; }
+.trkc-log__type .is-incoming { color: #00FF00; }
+.trkc-log__type .is-outgoing { color: #FFFF00; }
+.trkc-log__type .is-missed { color: #FF0000; }
+.trkc-log__type .is-rejected { color: #0000FF; }
+.trkc-log__call { display: flex; align-items: center; justify-content: center; flex: none; width: 72px; height: 40px; border-radius: 20px; background: #6650A4; color: #fff; }
+.trkc-log__actions { position: absolute; left: 0; right: 0; bottom: 8px; display: flex; justify-content: center; gap: 16px; }
+.trkc-log__round { display: flex; align-items: center; justify-content: center; width: 56px; height: 56px; border-radius: 12px; background: #888888; color: #1C1B1F; }
+
+.trkc--scan { --trkc-bg: #fff; }
+.trkc-scan { display: flex; flex-direction: column; height: 100%; background: linear-gradient(#B21917 0 100px, #fff 100px); font-family: Poppins, Roboto, "Segoe UI", system-ui, sans-serif; letter-spacing: normal; }
+.trkc-scan__top { display: flex; align-items: center; justify-content: space-between; flex: none; padding: 16px; color: #fff; }
+.trkc-scan__user, .trkc-scan__tools { display: flex; align-items: center; }
+.trkc-scan__who { display: flex; flex-direction: column; }
+.trkc-scan__who b { font-size: 14px; line-height: 20px; }
+.trkc-scan__who span { font-size: 11px; line-height: 16px; font-weight: 300; }
+.trkc-scan__sheet { display: flex; flex-direction: column; align-items: center; flex: 1; min-height: 0; overflow: hidden; border-radius: 32px 32px 0 0; background: #fff; color: #000; }
+.trkc-scan__title { padding: 8px; font-size: 28px; line-height: 40px; font-weight: 700; text-align: center; }
+.trkc-scan__row { display: flex; justify-content: space-between; align-self: stretch; padding: 0 8px 8px; font-size: 14px; line-height: 20px; }
+.trkc-scan__printer { display: flex; align-items: center; gap: 12px; align-self: stretch; padding: 0 8px 8px; }
+.trkc-scan__printbtn { display: flex; align-items: center; justify-content: space-evenly; flex: none; width: 90px; height: 60px; border-radius: 12px; background: #fff; box-shadow: 0 3px 6px rgba(0, 0, 0, .2), 0 1px 3px rgba(0, 0, 0, .25); }
+.trkc-scan__state { display: flex; flex-direction: column; font-size: 14px; line-height: 20px; }
+.trkc-scan__state span { font-size: 13px; color: #49454F; }
+.trkc-scan__label { display: flex; flex-direction: column; width: 172px; padding: 8px 10px 10px; border: 1px solid #D4D4D4; border-radius: 6px; background: #fff; box-shadow: 0 2px 6px rgba(0, 0, 0, .12); font-family: "DejaVu Sans Mono", Consolas, monospace; font-size: 11px; line-height: 16px; white-space: nowrap; }
+.trkc-scan__qr { width: 124px; height: 124px; margin: 0 0 8px 6px; fill: #000; }
+.trkc-scan__dialog { display: flex; flex-direction: column; align-items: center; gap: 8px; align-self: stretch; margin: 12px 8px 0; padding: 8px; border-radius: 12px; background: #EAEAEA; }
+.trkc-scan__prompt { font-size: 20px; line-height: 26px; text-align: center; }
+.trkc-scan__field { position: relative; display: flex; align-items: center; width: 100%; height: 56px; padding: 0 16px; border: 1px solid #79747E; border-radius: 4px; }
+.trkc-scan__field span { position: absolute; top: -9px; left: 12px; padding: 0 4px; background: #EAEAEA; font-size: 11px; line-height: 16px; font-weight: 300; color: #49454F; }
+.trkc-scan__field b { font-size: 24px; line-height: 32px; }
+.trkc-scan__buttons { display: flex; justify-content: space-evenly; align-self: stretch; padding: 8px; }
+.trkc-scan__btn { display: flex; align-items: center; justify-content: center; width: 130px; height: 48px; border-radius: 12px; background: #fff; box-shadow: 0 1px 3px rgba(0, 0, 0, .3); font-size: 14px; font-weight: 700; }
+.trkc-scan__btn.is-cancel { width: 124px; }
+
+@media (max-width: 360px) {
+    .trkc { --trkc-scale: .72; }
+}

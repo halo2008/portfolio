@@ -27,7 +27,10 @@ export interface TimelineItem {
 export interface ServiceItem {
   title: string;
   description: string;
+  deliverables: string[];
+  firstStep: string;
   iconName: string;
+  image: string;
 }
 
 export interface BusinessValueItem {
@@ -56,7 +59,93 @@ export enum LoadingState {
   ERROR = 'ERROR'
 }
 
+export interface Photo {
+  src: string;
+  small: string;
+  medium: string;
+  alt: string;
+  width: number;
+  height: number;
+}
+
+export interface PhotoRow {
+  title: string;
+  text: string;
+  photo: Photo;
+}
+
+export interface InboxRow {
+  sender: string;
+  items: string;
+  match: number;
+  review?: boolean;
+}
+
+export interface Inbox {
+  label: string;
+  app: string;
+  view: string;
+  search: string;
+  folders: { name: string; count?: number }[];
+  columns: string[];
+  approve: string;
+  review: string;
+  rows: InboxRow[];
+  open: {
+    title: string;
+    mail: string;
+    fix: string;
+    lines: { name: string; qty: string; match: number; pick?: string }[];
+  };
+}
+
+export interface HomeContent {
+  meta: { title: string; skip: string; menu: string; navLabel: string };
+  nav: {
+    services: string;
+    about: string;
+    work: string;
+    product: string;
+    questions: string;
+    groups: string[];
+    hints: string[];
+    language: { label: string; code: Language };
+  };
+  hero: { title: string; lead: string; primary: string; secondary: string; inbox: Inbox };
+  services: { title: string; lead: string; items: PhotoRow[] };
+  product: { title: string; lead: string; tabs: string[]; trackerTitle: string; trackerText: string; cta: string; topic: string };
+  lemy: { title: string; lead: string; points: { title: string; text: string }[]; cta: string };
+  statement: { label: string; before: string; strong: string; after: string; facts: { label: string; value: string }[] };
+  process: { title: string; steps: { title: string; text: string }[] };
+  work: { title: string; lead: string; appsTitle: string; open: string; close: string; items: PhotoRow[] };
+  faq: { title: string; link: string; items: { question: string; answer: string }[] };
+  about: { title: string; paragraphs: string[]; portraitAlt: string };
+  call: {
+    title: string;
+    lead: string;
+    form: {
+      name: string;
+      email: string;
+      service: string;
+      serviceOther: string;
+      message: string;
+      nameError: string;
+      emailError: string;
+      messageError: string;
+      fix: string;
+      sending: string;
+      sent: string;
+      failed: string;
+      privacy: string;
+    };
+  };
+  close: { title: string; lead: string };
+  footer: { lede: string; columns: string[]; lab: string; credits: string };
+  consent: { text: string; accept: string; reject: string; label: string };
+}
+
 export interface PortfolioContent {
+  home: HomeContent;
   name: string;
   title: string;
   availability: string; // New
@@ -88,9 +177,20 @@ export interface PortfolioContent {
     title: string;
     items: TimelineItem[];
   };
-  services: { // New
+  services: {
     title: string;
+    deliverablesLabel: string;
+    firstStepLabel: string;
+    cta: string;
     items: ServiceItem[];
+  };
+  process: {
+    title: string;
+    steps: { title: string; description: string }[];
+  };
+  faq: {
+    title: string;
+    items: { question: string; answer: string }[];
   };
   businessValue: {
     title: string;
@@ -109,6 +209,18 @@ export interface PortfolioContent {
       github: string;
       email: string;
       tryLab: string;
+    };
+    form: {
+      name: string;
+      email: string;
+      service: string;
+      serviceOther: string;
+      message: string;
+      submit: string;
+      sending: string;
+      success: string;
+      error: string;
+      privacy: string;
     };
     linkedinUrl: string;
     githubUrl: string;

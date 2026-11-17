@@ -13,14 +13,14 @@ const asset = (path: string) => {
 export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
     en: {
         name: "Konrad Sędkowski",
-        title: "DevOps Engineer & Full Stack Developer",
-        availability: "Open for B2B contracts ",
+        title: "DevOps, IoT & AI services for companies",
+        availability: "Taking on new projects",
         hero: {
-            headline: "Bridging the Gap Between Industrial Hardware, Cloud Infrastructure, and Applied AI.",
-            subheadline: "DevOps Engineer & Full Stack Developer with 10+ years of industrial background. I build systems that solve real physical and business problems.",
+            headline: "I deploy cloud, integrate machines and automate work with AI.",
+            subheadline: "One engineer from the first call to production. Production Kubernetes on Google Cloud every day. Billed with a VAT invoice.",
             tags: ["DevOps", "Kubernetes", "Industrial IoT"],
-            cta: "View Case Studies",
-            ctaSecondary: "Discuss Your Project",
+            cta: "Book a free call",
+            ctaSecondary: "See case studies",
             profileImage: asset("portrait.webp")
         },
         philosophy: {
@@ -31,7 +31,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             image: asset("img/industrial.webp")
         },
         projects: {
-            title: "Featured Projects",
+            title: "Delivered projects",
             labels: { challenge: "The Challenge", solution: "The Solution", result: "The Result" },
             items: [
                 {
@@ -41,9 +41,20 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     challenge: "Migrating an ERP system from a fragile VPS infrastructure (Single Point of Failure, backup issues) to a scalable cloud environment.",
                     solution: "Designed a GKE cluster from scratch. Implemented HashiCorp Vault for secrets, Calico for Default Deny network policies, and WAF at Ingress. Automated deployment with Helm and Bash scripts.",
                     tech: ["Kubernetes", "DevSecOps", "GKE", "Terraform", "Vault"],
-                    result: "Eliminated downtime (Zero Downtime Deployments), fully automated Disaster Recovery, and ensured security compliance.",
+                    result: "Removed the single-VPS point of failure: HA control plane, automated backups/DR, and a hardened, policy-enforced cluster.",
                     iconName: 'Cloud',
                     image: asset("img/gke.webp")
+                },
+                {
+                    id: '8',
+                    title: "AI That Turns Order Emails into Draft Sales Orders in ERP",
+                    subtitle: "AI • Process automation",
+                    challenge: "Sales staff retyped orders from emails into the ERP by hand.",
+                    solution: "A cloud model (Gemini) reads the email and extracts the order lines. The self-hosted Basal decision model matches them against the product catalogue and reports how confident each match is. The result is a draft sales order: the salesperson gets a private notification, and the document is created in the sales system only after their click.",
+                    tech: ["Basal", "Gemini", "NestJS", "PostgreSQL"],
+                    result: "Running as a pilot. Product matching is done by a decision model on company hardware, and no order is created without human approval.",
+                    iconName: 'Bot',
+                    image: asset("img/services/automation.webp")
                 },
                 {
                     id: '2',
@@ -85,7 +96,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     challenge: "Low accuracy of classic OCR (Tesseract) with Polish invoices and LLM hallucinations when analyzing entire documents.",
                     solution: "Moved from OCR to raw PDF analysis via LLM. Developed a system of dynamic prompts selected based on the recognized Invoice Issuer NIP.",
                     tech: ["AI", "Computer Vision", "R&D", "Process Automation"],
-                    result: "Data extraction accuracy increased from 75% to 95%.",
+                    result: "Sharply reduced manual correction vs. classic OCR (internal results, not an audited benchmark).",
                     iconName: 'Brain',
                     image: asset("img/invoice.webp")
                 },
@@ -158,23 +169,86 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             ]
         },
         services: {
-            title: "Services",
+            title: "What I can do for you",
+            deliverablesLabel: "What you get",
+            firstStepLabel: "We start with",
+            cta: "Ask about this service",
             items: [
                 {
-                    title: "Kubernetes & Cloud Migration",
-                    description: "Moving applications from VPS/On-prem to GKE. Security audits and IaC implementation.",
-                    iconName: "Cloud"
+                    title: "Cloud & Kubernetes migration",
+                    description: "I move applications from a VPS or your own server room to Google Cloud (GKE or Cloud Run), with the whole infrastructure written as code and a rollback plan.",
+                    deliverables: [
+                        "Audit of the current infrastructure and its cost",
+                        "Infrastructure in Terraform, reproducible with one command",
+                        "CI/CD without service account keys (Workload Identity)",
+                        "Monitoring, logs and alerts (Prometheus, Grafana, Loki)",
+                        "Documentation and handover to your team"
+                    ],
+                    firstStep: "An audit and a migration plan",
+                    iconName: "Cloud",
+                    image: asset("img/services/cloud.webp")
                 },
                 {
-                    title: "Custom IoT & Hardware Integration",
-                    description: "Connecting unusual industrial devices (scales, cameras, readers) with the modern web.",
-                    iconName: "Wifi"
+                    title: "Industrial device integration",
+                    description: "I connect scales, cameras, readers and printers to ERP systems and web apps, also when the device only speaks RS232 or Modbus.",
+                    deliverables: [
+                        "Survey of the devices and their protocols",
+                        "Middleware exposing an API for your system",
+                        "Live view of the data",
+                        "An Android app when the process needs one",
+                        "User manual and support after go-live"
+                    ],
+                    firstStep: "A survey of devices and protocols",
+                    iconName: "Wifi",
+                    image: asset("img/services/iot.webp")
                 },
                 {
-                    title: "Local AI & RAG Implementation",
-                    description: "Deploying private language models for companies concerned about data leakage.",
-                    iconName: "Brain"
+                    title: "Private AI & knowledge bases (RAG)",
+                    description: "An AI assistant that answers from your own documents. The data can stay on your infrastructure, without being sent to public models.",
+                    deliverables: [
+                        "Review of your documents and use cases",
+                        "Knowledge base with semantic search",
+                        "Local model (Ollama) or cloud model (Gemini), your choice",
+                        "Integration with Slack, your website or internal system",
+                        "Measurement of answer quality and cost"
+                    ],
+                    firstStep: "A workshop and a prototype on your documents",
+                    iconName: "Brain",
+                    image: asset("img/services/rag.webp")
+                },
+                {
+                    title: "Office process automation with AI",
+                    description: "I automate repetitive office work: recognising orders in emails, reading invoices, filling in ERP data. I choose the models by how sensitive the data is: local where data must not leave the company, cloud where that is acceptable.",
+                    deliverables: [
+                        "Review of your processes and the ones worth automating",
+                        "Models chosen by data sensitivity: local or cloud",
+                        "Integration with email, ERP or spreadsheets",
+                        "The model reports how confident it is, and uncertain cases go to a human",
+                        "Measurement of the time saved"
+                    ],
+                    firstStep: "A process review and a pilot on one of them",
+                    iconName: "Bot",
+                    image: asset("img/services/automation.webp")
                 }
+            ]
+        },
+        process: {
+            title: "How we work together",
+            steps: [
+                { title: "Free call", description: "30 minutes. You describe the problem, I tell you plainly whether and how I can help." },
+                { title: "Scope and quote", description: "You get a written scope of work, a schedule and a price." },
+                { title: "Delivery", description: "I work in stages. After each stage you see a working result." },
+                { title: "Handover and invoice", description: "Documentation, a walkthrough for your team and a VAT invoice issued by letmework.ai sp. z o.o." }
+            ]
+        },
+        faq: {
+            title: "Questions before we talk",
+            items: [
+                { question: "Who do I sign the contract with?", answer: "I do the work personally. The contract and the VAT invoice are issued by letmework.ai sp. z o.o. For you it means one contract with a company and one engineer doing the work." },
+                { question: "How much does it cost?", answer: "It depends on the scope. After the free call you get a quote for a defined result, or an hourly rate for ongoing work." },
+                { question: "Do you work remotely?", answer: "Yes, most of the work is done remotely. For device integration we agree on-site work individually." },
+                { question: "What about confidentiality?", answer: "We can sign an NDA before the first technical conversation. I only ask for the access the job requires." },
+                { question: "What happens after go-live?", answer: "You get the code and the documentation. We can also agree on ongoing support." }
             ]
         },
         businessValue: {
@@ -187,7 +261,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 },
                 {
                     title: "Operational Continuity (SRE)",
-                    description: "I translate industrial-grade reliability into 99.9% uptime for your cloud services, mitigating the risk of business-critical interruptions.",
+                    description: "An industrial reliability mindset: idempotent IaC, observability and DR — I design for failure instead of assuming uptime.",
                     iconName: "ShieldCheck"
                 },
                 {
@@ -228,12 +302,24 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             ]
         },
         contact: {
-            cta: "Ready to optimize your infrastructure?",
-            sub: "Available for B2B contracts.",
-            buttons: { cv: "Technical Portfolio (PDF)", linkedin: "Contact on LinkedIn", github: "GitHub", email: "Email Me", tryLab: "Try Personal AI Lab (24h Session)" },
+            cta: "Tell me what you want to build.",
+            sub: "I read and answer every enquiry personally.",
+            buttons: { cv: "Technical Portfolio (PDF)", linkedin: "LinkedIn", github: "GitHub", email: "Email Me", tryLab: "Try Personal AI Lab (24h Session)" },
+            form: {
+                name: "Name",
+                email: "Work email",
+                service: "What is it about?",
+                serviceOther: "Something else",
+                message: "Describe the problem in a few sentences",
+                submit: "Send enquiry",
+                sending: "Sending...",
+                success: "Thank you. Your enquiry has reached me and I will reply by email.",
+                error: "Sending failed. Please write to me directly:",
+                privacy: "I use the data from this form only to answer your enquiry."
+            },
             linkedinUrl: "www.linkedin.com/in/konrad-sędkowski-329644176",
             githubUrl: "https://github.com/halo2008",
-            emailUrl: "ksedkowski@gmail.com"
+            emailUrl: "konrad.sedkowski@letmework.ai"
         },
         aiChat: {
             trigger: "Ask AI About Me",
@@ -249,8 +335,177 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             title: "Live Infrastructure Telemetry",
             description: "Real-time performance metrics directly from the production environment, monitored via Prometheus and Grafana."
         },
-        nav: { home: "Home", projects: "Projects", resume: "About Me", services: "Services", contact: "Contact" },
-        footer: "Open for B2B contracts.",
+        nav: { home: "Home", projects: "Case studies", resume: "About me", services: "Services", contact: "Contact" },
+        footer: "Konrad Sędkowski. Contracts and VAT invoices: letmework.ai sp. z o.o.",
+        home: {
+            meta: {
+                title: "Konrad Sędkowski: automation and AI for companies",
+                skip: "Skip to content",
+                menu: "Menu",
+                navLabel: "Main"
+            },
+            nav: {
+                services: "Services",
+                about: "About me",
+                work: "Work",
+                product: "ERP system",
+                questions: "Questions",
+                groups: ["AI in the company", "Infrastructure"],
+                hints: ["Orders from emails to ERP", "Answers from your documents", "Migration and upkeep", "Scales, cameras, printers"],
+                language: { label: "Polski", code: "pl" }
+            },
+            hero: {
+                title: "Automation and AI for companies",
+                lead: "Orders from emails reach the ERP as drafts to approve, staff get answers from company documents and systems run in Google Cloud. The first call, 30 minutes, is free.",
+                primary: "Book a free call",
+                secondary: "See the work",
+                inbox: {
+                    label: "Orders-from-email panel: four drafts matched at 91 to 97 percent wait for approval, one matched at 58 percent needs a check",
+                    app: "Orders from email",
+                    view: "To approve",
+                    search: "Search",
+                    folders: [{ name: "To approve", count: 4 }, { name: "To check", count: 1 }, { name: "Approved" }, { name: "Rejected" }],
+                    columns: ["Sender and lines", "Match", "Action"],
+                    approve: "Approve",
+                    review: "To check",
+                    rows: [
+                        { sender: "Sample Wholesale", items: "Nitrile gloves M × 20 boxes, packing tape × 12", match: 97 },
+                        { sender: "Test Shop", items: "Stretch film × 6 rolls, box 40×30×20 × 150", match: 94 },
+                        { sender: "Sample Bakery", items: "Paper bags × 500, “the same as last time”", match: 58, review: true },
+                        { sender: "Test Workshop", items: "Paper towels × 24, hand soap 5 l × 4", match: 96 },
+                        { sender: "Model Company", items: "Thermal labels 100×150 × 10 rolls", match: 91 }
+                    ],
+                    open: {
+                        title: "Sample Bakery: order draft",
+                        mail: "“Please send 500 paper bags and the same as last time.”",
+                        fix: "Fix the line",
+                        lines: [
+                            { name: "Paper bags 30×40 cm", qty: "500 pcs", match: 97 },
+                            { name: "“the same as last time”: 2 matching products", qty: "?", match: 58, pick: "Pick a product" }
+                        ]
+                    }
+                }
+            },
+            services: {
+                title: "Four services for companies",
+                lead: "From the first survey to documentation for your team.",
+                items: [
+                    { title: "Office work automation", text: "An order from an email reaches the ERP as a draft to approve. A local or cloud model, depending on the data.", photo: { src: asset("assets/img/ai-office-automation.webp"), small: asset("assets/img/ai-office-automation-500.webp"), medium: asset("assets/img/ai-office-automation-960.webp"), alt: "A salesperson's hand on a mouse in front of a monitor listing orders from emails, some approved, some waiting", width: 1280, height: 853 } },
+                    { title: "AI assistant built on company documents", text: "It answers staff from company manuals, offers and procedures. The data can stay on your servers.", photo: { src: asset("assets/img/photo-f63536476.webp"), small: asset("assets/img/photo-f63536476-500.webp"), medium: asset("assets/img/photo-f63536476-960.webp"), alt: "Archive shelves holding labelled boxes of documents", width: 1280, height: 903 } },
+                    { title: "Google Cloud for company systems", text: "I move the ERP and other apps to the cloud and run them: backups, monitoring, a rollback plan.", photo: { src: asset("assets/img/photo-f6212692-960.webp"), small: asset("assets/img/photo-f6212692-500.webp"), medium: asset("assets/img/photo-f6212692-960.webp"), alt: "Rows of server cabinets in a bright data centre hall", width: 960, height: 640 } },
+                    { title: "Devices connected to the ERP", text: "Scales, cameras, readers and label printers send data straight to the system, with no retyping.", photo: { src: asset("assets/img/photo-f192577777.webp"), small: asset("assets/img/photo-f192577777-500.webp"), medium: asset("assets/img/photo-f192577777-960.webp"), alt: "A touch control panel mounted on a steel machine cabinet", width: 1280, height: 852 } }
+                ]
+            },
+            product: {
+                title: "An ERP system and an app for sales reps",
+                lead: "One system for HR, customers, the warehouse and invoices, with an AI assistant. It runs in the browser and on phones. letmework.ai holds the licence and the contract; I roll the system out in your company.",
+                tabs: ["Sales", "Warehouse", "Logistics", "AI assistant"],
+                trackerTitle: "The ERP Android app for sales reps",
+                trackerText: "A driver with a company phone runs the app, and logistics sees in the ERP where he is, which way he is going and how fast. Sales reps assign calls and texts to customers with one tap.",
+                cta: "Book a system demo",
+                topic: "ERP system and Tracker app"
+            },
+            lemy: {
+                title: "Lemy, a voice assistant for sales reps",
+                lead: "The rep talks to the phone and Lemy writes it into the ERP. It changes nothing without a confirmation.",
+                points: [
+                    { title: "A note after the meeting", text: "Dictated on the spot, it lands in the customer card." },
+                    { title: "Questions to the ERP", text: "Stock levels, the last order, leave in the team." },
+                    { title: "Saved only after a yes", text: "Lemy shows what it will save. The rep confirms." }
+                ],
+                cta: "See Lemy in a demo"
+            },
+            statement: {
+                label: "Experience",
+                before: "I started at the machines: as a mechanic, operator and shift foreman in ceramics factories. Today I run an ERP platform that many companies use every day. I treat software as a tool: it should take ",
+                facts: [
+                    { value: "34", label: "microservices on the ERP platform I run" },
+                    { value: "29 of 31", label: "production releases prepared by me, June to November 2026" },
+                    { value: "over 850", label: "merged changes across 5 repositories" }
+                ],
+                strong: "manual work",
+                after: " off people."
+            },
+            process: {
+                title: "Working together in 4 steps",
+                steps: [
+                    { title: "Free call", text: "I tell you plainly whether and how I can help." },
+                    { title: "Scope and quote", text: "You get a written scope of work, a schedule and a price." },
+                    { title: "Delivery in stages", text: "After each stage you see a working result." },
+                    { title: "Handover and invoice", text: "Documentation, a walkthrough with your team and a VAT invoice from letmework.ai sp. z o.o." }
+                ]
+            },
+            work: {
+                title: "6 projects in companies",
+                lead: "From the cloud and a truck weighbridge to AI that writes offers.",
+                appsTitle: "Apps for sales and the warehouse",
+                open: "See the screen",
+                close: "Close",
+                items: [
+                    { title: "ERP moved to Google Cloud", text: "Production left the rented servers, and the whole environment can be rebuilt from the repository. Backups run by themselves.", photo: { src: asset("assets/img/photo-f37336988.webp"), small: asset("assets/img/photo-f37336988-500.webp"), medium: asset("assets/img/photo-f37336988-960.webp"), alt: "Blue network cables plugged into a switch in a server cabinet", width: 1280, height: 720 } },
+                    { title: "Truck weighbridge with ANPR cameras", text: "A camera reads the plate and the weight lands in the ERP against the right delivery. Nobody retypes slips, and the camera feed runs in the browser.", photo: { src: asset("assets/img/ai-weighbridge.webp"), small: asset("assets/img/ai-weighbridge-500.webp"), medium: asset("assets/img/ai-weighbridge-960.webp"), alt: "A semi-trailer truck on a weighbridge, an ANPR camera on a pole, a barrier and a weighing booth", width: 1280, height: 853 } },
+                    { title: "AI drafts orders from emails", text: "A pilot: products are matched by a decision model on company hardware. No order is created without the salesperson's approval.", photo: { src: asset("assets/img/photo-f51440522.webp"), small: asset("assets/img/photo-f51440522-500.webp"), medium: asset("assets/img/photo-f51440522-960.webp"), alt: "An open laptop on a wooden table in an office", width: 1280, height: 853 } },
+                    { title: "A CRM app for over 50 salespeople", text: "An Android app linked to the phone system logs customer calls on its own. The manager sees contacts as they happen, with no manual reports.", photo: { src: asset("assets/img/ai-mobile-crm.webp"), small: asset("assets/img/ai-mobile-crm-500.webp"), medium: asset("assets/img/ai-mobile-crm-960.webp"), alt: "A salesperson's hands holding a smartphone showing a list of recent customer calls", width: 1280, height: 853 } },
+                    { title: "Labels printed from a phone on Zebra printers", text: "I wrote a driver for mobile printers, so warehouse staff print labels straight from the phone app.", photo: { src: asset("assets/img/ai-label-printer.webp"), small: asset("assets/img/ai-label-printer-500.webp"), medium: asset("assets/img/ai-label-printer-960.webp"), alt: "A mobile label printer on a warehouse worker's belt, a barcode label coming out", width: 1280, height: 853 } },
+                    { title: "An AI assistant writes offers for customers", text: "The model knows each customer's purchase history and suggests complementary products. The salesperson gets a ready offer draft; the model runs on the company's server.", photo: { src: asset("assets/img/ai-sales-assistant.webp"), small: asset("assets/img/ai-sales-assistant-500.webp"), medium: asset("assets/img/ai-sales-assistant-960.webp"), alt: "A laptop in a sales office showing a draft offer email with product tiles", width: 1280, height: 853 } }
+                ],
+            },
+            faq: {
+                title: "5 questions before the call",
+                link: "Send an email",
+                items: [
+                    { question: "Who does the company sign the contract with?", answer: "The contract and the VAT invoice come from letmework.ai sp. z o.o. I do the work myself." },
+                    { question: "How much do the services cost?", answer: "It depends on the scope: a quote for a defined result or an hourly rate." },
+                    { question: "Do I work on site at the company?", answer: "Most of the work is remote. On-site work is agreed for device jobs." },
+                    { question: "What about the company's confidential data?", answer: "We can sign a non-disclosure agreement before the first technical conversation. I ask only for the access the job requires." },
+                    { question: "What does the company get after go-live?", answer: "The code and the documentation. We can also agree on ongoing support." }
+                ]
+            },
+            about: {
+                title: "Konrad Sędkowski, automation engineer",
+                paragraphs: [
+                    "Since 2025 I have run the infrastructure and releases of an ERP platform used by many companies. I moved it from rented servers to Google Cloud.",
+                    "In it I built, among other things, single sign-on, online payments with BLIK and invoices, monitoring with alerts and GPS fleet tracking.",
+                    "Before that I spent nearly three years developing the ERP system of a trading company: an app for over 50 salespeople, scales and cameras connected to the system, and an AI sales assistant."
+                ],
+                portraitAlt: "Konrad Sędkowski in a leather jacket, in a server room"
+            },
+            call: {
+                title: "A free call, 30 minutes",
+                lead: "I read every enquiry myself and reply by email.",
+                form: {
+                    name: "Full name",
+                    email: "Work email",
+                    service: "Subject of the call",
+                    serviceOther: "Another subject",
+                    message: "The problem",
+                    nameError: "Write your full name.",
+                    emailError: "Write an email address with an @.",
+                    messageError: "Describe the problem in at least 10 characters.",
+                    fix: "Fields to fix: {n}.",
+                    sending: "Sending",
+                    sent: "Your request for a free call is in. I will reply by email.",
+                    failed: "Sending failed. Write to me directly:",
+                    privacy: "I use the data from this form only to answer this enquiry."
+                }
+            },
+            close: {
+                title: "The first call takes 30 minutes",
+                lead: "It is free. After it you get a written scope of work and a quote."
+            },
+            footer: {
+                lede: "Contracts and VAT invoices are issued by letmework.ai sp. z o.o.",
+                columns: ["Offer", "Information", "Contact", "More"],
+                lab: "AI lab",
+                credits: "Photographs: Wikimedia Commons and AI illustrations"
+            },
+            consent: {
+                text: "I turn on Google Analytics visit statistics only with your consent.",
+                accept: "Turn statistics on",
+                reject: "Decline statistics",
+                label: "Statistics consent"
+            }
+        },
         landing: {
             hero: {
                 headline: "Your Technical Documentation available in Slack in 3 seconds. No hallucinations.",
@@ -276,7 +531,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 title: "Built by an Engineer, not an Agency",
                 bio: "Hi, I'm Konrad. I design infrastructure for industry daily. I built this tool because I was tired of searching through 500-page PDFs. I prioritize reliability and security over hype.",
                 name: "Konrad Sędkowski",
-                role: "Senior DevOps & Founder",
+                role: "Platform / DevOps Engineer",
                 image: asset("portrait.webp"),
                 linkedin: "www.linkedin.com/in/konrad-sędkowski-329644176"
             }
@@ -284,14 +539,14 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
     },
     pl: {
         name: "Konrad Sędkowski",
-        title: "DevOps Engineer & Integrator IoT",
-        availability: "Otwarty na kontrakty B2B",
+        title: "Usługi DevOps, IoT i AI dla firm",
+        availability: "Przyjmuję nowe zlecenia",
         hero: {
-            headline: "Łączę Industrial Hardware, Infrastrukturę Chmurową i AI.",
-            subheadline: "DevOps Engineer & Full Stack Developer z 10+ letnim doświadczeniem w przemyśle. Buduję systemy rozwiązujące realne problemy fizyczne i biznesowe.",
+            headline: "Wdrażam chmurę, integruję maszyny i automatyzuję pracę z AI.",
+            subheadline: "Jeden inżynier od pierwszej rozmowy po wdrożenie. Produkcyjny Kubernetes na Google Cloud na co dzień. Rozliczenie fakturą VAT.",
             tags: ["DevOps", "Kubernetes", "Industrial IoT"],
-            cta: "Zobacz Case Studies",
-            ctaSecondary: "Omów Projekt",
+            cta: "Umów bezpłatną rozmowę",
+            ctaSecondary: "Zobacz realizacje",
             profileImage: asset("portrait.webp")
         },
 
@@ -303,7 +558,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             image: asset("img/industrial.webp")
         },
         projects: {
-            title: "Wybrane Projekty",
+            title: "Zrealizowane projekty",
             labels: { challenge: "Wyzwanie", solution: "Rozwiązanie", result: "Wynik" },
             items: [
                 {
@@ -313,9 +568,20 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     challenge: "Migracja systemu ERP z awaryjnej infrastruktury VPS (Single Point of Failure, problemy z backupami) do skalowalnego środowiska chmurowego.",
                     solution: "Zaprojektowanie klastra GKE od zera. Wdrożenie HashiCorp Vault do zarządzania sekretami, polityk sieciowych Calico (Default Deny) oraz WAF na warstwie Ingress. Automatyzacja wdrażania za pomocą skryptów Helm i Bash.",
                     tech: ["Kubernetes", "DevSecOps", "GKE", "Terraform", "Vault"],
-                    result: "Eliminacja przestojów (Zero Downtime Deployments), pełna automatyzacja odzyskiwania (Disaster Recovery) i zgodność ze standardami bezpieczeństwa.",
+                    result: "Usunięcie pojedynczego punktu awarii VPS: HA control plane, automatyczne backupy/DR i utwardzony, kontrolowany politykami klaster.",
                     iconName: 'Cloud',
                     image: asset("img/gke.webp")
+                },
+                {
+                    id: '8',
+                    title: "AI, które z maili z zamówieniami przygotowuje propozycje zamówień w ERP",
+                    subtitle: "AI • Automatyzacja procesów",
+                    challenge: "Handlowcy ręcznie przepisywali zamówienia z maili do systemu ERP.",
+                    solution: "Treść maila czyta i wyciąga z niej pozycje model chmurowy (Gemini). Hostowany we własnym zakresie model decyzyjny Basal dobiera produkty z katalogu i podaje pewność dopasowania. Powstaje propozycja zamówienia (ZK): handlowiec dostaje prywatne powiadomienie, a dokument w systemie sprzedażowym powstaje dopiero po jego kliknięciu.",
+                    tech: ["Basal", "Gemini", "NestJS", "PostgreSQL"],
+                    result: "Działa jako pilotaż. Dopasowanie produktów robi model decyzyjny działający na firmowym sprzęcie, a żadne zamówienie nie powstaje bez zatwierdzenia przez człowieka.",
+                    iconName: 'Bot',
+                    image: asset("img/services/automation.webp")
                 },
                 {
                     id: '2',
@@ -357,7 +623,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                     challenge: "Niska skuteczność klasycznych OCR (Tesseract) przy polskich fakturach i halucynacje modeli LLM przy analizie całych dokumentów.",
                     solution: "Odejście od OCR na rzecz analizy surowego PDF przez LLM. Opracowanie systemu dynamicznych promptów dobieranych na podstawie rozpoznanego NIP-u wystawcy faktury.",
                     tech: ["AI", "Computer Vision", "R&D", "Process Automation"],
-                    result: "Wzrost skuteczności ekstrakcji danych z 75% do 95%.",
+                    result: "Wyraźna redukcja ręcznych korekt względem klasycznego OCR (wyniki wewnętrzne, nie audytowany benchmark).",
                     iconName: 'Brain',
                     image: asset("img/invoice.webp")
                 },
@@ -430,23 +696,86 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             ]
         },
         services: {
-            title: "Usługi",
+            title: "Co mogę dla Ciebie zrobić",
+            deliverablesLabel: "Co dostajesz",
+            firstStepLabel: "Zaczynamy od",
+            cta: "Zapytaj o tę usługę",
             items: [
                 {
-                    title: "Kubernetes i Migracja do Chmury",
-                    description: "Kompleksowa migracja aplikacji z VPS/On-prem do Google Kubernetes Engine (GKE). Audyt bezpieczeństwa, wdrożenie Infrastructure as Code (Terraform) oraz optymalizacja kosztów chmury.",
-                    iconName: "Cloud"
+                    title: "Migracja do chmury i Kubernetes",
+                    description: "Przenoszę aplikacje z VPS lub własnej serwerowni na Google Cloud (GKE albo Cloud Run). Cała infrastruktura jest zapisana w kodzie, a każda zmiana ma plan wycofania.",
+                    deliverables: [
+                        "Audyt obecnej infrastruktury i jej kosztów",
+                        "Infrastruktura w Terraformie, do odtworzenia jednym poleceniem",
+                        "CI/CD bez kluczy serwisowych (Workload Identity)",
+                        "Monitoring, logi i alerty (Prometheus, Grafana, Loki)",
+                        "Dokumentacja i przekazanie Twojemu zespołowi"
+                    ],
+                    firstStep: "Audyt i plan migracji",
+                    iconName: "Cloud",
+                    image: asset("img/services/cloud.webp")
                 },
                 {
-                    title: "Dedykowane IoT i Integracja Hardware",
-                    description: "Łączenie nietypowych urządzeń przemysłowych (wagi, kamery, czytniki RFID) z nowoczesnym webem. Obsługa protokołów RS232/Modbus i wizualizacja danych w czasie rzeczywistym.",
-                    iconName: "Wifi"
+                    title: "Integracja urządzeń przemysłowych",
+                    description: "Podłączam wagi, kamery, czytniki i drukarki do systemów ERP i aplikacji webowych, także gdy urządzenie zna tylko RS232 albo Modbus.",
+                    deliverables: [
+                        "Rozpoznanie urządzeń i ich protokołów",
+                        "Oprogramowanie pośredniczące z API dla Twojego systemu",
+                        "Podgląd danych na żywo",
+                        "Aplikacja na Androida, gdy proces tego wymaga",
+                        "Instrukcja obsługi i wsparcie po wdrożeniu"
+                    ],
+                    firstStep: "Rozpoznanie urządzeń i protokołów",
+                    iconName: "Wifi",
+                    image: asset("img/services/iot.webp")
                 },
                 {
-                    title: "Lokalne AI i Wdrożenia RAG",
-                    description: "Wdrażanie prywatnych modeli językowych (Ollama, Local LLM) dla firm, które obawiają się wycieku danych. Budowa baz wiedzy RAG i bezpiecznych asystentów AI działających na własnej infrastrukturze.",
-                    iconName: "Brain"
+                    title: "Prywatne AI i bazy wiedzy (RAG)",
+                    description: "Asystent AI, który odpowiada na podstawie Twoich dokumentów. Dane mogą zostać na Twojej infrastrukturze, bez wysyłania ich do publicznych modeli.",
+                    deliverables: [
+                        "Analiza dokumentów i przypadków użycia",
+                        "Baza wiedzy z wyszukiwaniem semantycznym",
+                        "Model lokalny (Ollama) albo chmurowy (Gemini), Ty wybierasz",
+                        "Integracja ze Slackiem, stroną lub systemem firmowym",
+                        "Pomiar jakości odpowiedzi i kosztów"
+                    ],
+                    firstStep: "Warsztat i prototyp na Twoich dokumentach",
+                    iconName: "Brain",
+                    image: asset("img/services/rag.webp")
+                },
+                {
+                    title: "Automatyzacja pracy biurowej z AI",
+                    description: "Automatyzuję powtarzalną pracę biurową: rozpoznawanie zamówień w mailach, odczyt faktur, uzupełnianie danych w ERP. Modele dobieram do wrażliwości danych: lokalne tam, gdzie dane nie mogą wyjść z firmy, chmurowe tam, gdzie to dopuszczalne.",
+                    deliverables: [
+                        "Przegląd procesów i wybór tych, które opłaca się automatyzować",
+                        "Modele dobrane do wrażliwości danych: lokalne albo chmurowe",
+                        "Integracja z pocztą, ERP lub arkuszami",
+                        "Model podaje, jak bardzo jest pewny, a niepewne przypadki trafiają do człowieka",
+                        "Pomiar oszczędzonego czasu"
+                    ],
+                    firstStep: "Przegląd procesów i pilotaż na jednym z nich",
+                    iconName: "Bot",
+                    image: asset("img/services/automation.webp")
                 }
+            ]
+        },
+        process: {
+            title: "Jak wygląda współpraca",
+            steps: [
+                { title: "Bezpłatna rozmowa", description: "30 minut. Opowiadasz o problemie, ja mówię wprost, czy i jak mogę pomóc." },
+                { title: "Zakres i wycena", description: "Dostajesz pisemny zakres prac, harmonogram i cenę." },
+                { title: "Realizacja", description: "Pracuję etapami. Po każdym etapie widzisz działający wynik." },
+                { title: "Przekazanie i faktura", description: "Dokumentacja, omówienie z Twoim zespołem i faktura VAT wystawiona przez letmework.ai sp. z o.o." }
+            ]
+        },
+        faq: {
+            title: "Pytania przed rozmową",
+            items: [
+                { question: "Z kim podpisuję umowę?", answer: "Usługi wykonuję osobiście. Umowę i fakturę VAT wystawia letmework.ai sp. z o.o. Dla Ciebie to jedna umowa ze spółką i jeden inżynier, który robi robotę." },
+                { question: "Ile to kosztuje?", answer: "Zależy od zakresu. Po bezpłatnej rozmowie dostajesz wycenę za konkretny efekt albo stawkę godzinową przy pracach ciągłych." },
+                { question: "Czy pracujesz zdalnie?", answer: "Tak, większość prac wykonuję zdalnie. Przy integracji urządzeń pracę na miejscu ustalamy indywidualnie." },
+                { question: "Co z poufnością?", answer: "Przed pierwszą rozmową techniczną możemy podpisać NDA. Proszę tylko o dostępy, których wymaga zlecenie." },
+                { question: "Co po wdrożeniu?", answer: "Dostajesz kod i dokumentację. Możemy też umówić się na stałe wsparcie." }
             ]
         },
         businessValue: {
@@ -459,7 +788,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 },
                 {
                     title: "Ciągłość Operacyjna (SRE)",
-                    description: "Przekładam rygor przemysłowy na 99.9% dostępności Twoich usług chmurowych, chroniąc Twój biznes przed kosztownymi przestojami.",
+                    description: "Przemysłowe podejście do niezawodności: idempotentny IaC, obserwowalność i DR — projektuję pod awarię, zamiast zakładać uptime.",
                     iconName: "ShieldCheck"
                 },
                 {
@@ -500,12 +829,24 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             ]
         },
         contact: {
-            cta: "Gotowy na optymalizację?",
-            sub: "Dostępny na kontrakty B2B.",
-            buttons: { cv: "Portfolio Techniczne (PDF)", linkedin: "Kontakt na LinkedIn", github: "GitHub", email: "Napisz Email", tryLab: "Wypróbuj AI Lab (24h sesja)" },
+            cta: "Opowiedz, co chcesz zbudować.",
+            sub: "Każde zapytanie czytam i odpisuję na nie osobiście.",
+            buttons: { cv: "Portfolio Techniczne (PDF)", linkedin: "LinkedIn", github: "GitHub", email: "Napisz Email", tryLab: "Wypróbuj AI Lab (24h sesja)" },
+            form: {
+                name: "Imię i nazwisko",
+                email: "E-mail firmowy",
+                service: "Czego dotyczy zapytanie?",
+                serviceOther: "Coś innego",
+                message: "Opisz problem w kilku zdaniach",
+                submit: "Wyślij zapytanie",
+                sending: "Wysyłam...",
+                success: "Dziękuję. Zapytanie do mnie dotarło, odpiszę mailem.",
+                error: "Nie udało się wysłać. Napisz do mnie bezpośrednio:",
+                privacy: "Dane z formularza wykorzystuję wyłącznie do odpowiedzi na to zapytanie."
+            },
             linkedinUrl: "www.linkedin.com/in/konrad-sędkowski-329644176",
             githubUrl: "https://github.com/halo2008",
-            emailUrl: "ksedkowski@gmail.com"
+            emailUrl: "konrad.sedkowski@letmework.ai"
         },
         aiChat: {
             trigger: "Zapytaj AI o mnie",
@@ -521,8 +862,177 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
             title: "Telemetria Infrastruktury na Żywo",
             description: "Metryki wydajności w czasie rzeczywistym bezpośrednio ze środowiska produkcyjnego, monitorowane przez Prometheus i Grafana."
         },
-        nav: { home: "Home", projects: "Projekty", resume: "O mnie", services: "Usługi", contact: "Kontakt" },
-        footer: "Open for B2B contracts.",
+        nav: { home: "Home", projects: "Realizacje", resume: "O mnie", services: "Usługi", contact: "Kontakt" },
+        footer: "Konrad Sędkowski. Umowy i faktury VAT: letmework.ai sp. z o.o.",
+        home: {
+            meta: {
+                title: "Konrad Sędkowski: automatyzacja i AI dla firm",
+                skip: "Przejdź do treści",
+                menu: "Menu",
+                navLabel: "Główna"
+            },
+            nav: {
+                services: "Usługi",
+                about: "O mnie",
+                work: "Realizacje",
+                product: "System ERP",
+                questions: "Pytania",
+                groups: ["AI w firmie", "Infrastruktura"],
+                hints: ["Zamówienia z maili do ERP", "Odpowiada z dokumentów firmy", "Migracja i utrzymanie systemów", "Wagi, kamery, drukarki w ERP"],
+                language: { label: "English", code: "en" }
+            },
+            hero: {
+                title: "Automatyzacja i AI dla firm",
+                lead: "Zamówienia z maili trafiają do ERP jako propozycje do zatwierdzenia, pracownicy dostają odpowiedzi z dokumentów firmy, a systemy działają w chmurze Google. Pierwsza rozmowa, 30 minut, jest bezpłatna.",
+                primary: "Umów bezpłatną rozmowę",
+                secondary: "Zobacz realizacje",
+                inbox: {
+                    label: "Panel zamówień z maili: cztery propozycje z pewnością dopasowania od 91 do 97 procent czekają na zatwierdzenie, jedna z pewnością 58 procent jest do sprawdzenia",
+                    app: "Zamówienia z maili",
+                    view: "Do zatwierdzenia",
+                    search: "Szukaj",
+                    folders: [{ name: "Do zatwierdzenia", count: 4 }, { name: "Do sprawdzenia", count: 1 }, { name: "Zatwierdzone" }, { name: "Odrzucone" }],
+                    columns: ["Nadawca i pozycje", "Pewność", "Akcja"],
+                    approve: "Zatwierdź",
+                    review: "Do sprawdzenia",
+                    rows: [
+                        { sender: "Hurtownia Przykładowa", items: "Rękawice nitrylowe M × 20 op., taśma pakowa × 12", match: 97 },
+                        { sender: "Sklep Testowy", items: "Folia stretch × 6 rolek, karton 40×30×20 × 150", match: 94 },
+                        { sender: "Piekarnia Przykładowa", items: "Worki papierowe × 500, „to co ostatnio”", match: 58, review: true },
+                        { sender: "Warsztat Testowy", items: "Ręczniki papierowe × 24, mydło 5 l × 4", match: 96 },
+                        { sender: "Firma Wzorcowa", items: "Etykiety termiczne 100×150 × 10 rolek", match: 91 }
+                    ],
+                    open: {
+                        title: "Piekarnia Przykładowa: propozycja zamówienia",
+                        mail: "„Poproszę worki papierowe 500 szt. i to co ostatnio.”",
+                        fix: "Popraw pozycję",
+                        lines: [
+                            { name: "Worki papierowe 30×40 cm", qty: "500 szt.", match: 97 },
+                            { name: "„to co ostatnio”: 2 pasujące produkty", qty: "?", match: 58, pick: "Wybierz produkt" }
+                        ]
+                    }
+                }
+            },
+            services: {
+                title: "Cztery usługi dla firm",
+                lead: "Od rozpoznania do dokumentacji dla Twojego zespołu.",
+                items: [
+                    { title: "Automatyzacja pracy biurowej", text: "Zamówienie z maila trafia do ERP jako propozycja do zatwierdzenia. Model lokalny albo chmurowy, zależnie od danych.", photo: { src: asset("assets/img/ai-office-automation.webp"), small: asset("assets/img/ai-office-automation-500.webp"), medium: asset("assets/img/ai-office-automation-960.webp"), alt: "Dłoń handlowca na myszce przed monitorem z listą zamówień z maili, część zatwierdzona, część czeka", width: 1280, height: 853 } },
+                    { title: "Asystent AI z dokumentów firmy", text: "Odpowiada pracownikom z instrukcji, ofert i procedur firmy. Dane mogą zostać na Twoich serwerach.", photo: { src: asset("assets/img/photo-f63536476.webp"), small: asset("assets/img/photo-f63536476-500.webp"), medium: asset("assets/img/photo-f63536476-960.webp"), alt: "Regały archiwum z opisanymi pudłami dokumentów", width: 1280, height: 903 } },
+                    { title: "Chmura Google dla systemów firmy", text: "Przenoszę ERP i aplikacje do chmury i je utrzymuję: kopie zapasowe, monitoring, plan wycofania zmian.", photo: { src: asset("assets/img/photo-f6212692-960.webp"), small: asset("assets/img/photo-f6212692-500.webp"), medium: asset("assets/img/photo-f6212692-960.webp"), alt: "Rzędy szaf serwerowych w jasnej hali centrum danych", width: 960, height: 640 } },
+                    { title: "Urządzenia podłączone do ERP", text: "Wagi, kamery, czytniki i drukarki etykiet wysyłają dane prosto do systemu, bez przepisywania.", photo: { src: asset("assets/img/photo-f192577777.webp"), small: asset("assets/img/photo-f192577777-500.webp"), medium: asset("assets/img/photo-f192577777-960.webp"), alt: "Panel dotykowy sterowania zamontowany na stalowej szafie maszyny", width: 1280, height: 852 } }
+                ]
+            },
+            product: {
+                title: "System ERP i aplikacja dla handlowców",
+                lead: "Jeden system na kadry, klientów, magazyn i faktury, z asystentem AI. Działa w przeglądarce i na telefonie. Licencję i umowę prowadzi letmework.ai, ja wdrażam system w Twojej firmie.",
+                tabs: ["Sprzedaż", "Magazyn", "Logistyka", "Asystent AI"],
+                trackerTitle: "Aplikacja ERP na Androida dla handlowców",
+                trackerText: "Kierowca ze służbowym telefonem ma aplikację, a logistyka widzi w ERP, gdzie jest, którędy jedzie i z jaką prędkością. Handlowiec jednym przyciskiem przypisuje połączenia i SMS-y do klienta.",
+                cta: "Umów pokaz systemu",
+                topic: "System ERP i aplikacja Tracker"
+            },
+            lemy: {
+                title: "Lemy, asystent głosowy dla handlowców",
+                lead: "Handlowiec mówi do telefonu, a Lemy zapisuje to w ERP. Bez potwierdzenia niczego nie zmienia.",
+                points: [
+                    { title: "Notatka po spotkaniu", text: "Podyktowana od razu trafia do karty klienta." },
+                    { title: "Pytania do ERP", text: "Stan towaru, ostatnie zamówienie, urlopy w zespole." },
+                    { title: "Zapis dopiero po „tak”", text: "Lemy pokazuje, co zapisze. Handlowiec potwierdza." }
+                ],
+                cta: "Zobacz Lemy na pokazie"
+            },
+            statement: {
+                label: "Doświadczenie",
+                before: "Zaczynałem przy maszynach: jako mechanik, operator i mistrz zmiany w fabrykach ceramiki. Dziś prowadzę platformę ERP, z której codziennie korzysta wiele firm. Oprogramowanie traktuję jak narzędzie: ma zdjąć z ludzi ",
+                facts: [
+                    { value: "34", label: "mikroserwisy na platformie ERP, którą prowadzę" },
+                    { value: "29 z 31", label: "wydań produkcyjnych przygotowałem sam, od czerwca do listopada 2026" },
+                    { value: "ponad 850", label: "scalonych zmian w 5 repozytoriach" }
+                ],
+                strong: "ręczną pracę",
+                after: "."
+            },
+            process: {
+                title: "Współpraca w 4 krokach",
+                steps: [
+                    { title: "Bezpłatna rozmowa", text: "Mówię wprost, czy i jak mogę pomóc." },
+                    { title: "Zakres i wycena", text: "Dostajesz pisemny zakres prac, harmonogram i cenę." },
+                    { title: "Realizacja etapami", text: "Po każdym etapie widzisz działający wynik." },
+                    { title: "Przekazanie i faktura", text: "Dokumentacja, omówienie z Twoim zespołem i faktura VAT od letmework.ai sp. z o.o." }
+                ]
+            },
+            work: {
+                title: "6 realizacji w firmach",
+                lead: "Od chmury i wagi dla TIR-ów po AI, które pisze oferty.",
+                appsTitle: "Aplikacje dla handlowców i magazynu",
+                open: "Zobacz ekran",
+                close: "Zamknij",
+                items: [
+                    { title: "ERP przeniesiony do chmury Google", text: "Produkcja zeszła z wynajętych serwerów, a całe środowisko da się odtworzyć z repozytorium. Kopie zapasowe robią się same.", photo: { src: asset("assets/img/photo-f37336988.webp"), small: asset("assets/img/photo-f37336988-500.webp"), medium: asset("assets/img/photo-f37336988-960.webp"), alt: "Niebieskie kable sieciowe wpięte w przełącznik w szafie serwerowej", width: 1280, height: 720 } },
+                    { title: "Waga dla TIR-ów z kamerami ANPR", text: "Kamera odczytuje tablicę, a masa trafia do ERP przy właściwej dostawie. Magazynier nie przepisuje kwitów, a obraz z kamer działa w przeglądarce.", photo: { src: asset("assets/img/ai-weighbridge.webp"), small: asset("assets/img/ai-weighbridge-500.webp"), medium: asset("assets/img/ai-weighbridge-960.webp"), alt: "Ciężarówka z naczepą na wadze samochodowej, kamera ANPR na słupie, szlaban i budka wagowa", width: 1280, height: 853 } },
+                    { title: "AI przygotowuje zamówienia z maili", text: "Pilotaż: produkty dobiera model decyzyjny na firmowym sprzęcie. Żadne zamówienie nie powstaje bez zatwierdzenia przez handlowca.", photo: { src: asset("assets/img/photo-f51440522.webp"), small: asset("assets/img/photo-f51440522-500.webp"), medium: asset("assets/img/photo-f51440522-960.webp"), alt: "Otwarty laptop na drewnianym stole w biurze", width: 1280, height: 853 } },
+                    { title: "Aplikacja CRM dla ponad 50 handlowców", text: "Aplikacja na Androida połączona z centralą sama zapisuje rozmowy z klientami. Kierownik widzi kontakty na bieżąco, bez ręcznych raportów.", photo: { src: asset("assets/img/ai-mobile-crm.webp"), small: asset("assets/img/ai-mobile-crm-500.webp"), medium: asset("assets/img/ai-mobile-crm-960.webp"), alt: "Dłonie handlowca ze smartfonem, na ekranie lista ostatnich połączeń z klientami", width: 1280, height: 853 } },
+                    { title: "Etykiety z telefonu na drukarkach Zebra", text: "Napisałem sterownik do przenośnych drukarek, więc magazynier drukuje etykiety prosto z aplikacji w telefonie.", photo: { src: asset("assets/img/ai-label-printer.webp"), small: asset("assets/img/ai-label-printer-500.webp"), medium: asset("assets/img/ai-label-printer-960.webp"), alt: "Przenośna drukarka etykiet przy pasku pracownika magazynu, z wysuwającą się etykietą z kodem kreskowym", width: 1280, height: 853 } },
+                    { title: "Asystent AI pisze oferty dla klientów", text: "Model zna historię zakupów klienta i proponuje produkty uzupełniające. Handlowiec dostaje gotowy szkic oferty, a model działa na serwerze firmy.", photo: { src: asset("assets/img/ai-sales-assistant.webp"), small: asset("assets/img/ai-sales-assistant-500.webp"), medium: asset("assets/img/ai-sales-assistant-960.webp"), alt: "Laptop w biurze handlowym ze szkicem maila z ofertą i kafelkami produktów", width: 1280, height: 853 } }
+                ],
+            },
+            faq: {
+                title: "5 pytań przed rozmową",
+                link: "Napisz e-mail",
+                items: [
+                    { question: "Z kim firma podpisuje umowę?", answer: "Umowę i fakturę VAT wystawia letmework.ai sp. z o.o. Prace wykonuję osobiście." },
+                    { question: "Ile kosztują usługi?", answer: "Zależy od zakresu: wycena za konkretny efekt albo stawka godzinowa." },
+                    { question: "Czy pracuję na miejscu w firmie?", answer: "Większość prac wykonuję zdalnie. Pracę na miejscu ustalamy przy urządzeniach." },
+                    { question: "Co z poufnością danych firmy?", answer: "Przed pierwszą rozmową techniczną możemy podpisać umowę o poufności. Proszę tylko o dostępy, których wymaga zlecenie." },
+                    { question: "Co firma dostaje po wdrożeniu?", answer: "Kod i dokumentację. Możemy też umówić się na stałe wsparcie." }
+                ]
+            },
+            about: {
+                title: "Konrad Sędkowski, inżynier od automatyzacji",
+                paragraphs: [
+                    "Od 2025 roku prowadzę infrastrukturę i wydania platformy ERP, z której korzysta wiele firm. Przeniosłem ją z wynajętych serwerów do chmury Google.",
+                    "Zbudowałem w niej między innymi wspólne logowanie, płatności online z BLIK-iem i fakturami, monitoring z alertami oraz śledzenie GPS floty.",
+                    "Wcześniej przez blisko trzy lata rozwijałem system ERP firmy handlowej: aplikację dla ponad 50 handlowców, połączenie wag i kamer z systemem oraz asystenta sprzedaży opartego na AI."
+                ],
+                portraitAlt: "Konrad Sędkowski w skórzanej kurtce, w serwerowni"
+            },
+            call: {
+                title: "Bezpłatna rozmowa, 30 minut",
+                lead: "Każde zapytanie czytam sam i odpisuję mailem.",
+                form: {
+                    name: "Imię i nazwisko",
+                    email: "E-mail firmowy",
+                    service: "Temat rozmowy",
+                    serviceOther: "Inny temat",
+                    message: "Opis problemu",
+                    nameError: "Wpisz imię i nazwisko.",
+                    emailError: "Wpisz adres e-mail ze znakiem @.",
+                    messageError: "Opisz problem, co najmniej 10 znaków.",
+                    fix: "Pola do poprawy: {n}.",
+                    sending: "Wysyłam",
+                    sent: "Twoja prośba o bezpłatną rozmowę dotarła. Odpiszę mailem.",
+                    failed: "Nie udało się wysłać. Napisz bezpośrednio:",
+                    privacy: "Dane z formularza wykorzystuję wyłącznie do odpowiedzi na to zapytanie."
+                }
+            },
+            close: {
+                title: "Pierwsza rozmowa trwa 30 minut",
+                lead: "Jest bezpłatna. Po niej dostajesz pisemny zakres prac i wycenę."
+            },
+            footer: {
+                lede: "Umowy i faktury VAT wystawia letmework.ai sp. z o.o.",
+                columns: ["Oferta", "Informacje", "Kontakt", "Więcej"],
+                lab: "Laboratorium AI",
+                credits: "Zdjęcia: Wikimedia Commons i ilustracje AI"
+            },
+            consent: {
+                text: "Statystyki odwiedzin Google Analytics włączam tylko za Twoją zgodą.",
+                accept: "Włącz statystyki",
+                reject: "Odrzuć statystyki",
+                label: "Zgoda na statystyki"
+            }
+        },
         landing: {
             hero: {
                 headline: "Twoja Dokumentacja Techniczna dostępna w Slacku w 3 sekundy. Bez halucynacji.",
@@ -548,7 +1058,7 @@ export const PORTFOLIO_DATA: Record<'en' | 'pl', PortfolioContent> = {
                 title: "O Twórcy",
                 bio: "Cześć, jestem Konrad. Na co dzień projektuję infrastrukturę dla przemysłu. Zbudowałem to narzędzie, bo miałem dość szukania w PDF-ach. Stawiam na niezawodność, nie na hype.",
                 name: "Konrad Sędkowski",
-                role: "Senior DevOps & Founder",
+                role: "Platform / DevOps Engineer",
                 image: asset("portrait.webp"),
                 linkedin: "www.linkedin.com/in/konrad-sędkowski-329644176"
             }

@@ -261,37 +261,28 @@ interface LanguageContextType {
   labContent: LabContent;
 }
 
+const isLanguage = (value: string | null): value is Language => value === 'pl' || value === 'en';
+
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [language, setLanguageState] = React.useState<Language>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('language');
-      return (saved === 'pl' || saved === 'en') ? saved : 'en';
+    const requested = new URLSearchParams(window.location.search).get('lang');
+    const saved = localStorage.getItem('language');
+    const initial = isLanguage(requested) ? requested : isLanguage(saved) ? saved : 'pl';
+    if (isLanguage(requested)) {
+      localStorage.setItem('language', requested);
+      window.history.replaceState(null, '', window.location.pathname + window.location.hash);
     }
-    return 'en';
+    return initial;
   });
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('language', lang);
-    }
+    localStorage.setItem('language', lang);
   };
 
   React.useEffect(() => {
-    const saved = localStorage.getItem('language');
-    if (!saved) {
-      fetch('https://get.geojs.io/v1/ip/country.json')
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.country === 'PL') {
-            setLanguage('pl');
-          }
-        })
-        .catch((err) => console.error('Geo-IP check failed:', err));
-    }
-
     const handleStorageChange = () => {
       const savedStorage = localStorage.getItem('language');
       if (savedStorage === 'en' || savedStorage === 'pl') {

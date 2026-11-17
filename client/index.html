@@ -1,38 +1,53 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="pl" data-type="software" data-radius="soft" data-buttons="pill" data-ground="sage" data-motion>
 
 <head>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-0R94NJ3ZDK"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
+    gtag('consent', 'default', { analytics_storage: 'denied', ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' });
     gtag('js', new Date());
     gtag('config', 'G-0R94NJ3ZDK');
   </script>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DevOps Engineer & IoT Integrator | Kubernetes, AI & Cloud Native Solutions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Konrad Sędkowski: automatyzacja i AI dla firm</title>
   <meta name="description"
-    content="Portfolio inżyniera z unikalnym backgroundem przemysłowym. Specjalizacja: Migracje do Kubernetes, Integracja AI (Local LLM/RAG) w systemach ERP oraz łączenie Hardware'u z Cloudem. Zobacz Case Studies." />
-  <meta name="keywords"
-    content="DevOps Engineer, Kubernetes Specialist, GKE, Industrial IoT, NestJS Developer, Wdrożenia AI, RAG, Kotlin, Freelance IT" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
-    rel="stylesheet">
-  <script type="importmap">
-{
-  "imports": {
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.554.0"
-  }
-}
-</script>
+    content="AI, które przygotowuje zamówienia z maili i odpowiada z dokumentów firmy, systemy w chmurze Google oraz wagi i kamery podłączone do ERP. Pierwsza rozmowa, 30 minut, jest bezpłatna." />
+  <link rel="canonical" href="https://ks-infra.dev/" />
+  <meta name="site-kind" content="software" />
+  <meta name="page-type" content="software" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Konrad Sędkowski" />
+  <meta property="og:title" content="Konrad Sędkowski: automatyzacja i AI dla firm" />
+  <meta property="og:description"
+    content="Automatyzacja i AI dla firm: zamówienia z maili do ERP, asystent z dokumentów firmy, chmura Google i integracja urządzeń. Umów bezpłatną rozmowę, 30 minut." />
+  <meta property="og:url" content="https://ks-infra.dev/" />
+  <meta property="og:image" content="https://ks-infra.dev/share.jpg" />
+  <meta property="og:locale" content="pl_PL" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Konrad Sędkowski: automatyzacja i AI dla firm" />
+  <meta name="twitter:description"
+    content="Chmura Google dla systemów firmy, urządzenia podłączone do ERP i AI w pracy biurowej." />
+  <meta name="twitter:image" content="https://ks-infra.dev/share.jpg" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+      if (location.pathname !== '/') { root.style.background = '#020617'; return; }
+      try { if (new URLSearchParams(location.search).get('lang') === 'en' || (!/[?&]lang=pl/.test(location.search) && localStorage.getItem('language') === 'en')) root.lang = 'en'; } catch (e) {}
+      document.write('<meta name="theme-color" content="#0b1120"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400..700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/assets/system.css"><link rel="stylesheet" href="/assets/ui/cards.css"><link rel="stylesheet" href="/assets/ui/base.css"><link rel="stylesheet" href="/assets/ui/window/fragment.css"><link rel="stylesheet" href="/assets/motion/motion.css"><link rel="stylesheet" href="/assets/backgrounds/backgrounds.css"><link rel="stylesheet" href="/assets/layout/layout.css"><link rel="stylesheet" href="/assets/icons/icon.css"><link rel="stylesheet" href="/mockups-erp.css"><link rel="stylesheet" href="/mockups-tracker.css"><link rel="stylesheet" href="/mockups-tracker-case.css"><link rel="stylesheet" href="/mockups-case.css"><link rel="stylesheet" href="/home.css"><script src="/assets/backgrounds/backgrounds.js"><\/script><link rel="modulepreload" href="/assets/moments/moments.js"><link rel="modulepreload" href="/assets/moments/lib.js"><link rel="modulepreload" href="/assets/moments/counter-rolls/moment.js"><link rel="modulepreload" href="/assets/moments/marquee-row/moment.js">');
+    })();
+  </script>
+  <script>if (location.pathname === '/') { document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700) }</script>
+  <script>if (location.pathname === '/') { document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500) }</script>
 </head>
 
 <body class="bg-darker text-slate-300 antialiased selection:bg-primary selection:text-white overflow-x-hidden">
+  <!-- kind software; hero split (window: orders from email); grounds hero bg-dots, services bg-band, lit ground sage; effect none; moments counter-rolls (experience), marquee-row (work); diagram timeline in work; nav-mega, footer-dark, rhythm surface-pairs, buttons pill, mark initial -->
   <div id="root"></div>
   <script type="module" src="/index.tsx"></script>
 </body>

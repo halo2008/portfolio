@@ -1,0 +1,8 @@
+- 2026-11-16 client/TRASH/photo-f*.jpg: JPEG downloads from photos.mjs fetch, replaced by WebP conversions in public/assets/img
+- 2026-11-16 client/TRASH/photo-f120773107*.webp: rejected stand-in (readable headphone brand)
+- 2026-11-16 client/TRASH/photo-f18189225-phone.webp, -500.webp: unused hero sizes
+- 2026-11-16 client/TRASH/photo-f61681597*: replaced stand-in (readable word on ruler); photo-f197429041*.jpg: JPEG originals
+- 2026-11-16 client/TRASH/photo-f18189225*, photo-f11950632*.jpg: replaced hero stand-in (warehouse hall) and JPEG originals
+- 2026-11-16 client/TRASH/share-cnc-old.jpg: old share image (CNC stand-in), replaced by crop of AI hero
+- 2026-11-16 client/TRASH/diagrams/, ui-*.svg, icons-credits.json (from public/assets): diagram w karcie realizacji wycofany (checker: cut-text na podpisach węzłów), pliki nieużywane.
+- 2026-11-16 client/TRASH/share-ai-hero-old.jpg: share image from the removed AI hero, replaced by a crop of the order-panel hero

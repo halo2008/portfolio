@@ -1,74 +1,81 @@
 import React from 'react';
-import { Rocket, Brain, Wifi, Shield, Server, Cloud } from 'lucide-react';
+import { Brain, Wifi, Cloud, Bot, Check, ArrowRight, type LucideIcon } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
-import { useTilt } from '../hooks/useTilt';
-import { useScrollReveal } from '../hooks/useScrollReveal';
-import GlowCard from './GlowCard';
+import { BlurFade } from './ui/blur-fade';
+import { Spotlight } from './ui/spotlight';
+import { LEAD_SERVICE_EVENT } from './Contact';
 
-const ServiceCard: React.FC<{ children: React.ReactNode; delay: number; isVisible: boolean }> = ({ children, delay, isVisible }) => {
-    const { ref, handleMouseMove, handleMouseLeave } = useTilt({ maxRotation: 5, scale: 1.01 });
-
-    return (
-        <GlowCard
-            className={`bg-surface border border-slate-700 rounded-sm hover:border-primary/50 transition-all duration-300 group relative ${isVisible ? 'reveal-visible' : 'reveal-hidden'}`}
-            style={{ animationDelay: `${delay}ms` }}
-        >
-            <div ref={ref} onMouseMove={handleMouseMove} onMouseLeave={handleMouseLeave} className="p-8 overflow-hidden rounded-sm">
-                {children}
-            </div>
-        </GlowCard>
-    );
-};
+const ICONS: Record<string, LucideIcon> = { Cloud, Wifi, Brain, Bot };
 
 const Services: React.FC = () => {
     const { content } = useLanguage();
     const { services } = content;
-    const { ref, isVisible } = useScrollReveal();
 
-    const getIcon = (iconName: string) => {
-        switch (iconName) {
-            case 'Rocket': return <Rocket size={32} />;
-            case 'Brain': return <Brain size={32} />;
-            case 'Wifi': return <Wifi size={32} />;
-            case 'Shield': return <Shield size={32} />;
-            case 'Server': return <Server size={32} />;
-            case 'Cloud': return <Cloud size={32} />;
-            default: return <Rocket size={32} />;
-        }
-    };
+    const preselect = (service: string) =>
+        window.dispatchEvent(new CustomEvent(LEAD_SERVICE_EVENT, { detail: service }));
 
     return (
-        <section id="services" className="py-24 px-6 md:px-12 lg:px-24 bg-dark relative overflow-hidden border-t border-slate-800">
-            {/* Mesh Background */}
-            <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:20px_20px] opacity-[0.2]"></div>
+        <section id="services" className="py-24 px-6 md:px-12 lg:px-24 bg-darker border-t border-slate-800">
+            <div className="max-w-7xl mx-auto">
+                <BlurFade inView>
+                    <h2 className="text-3xl md:text-5xl font-bold text-white mb-14 max-w-3xl">{services.title}</h2>
+                </BlurFade>
 
-            <div ref={ref} className="max-w-7xl mx-auto relative z-10">
-                <div className={`text-center mb-16 ${isVisible ? 'reveal-visible' : 'reveal-hidden'}`}>
-                    <span className="text-primary font-mono text-sm tracking-widest uppercase mb-2 block">// OFFERING</span>
-                    <h2 className="text-3xl md:text-5xl font-bold text-white">
-                        {services.title}
-                    </h2>
-                </div>
+                <div className="grid md:grid-cols-2 gap-6">
+                    {services.items.map((item, index) => {
+                        const Icon = ICONS[item.iconName] ?? Cloud;
+                        return (
+                            <BlurFade key={item.title} inView delay={index * 0.1} className="h-full">
+                                <article className="group relative h-full flex flex-col overflow-hidden rounded-sm border border-slate-800 bg-dark transition-colors duration-300 hover:border-slate-600">
+                                    <Spotlight className="from-primary/40 via-primary/10 to-transparent blur-3xl" size={260} />
 
-                <div className="grid md:grid-cols-3 gap-6">
-                    {services.items.map((item, index) => (
-                        <ServiceCard key={index} delay={index * 120} isVisible={isVisible}>
-                            {/* Hover corner accent */}
-                            <div className="absolute top-0 right-0 w-0 h-0 border-t-[40px] border-r-[40px] border-t-transparent border-r-slate-800 group-hover:border-r-primary transition-all duration-300"></div>
+                                    <div className="relative aspect-[3/1] overflow-hidden">
+                                        <img
+                                            src={item.image}
+                                            alt=""
+                                            loading="lazy"
+                                            width={1200}
+                                            height={800}
+                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                                        />
+                                    </div>
 
-                            <div className="mb-6 p-3 bg-darker border border-slate-700 rounded-sm w-fit text-slate-400 group-hover:text-primary group-hover:border-primary/50 transition-colors duration-300">
-                                {getIcon(item.iconName)}
-                            </div>
+                                    <div className="relative flex flex-col flex-1 p-8">
+                                        <Icon size={32} className="text-primary mb-6" />
+                                        <h3 className="text-2xl font-bold text-white mb-3">{item.title}</h3>
+                                        <p className="text-slate-400 leading-relaxed mb-8">{item.description}</p>
 
-                            <h3 className="text-xl font-bold text-white mb-4 group-hover:text-primary transition-colors">
-                                {item.title}
-                            </h3>
+                                        <p className="text-xs font-mono uppercase tracking-widest text-slate-500 mb-4">
+                                            {services.deliverablesLabel}
+                                        </p>
+                                        <ul className="space-y-3 mb-8">
+                                            {item.deliverables.map(deliverable => (
+                                                <li key={deliverable} className="flex gap-3 text-sm text-slate-300">
+                                                    <Check size={16} className="text-primary shrink-0 mt-0.5" />
+                                                    {deliverable}
+                                                </li>
+                                            ))}
+                                        </ul>
 
-                            <p className="text-slate-400 leading-relaxed font-light text-sm">
-                                {item.description}
-                            </p>
-                        </ServiceCard>
-                    ))}
+                                        <div className="mt-auto pt-6 border-t border-slate-800">
+                                            <p className="text-sm text-slate-400 mb-5">
+                                                <span className="text-slate-500">{services.firstStepLabel}: </span>
+                                                {item.firstStep}
+                                            </p>
+                                            <a
+                                                href="#contact"
+                                                onClick={() => preselect(item.title)}
+                                                className="inline-flex items-center gap-2 font-bold text-primary"
+                                            >
+                                                {services.cta}
+                                                <ArrowRight size={16} className="transition-transform duration-200 group-hover:translate-x-1" />
+                                            </a>
+                                        </div>
+                                    </div>
+                                </article>
+                            </BlurFade>
+                        );
+                    })}
                 </div>
             </div>
         </section>

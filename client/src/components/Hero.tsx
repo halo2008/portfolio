@@ -1,152 +1,93 @@
 import React from 'react';
-import { ChevronDown, Terminal, Briefcase, Zap, Beaker } from 'lucide-react';
+import { ArrowRight, Beaker } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useLanguage } from '../LanguageContext';
-import { useNavigate } from 'react-router-dom';
-import { useTypewriter } from '../hooks/useTypewriter';
+import { TextEffect } from './ui/text-effect';
+import { BlurFade } from './ui/blur-fade';
+import { DotPattern } from './ui/dot-pattern';
 
 const Hero: React.FC = () => {
   const { content, language } = useLanguage();
-  const navigate = useNavigate();
-  const { name, title, hero, availability, philosophy, contact } = content;
-
-  const typewriterTexts = language === 'en'
-    ? ['Kubernetes', 'DevOps', 'Full-Stack', 'IoT', 'AI / RAG']
-    : ['Kubernetes', 'DevOps', 'Full-Stack', 'IoT', 'AI / RAG'];
-  const { displayText } = useTypewriter({ texts: typewriterTexts, typeSpeed: 100, deleteSpeed: 50, pauseDuration: 2500 });
-
-  const handleTryLab = () => {
-    navigate('/lab');
-  };
+  const { name, title, hero, availability, contact } = content;
 
   return (
-    <section id="home" className="relative min-h-screen flex items-center justify-center px-6 md:px-12 lg:px-24 pt-20 overflow-hidden bg-dark">
+    <section id="home" className="relative min-h-screen flex items-center px-6 md:px-12 lg:px-24 pt-24 pb-16 overflow-hidden bg-dark">
+      <DotPattern
+        width={24}
+        height={24}
+        cr={1}
+        className="text-slate-700/60 [mask-image:radial-gradient(60vw_circle_at_30%_40%,white,transparent)]"
+      />
 
-      {/* Industrial Grid Background */}
-      <div className="absolute inset-0 z-0 pointer-events-none"
-        style={{
-          backgroundImage: 'linear-gradient(to right, #1e293b 1px, transparent 1px), linear-gradient(to bottom, #1e293b 1px, transparent 1px)',
-          backgroundSize: '40px 40px',
-          opacity: 0.2
-        }}>
-      </div>
+      <div className="max-w-7xl w-full mx-auto grid md:grid-cols-[1.4fr_1fr] gap-12 items-center relative z-10">
+        <div>
+          <BlurFade delay={0.05}>
+            <p className="text-primary font-mono text-sm tracking-widest uppercase mb-6">{title}</p>
+          </BlurFade>
 
-      {/* Vignette */}
-      <div className="absolute inset-0 bg-gradient-to-t from-dark via-transparent to-dark/80 z-0 pointer-events-none"></div>
+          <TextEffect
+            key={language}
+            as="h1"
+            per="word"
+            preset="fade-in-blur"
+            speedReveal={1.6}
+            className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-[1.08] tracking-tight mb-6"
+          >
+            {hero.headline}
+          </TextEffect>
 
-      <div className="max-w-7xl w-full grid md:grid-cols-2 gap-12 items-center z-10 relative">
-        {/* Text Content */}
-        <div className="order-2 md:order-1">
-          <div className="flex items-center space-x-2 text-primary font-mono mb-6 animate-fade-in-up border border-primary/20 bg-primary/5 px-4 py-1.5 w-fit rounded-sm" style={{ animationDelay: '0.1s' }}>
-            <Terminal size={16} />
-            <span className="text-sm tracking-wide uppercase">{title}</span>
-          </div>
+          <BlurFade delay={0.35}>
+            <p className="text-lg md:text-xl text-slate-400 max-w-2xl mb-10 leading-relaxed">
+              {hero.subheadline}
+            </p>
+          </BlurFade>
 
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-none tracking-tighter animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-            {name}
-            <span className="block text-slate-400 mt-2 text-2xl md:text-4xl lg:text-5xl font-light">
-              {hero.headline}
-            </span>
-            <span className="block mt-3 text-xl md:text-2xl font-mono font-normal">
-              <span className="text-primary">&gt; </span>
-              <span className="text-amber-300">{displayText}</span>
-              <span className="typewriter-cursor text-primary">|</span>
-            </span>
-          </h1>
+          <BlurFade delay={0.45}>
+            <div className="flex flex-wrap items-center gap-4 mb-8">
+              <a
+                href="#contact"
+                className="group inline-flex items-center gap-2 px-7 py-4 bg-primary text-darker font-bold rounded-sm transition-transform duration-200 hover:-translate-y-0.5 active:translate-y-0"
+              >
+                {hero.cta}
+                <ArrowRight size={18} className="transition-transform duration-200 group-hover:translate-x-1" />
+              </a>
+              <a
+                href="#projects"
+                className="inline-flex items-center px-7 py-4 border border-slate-600 text-white font-bold rounded-sm transition-colors duration-200 hover:border-primary hover:text-primary"
+              >
+                {hero.ctaSecondary}
+              </a>
+            </div>
+          </BlurFade>
 
-          <p className="text-lg md:text-xl text-slate-400 max-w-xl mb-8 leading-relaxed border-l-2 border-primary pl-6 animate-fade-in-up font-light" style={{ animationDelay: '0.3s' }}>
-            {hero.subheadline}
-          </p>
-
-          <div className="mb-10 animate-fade-in-up" style={{ animationDelay: '0.35s' }}>
-            <div className="inline-flex items-center gap-3 px-4 py-2 bg-surface border border-slate-700 rounded-sm">
-              <div className="relative flex h-3 w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-              </div>
-              <span className="text-green-400 text-xs font-mono tracking-wider uppercase">
+          <BlurFade delay={0.55}>
+            <div className="flex flex-wrap items-center gap-x-8 gap-y-3 text-sm">
+              <span className="inline-flex items-center gap-2 text-green-400 font-mono uppercase tracking-wider text-xs">
+                <span className="h-2 w-2 rounded-full bg-green-500" />
                 {availability}
               </span>
+              <Link to="/lab" className="inline-flex items-center gap-2 text-slate-400 hover:text-primary transition-colors">
+                <Beaker size={16} />
+                {contact.buttons.tryLab}
+              </Link>
             </div>
-          </div>
-
-          {/* About Me / Philosophy Section Merged */}
-          <div className="mb-10 animate-fade-in-up space-y-6" style={{ animationDelay: '0.4s' }}>
-            <div>
-              <h3 className="text-xl font-bold text-white mb-2">{philosophy.title}</h3>
-              <p className="text-slate-400 font-light leading-relaxed text-sm md:text-base">
-                {philosophy.description}
-              </p>
-            </div>
-
-            <div className="bg-surface/50 p-4 rounded-sm border-l-2 border-primary">
-              <h4 className="text-white font-bold text-sm flex items-center gap-2 mb-1">
-                <Zap size={14} className="text-primary" />
-                {philosophy.differentiatorTitle}
-              </h4>
-              <p className="text-slate-400 text-xs md:text-sm font-mono">
-                {philosophy.differentiator}
-              </p>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap gap-4 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
-            {/* Lab CTA Button - Orange/Solid */}
-            <button
-              onClick={handleTryLab}
-              className="inline-flex items-center gap-2 px-6 py-3.5 bg-primary text-darker font-bold rounded-sm hover:bg-primary/90 transition-all duration-300 shadow-[0_0_15px_rgba(245,158,11,0.3)] hover:shadow-[0_0_25px_rgba(245,158,11,0.5)]"
-            >
-              <Beaker size={18} />
-              {language === 'en' ? 'Try Personal AI Lab (24h Session)' : 'Wypróbuj AI Lab (24h sesja)'}
-            </button>
-            <a
-              href="#projects"
-              className="inline-flex items-center gap-2 px-6 py-3.5 bg-transparent border border-primary text-primary font-bold rounded-sm hover:bg-primary hover:text-darker transition-all duration-300"
-            >
-              {hero.cta}
-              <ChevronDown size={20} />
-            </a>
-            <a
-              href="/cv.pdf"
-              download
-              className="inline-flex items-center gap-2 px-6 py-3.5 bg-surface border border-slate-700 text-slate-300 font-bold rounded-sm hover:border-slate-500 hover:text-white transition-all duration-300"
-            >
-              <Briefcase size={20} />
-              {contact.buttons.cv}
-            </a>
-          </div>
+          </BlurFade>
         </div>
 
-        {/* Image Content */}
-        <div className="order-1 md:order-2 flex justify-center md:justify-end relative animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-          <div className="relative w-72 h-72 md:w-96 md:h-96 lg:w-[500px] lg:h-[500px]">
-            {/* Technical Rings */}
-            <div className="absolute inset-0 border border-slate-700 rounded-full animate-spin-slow opacity-30"></div>
-            <div className="absolute inset-8 border border-dashed border-primary/30 rounded-full animate-spin-slow" style={{ animationDirection: 'reverse', animationDuration: '20s' }}></div>
-
-            {/* Main Image */}
-            <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-slate-700 shadow-2xl bg-surface">
-              <img
-                src={hero.profileImage}
-                alt={name}
-                className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700 opacity-90 hover:opacity-100"
-              />
-              {/* Tech Overlay */}
-              <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 pointer-events-none"></div>
-              <div className="absolute inset-0 bg-gradient-to-t from-dark to-transparent opacity-60 pointer-events-none"></div>
-            </div>
-
-            {/* Floating Info Panel */}
-            <div className="absolute -bottom-6 -left-6 bg-surface border border-slate-700 p-4 rounded-sm shadow-xl z-20 backdrop-blur-md">
-              <div className="flex items-center gap-3 font-mono text-xs">
-                <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-                  <span className="text-slate-500">STATUS:</span> <span className="text-primary">ONLINE</span>
-                  <span className="text-slate-500">REGION:</span> <span className="text-slate-300">EU-WEST</span>
-                  <span className="text-slate-500">UPTIME:</span> <span className="text-slate-300">99.9%</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <BlurFade delay={0.25} direction="left" className="flex justify-center md:justify-end">
+          <figure className="relative w-64 md:w-full max-w-sm aspect-[4/5] overflow-hidden rounded-sm border border-slate-700 bg-surface">
+            <img
+              src={hero.profileImage}
+              alt={name}
+              width={862}
+              height={1024}
+              className="w-full h-full object-cover transition-transform duration-700 hover:scale-[1.03]"
+            />
+            <figcaption className="absolute bottom-0 inset-x-0 px-5 py-4 bg-gradient-to-t from-darker to-transparent text-white font-bold">
+              {name}
+            </figcaption>
+          </figure>
+        </BlurFade>
       </div>
     </section>
   );
