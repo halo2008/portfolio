@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { Logger } from 'nestjs-pino';
 import helmet from 'helmet';
+import * as compression from 'compression';
 import * as basicAuth from 'express-basic-auth';
 
 async function bootstrap(): Promise<void> {
@@ -10,6 +11,9 @@ async function bootstrap(): Promise<void> {
         const app = await NestFactory.create(AppModule, { bufferLogs: true });
 
         app.useLogger(app.get(Logger));
+
+        // gzip for HTML, JS, CSS, JSON (Cloud Run does not compress responses itself); WebSocket chat is not affected
+        app.use(compression());
 
         // Low-level blocker for unwanted crawlers/monitors
         app.use((req: any, res: any, next: any) => {
