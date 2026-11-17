@@ -171,7 +171,7 @@ const LabChat: React.FC = () => {
 
   useEffect(() => {
     if (!loading && !user) {
-      navigate('/');
+      window.location.assign('/');
     }
   }, [user, loading, navigate]);
 

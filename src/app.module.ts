@@ -7,6 +7,8 @@ import { PrometheusModule, makeHistogramProvider } from '@willsoto/nestjs-promet
 import { ChatModule } from './modules/chat/chat.module';
 import { KnowledgeModule } from './modules/knowledge/knowledge.module';
 import { LabModule } from './modules/lab/lab.module';
+import { LeadModule } from './modules/lead/lead.module';
+
 const clientDistPath = resolve(__dirname, '..', 'dist', 'static');
 
 import { AppController } from './app.controller';
@@ -41,6 +43,7 @@ import { GenAiModule } from './core/genai/genai.module';
         ChatModule,
         KnowledgeModule,
         LabModule,
+        LeadModule,
     ],
     controllers: [AppController, HealthController],
     providers: [

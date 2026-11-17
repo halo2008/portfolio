@@ -1,3 +1,4 @@
+import '../index.css';
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { Outlet, useSearchParams } from 'react-router-dom';
 import { AuthProvider, useAuth, storeUserLanguagePreference } from '../core/auth/AuthContext';
