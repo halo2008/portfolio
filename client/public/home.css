@@ -177,3 +177,32 @@ footer.closing > .wrap { height: auto; }
 @media (max-width: 1023px) { .lemy-phones { justify-content: flex-start; margin-top: var(--s-6); } }
 @media (max-width: 639px) { .lemy-phones > :first-child { display: none; } .lemy-phones .trkm { --trkm-scale: .8; } }
 @media (max-width: 359px) { .lemy-phones .trkm { --trkm-scale: .7; } }
+/* AI assistant (AIChat): floating button and panel in the page system */
+.aichat { position: fixed; right: var(--s-5); bottom: calc(var(--bar, 0px) + var(--s-5)); z-index: 20; font-family: var(--font-text); }
+.aichat__trigger { display: grid; place-items: center; width: 56px; height: 56px; padding: 0; border: 0; border-radius: 50%; background: var(--action); color: var(--action-ink); cursor: pointer; box-shadow: 0 10px 30px -10px rgb(0 0 0 / .6); transition: transform var(--dur, .2s) var(--ease, ease); }
+.aichat__trigger:hover { transform: translateY(-2px); }
+.aichat__trigger:active { transform: translateY(0) scale(.97); }
+.aichat__trigger:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+.aichat__panel { display: flex; flex-direction: column; width: min(400px, calc(100vw - 32px)); height: min(560px, calc(100svh - var(--bar, 0px) - 48px)); overflow: hidden; border: 1px solid var(--line-strong); border-radius: var(--r-lg, 16px); background: var(--bg); color: var(--ink); box-shadow: 0 30px 60px -20px rgb(0 0 0 / .7); }
+.aichat__head { display: flex; align-items: center; gap: var(--s-3); padding: var(--s-3) var(--s-4); border-bottom: 1px solid var(--line); background: var(--surface); }
+.aichat__avatar { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 50%; background: var(--action); color: var(--action-ink); }
+.aichat__who { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+.aichat__who b { font-weight: 500; }
+.aichat__who span { display: flex; align-items: center; gap: 6px; font-size: var(--t-small); color: var(--muted); }
+.aichat__who i { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; }
+.aichat__close, .aichat__form button { display: grid; place-items: center; width: 44px; height: 44px; border: 0; border-radius: 50%; background: transparent; color: var(--muted); cursor: pointer; }
+.aichat__close:hover { color: var(--ink); }
+.aichat__note { display: flex; align-items: center; gap: var(--s-2); margin: 0; padding: var(--s-2) var(--s-4); border-bottom: 1px solid var(--line); font-size: var(--t-small); color: var(--muted); }
+.aichat__log { display: flex; flex: 1; flex-direction: column; gap: var(--s-3); overflow-y: auto; padding: var(--s-4); }
+.aichat__msg { align-self: flex-start; max-width: 85%; padding: var(--s-3) var(--s-4); border: 1px solid var(--line); border-radius: 14px 14px 14px 4px; background: var(--surface); font-size: 15px; line-height: 1.5; white-space: pre-wrap; }
+.aichat__msg.is-user { align-self: flex-end; border-color: transparent; border-radius: 14px 14px 4px 14px; background: var(--action); color: var(--action-ink); }
+.aichat__thinking { display: flex; align-items: center; gap: var(--s-2); color: var(--muted); }
+.aichat__limit, .aichat__legal { margin: 0; padding: var(--s-2) var(--s-4); font-size: 12px; line-height: 1.4; color: var(--muted); text-align: center; }
+.aichat__legal a { margin-inline: 4px; color: var(--ink); }
+.aichat__form { display: flex; gap: var(--s-2); padding: var(--s-3) var(--s-4); border-top: 1px solid var(--line); }
+.aichat__form input { flex: 1; min-width: 0; height: 44px; padding: 0 var(--s-4); border: 1px solid var(--line-strong); border-radius: 999px; background: var(--surface); color: var(--ink); font: inherit; }
+.aichat__form input:focus-visible { outline: 2px solid var(--action); outline-offset: 1px; }
+.aichat__form button { background: var(--action); color: var(--action-ink); }
+.aichat__form button:disabled { opacity: .5; cursor: not-allowed; }
+@media (max-width: 639px) { .aichat { right: var(--s-4); bottom: calc(var(--bar, 0px) + var(--s-4)); } }
+@media (prefers-reduced-motion: no-preference) { .aichat__thinking svg { animation: aichat-spin 1s linear infinite; } @keyframes aichat-spin { to { transform: rotate(360deg); } } }

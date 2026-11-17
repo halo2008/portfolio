@@ -136,100 +136,57 @@ const AIChat: React.FC = () => {
   }, [input, loading, executeRecaptcha, detectedLanguage]);
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 font-sans">
+    <div className="aichat">
       {!isOpen && (
-        <button
-          onClick={toggleChat}
-          className="bg-primary hover:bg-cyan-400 text-darker p-4 rounded-full shadow-[0_0_20px_rgba(6,182,212,0.4)] transition-all hover:scale-110 flex items-center gap-2 font-bold"
-        >
-          <Bot size={24} />
-          <span className="hidden md:inline">{aiChat.trigger}</span>
+        <button type="button" onClick={toggleChat} className="aichat__trigger" aria-label={aiChat.trigger} title={aiChat.trigger}>
+          <Bot size={26} aria-hidden="true" />
         </button>
       )}
 
       {isOpen && (
-        <div className="bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl w-[90vw] md:w-[400px] h-[500px] flex flex-col overflow-hidden animate-fade-in-up">
-          {/* Header */}
-          <div className="bg-slate-800 p-4 flex justify-between items-center border-b border-slate-700">
-            <div className="flex items-center gap-2">
-              <div className="bg-primary/20 p-1.5 rounded-lg">
-                <Bot size={20} className="text-primary" />
-              </div>
-              <div>
-                <h3 className="text-white font-bold text-sm">{aiChat.title}</h3>
-                <p className="text-xs text-slate-400 flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
-                  {aiChat.status}
-                </p>
-              </div>
-            </div>
-            <button onClick={toggleChat} className="text-slate-400 hover:text-white transition-colors">
-              <X size={20} />
-            </button>
-          </div>
-
-          {/* Disclaimer Banner */}
-          <div className="bg-primary/10 border-b border-primary/20 px-4 py-2 flex items-center gap-2">
-            <BookOpen size={14} className="text-primary flex-shrink-0" />
-            <span className="text-xs text-primary font-medium">
-              {getDisclaimer(detectedLanguage)}
+        <section className="aichat__panel" role="dialog" aria-label={aiChat.title}>
+          <header className="aichat__head">
+            <span className="aichat__avatar"><Bot size={18} aria-hidden="true" /></span>
+            <span className="aichat__who">
+              <b>{aiChat.title}</b>
+              <span><i aria-hidden="true" />{aiChat.status}</span>
             </span>
-          </div>
+            <button type="button" onClick={toggleChat} className="aichat__close" aria-label={language === 'pl' ? 'Zamknij czat' : 'Close chat'}>
+              <X size={18} aria-hidden="true" />
+            </button>
+          </header>
 
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-900/95">
+          <p className="aichat__note"><BookOpen size={14} aria-hidden="true" />{getDisclaimer(detectedLanguage)}</p>
+
+          <div className="aichat__log" aria-live="polite">
             {messages.map((msg, idx) => (
-              <div
-                key={idx}
-                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-              >
-                <div
-                  className={`max-w-[80%] p-3 rounded-2xl text-sm leading-relaxed ${msg.role === 'user'
-                    ? 'bg-primary text-darker rounded-tr-none font-medium'
-                    : 'bg-slate-800 text-slate-200 rounded-tl-none border border-slate-700'
-                    }`}
-                >
-                  {msg.text}
-                </div>
-              </div>
+              <div key={idx} className={msg.role === 'user' ? 'aichat__msg is-user' : 'aichat__msg'}>{msg.text}</div>
             ))}
             {loading === LoadingState.LOADING && (
-              <div className="flex justify-start">
-                <div className="bg-slate-800 p-3 rounded-2xl rounded-tl-none border border-slate-700 flex items-center gap-2">
-                  <Loader2 size={16} className="animate-spin text-primary" />
-                  <span className="text-xs text-slate-400">{aiChat.thinking}</span>
-                </div>
-              </div>
+              <div className="aichat__msg aichat__thinking"><Loader2 size={14} aria-hidden="true" />{aiChat.thinking}</div>
             )}
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input */}
-          <div className="px-4 py-2 text-[10px] text-center border-t border-slate-700 bg-slate-800/50">
-            <p className="text-amber-500/40">{aiChat.rateLimitNote}</p>
-          </div>
-          <form onSubmit={handleSend} className="p-3 bg-slate-800 border-t border-slate-700 flex gap-2">
+          <p className="aichat__limit">{aiChat.rateLimitNote}</p>
+          <form onSubmit={handleSend} className="aichat__form">
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder={aiChat.placeholder}
-              className="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-primary transition-colors placeholder-slate-500"
+              aria-label={aiChat.placeholder}
             />
-            <button
-              type="submit"
-              disabled={loading === LoadingState.LOADING || !input.trim()}
-              className="bg-primary text-darker p-2 rounded-xl hover:bg-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            >
-              <Send size={18} />
+            <button type="submit" disabled={loading === LoadingState.LOADING || !input.trim()} aria-label={language === 'pl' ? 'Wyślij' : 'Send'}>
+              <Send size={16} aria-hidden="true" />
             </button>
           </form>
-          <div className="bg-slate-800 px-4 pb-2 text-[10px] text-slate-500 text-center">
+          <p className="aichat__legal">
             This site is protected by reCAPTCHA and the Google
-            <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer" className="text-slate-400 hover:text-primary mx-1">Privacy Policy</a> and
-            <a href="https://policies.google.com/terms" target="_blank" rel="noreferrer" className="text-slate-400 hover:text-primary mx-1">Terms of Service</a> apply.
-          </div>
-        </div>
+            <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer">Privacy Policy</a> and
+            <a href="https://policies.google.com/terms" target="_blank" rel="noreferrer">Terms of Service</a> apply.
+          </p>
+        </section>
       )}
     </div>
   );

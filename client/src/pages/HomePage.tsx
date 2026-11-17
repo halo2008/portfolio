@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import AIChat from '../components/AIChat';
 import CookieConsent from '../components/CookieConsent';
 import LeadForm from '../components/LeadForm';
 import OrderInbox from '../components/OrderInbox';
@@ -136,7 +137,7 @@ const HomePage: React.FC = () => {
                         <div className="nav__item"><a className="nav__link" href="#about">{nav.about}</a></div>
                     </nav>
                     <div className="nav__actions">
-                        <a className="nav__link" href={`/?lang=${nav.language.code}`} lang={nav.language.code} hrefLang={nav.language.code}>{nav.language.label}</a>
+                        <a className="nav__link" href={nav.language.code === 'en' ? '/en/' : '/'} lang={nav.language.code} hrefLang={nav.language.code}>{nav.language.label}</a>
                         <a className="btn btn--primary" href="#call">{hero.primary}</a>
                     </div>
                     <button className="nav__toggle" type="button" aria-expanded="false" aria-label={home.meta.menu}>
@@ -402,6 +403,7 @@ const HomePage: React.FC = () => {
                 language={language}
                 onClose={() => setPreview(null)}
             />
+            <AIChat />
             <CookieConsent />
         </>
     );
