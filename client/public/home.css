@@ -168,15 +168,6 @@ footer.closing > .wrap { height: auto; }
 .erp-mobile > .span-6 > .btn-row { margin-top: auto; padding-top: var(--s-6); }
 @media (min-width: 640px) and (min-height: 860px) { .preview__stage .trkm { --trkm-scale: .9; } }
 @media (max-width: 639px) { #services .frame--fill { height: 720px; } }
-.lemy-text { display: flex; flex-direction: column; align-self: stretch; }
-.lemy-text .rows { margin-top: var(--s-5); }
-.lemy-text > .btn-row { margin-top: auto; padding-top: var(--s-6); }
-.lemy-phones { display: flex; justify-content: flex-start; gap: var(--s-5); }
-.lemy-phones .trkm { --trkm-scale: .76; }
-@media (max-width: 1279px) { .lemy-phones .trkm { --trkm-scale: .62; } }
-@media (max-width: 1023px) { .lemy-phones { justify-content: flex-start; margin-top: var(--s-6); } }
-@media (max-width: 639px) { .lemy-phones > :first-child { display: none; } .lemy-phones .trkm { --trkm-scale: .8; } }
-@media (max-width: 359px) { .lemy-phones .trkm { --trkm-scale: .7; } }
 /* AI assistant (AIChat): floating button and panel in the page system */
 .aichat { position: fixed; right: var(--s-5); bottom: calc(var(--bar, 0px) + var(--s-5)); z-index: 20; font-family: var(--font-text); }
 .aichat__trigger { display: grid; place-items: center; width: 56px; height: 56px; padding: 0; border: 0; border-radius: 50%; background: var(--action); color: var(--action-ink); cursor: pointer; box-shadow: 0 10px 30px -10px rgb(0 0 0 / .6); transition: transform var(--dur, .2s) var(--ease, ease); }
