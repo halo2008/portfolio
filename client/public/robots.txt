@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /admin
+Disallow: /api/
+
+Sitemap: https://ks-infra.dev/sitemap.xml

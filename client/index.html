@@ -16,6 +16,10 @@
   <meta name="description"
     content="AI, które przygotowuje zamówienia z maili i odpowiada z dokumentów firmy, systemy w chmurze Google oraz wagi i kamery podłączone do ERP. Pierwsza rozmowa, 30 minut, jest bezpłatna." />
   <link rel="canonical" href="https://ks-infra.dev/" />
+  <link rel="alternate" hreflang="pl" href="https://ks-infra.dev/" />
+  <link rel="alternate" hreflang="en" href="https://ks-infra.dev/en/" />
+  <link rel="alternate" hreflang="x-default" href="https://ks-infra.dev/" />
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Person", "@id": "https://ks-infra.dev/#konrad", "name": "Konrad Sędkowski", "url": "https://ks-infra.dev/", "email": "mailto:konrad.sedkowski@letmework.ai", "sameAs": ["https://www.linkedin.com/in/konrad-sędkowski-329644176", "https://github.com/halo2008"], "worksFor": {"@id": "https://letmework.ai/#organization"}}, {"@type": "Organization", "@id": "https://letmework.ai/#organization", "name": "letmework.ai sp. z o.o.", "url": "https://letmework.ai/"}, {"@type": "ProfessionalService", "@id": "https://ks-infra.dev/#service", "name": "Konrad Sędkowski: automatyzacja i AI dla firm", "url": "https://ks-infra.dev/", "image": "https://ks-infra.dev/share.jpg", "provider": {"@id": "https://ks-infra.dev/#konrad"}, "areaServed": {"@type": "Country", "name": "Polska"}, "availableLanguage": ["pl", "en"], "serviceType": ["Automatyzacja pracy biurowej", "Asystent AI z dokumentów firmy", "Chmura Google dla systemów firmy", "Urządzenia podłączone do ERP", "Wdrożenie systemu ERP"]}]}</script>
   <meta name="site-kind" content="software" />
   <meta name="page-type" content="software" />
 
@@ -37,13 +41,17 @@
   <script>
     (function () {
       var root = document.documentElement;
-      if (location.pathname !== '/') { root.style.background = '#020617'; return; }
-      try { if (new URLSearchParams(location.search).get('lang') === 'en' || (!/[?&]lang=pl/.test(location.search) && localStorage.getItem('language') === 'en')) root.lang = 'en'; } catch (e) {}
+      var path = location.pathname, en = /^\/en\/?$/.test(path);
+      if (path !== '/' && !en) { root.style.background = '#020617'; document.write('<style>[data-prerender]{display:none}</style>'); return; }
+      var asked = new URLSearchParams(location.search).get('lang');
+      if (asked === 'en' && !en) { location.replace('/en/' + location.hash); return; }
+      if (asked === 'pl' && en) { location.replace('/' + location.hash); return; }
+      root.lang = en ? 'en' : 'pl';
       document.write('<meta name="theme-color" content="#0b1120"><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400..700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/assets/system.css"><link rel="stylesheet" href="/assets/ui/cards.css"><link rel="stylesheet" href="/assets/ui/base.css"><link rel="stylesheet" href="/assets/ui/window/fragment.css"><link rel="stylesheet" href="/assets/motion/motion.css"><link rel="stylesheet" href="/assets/backgrounds/backgrounds.css"><link rel="stylesheet" href="/assets/layout/layout.css"><link rel="stylesheet" href="/assets/icons/icon.css"><link rel="stylesheet" href="/mockups-erp.css"><link rel="stylesheet" href="/mockups-tracker.css"><link rel="stylesheet" href="/mockups-tracker-case.css"><link rel="stylesheet" href="/mockups-case.css"><link rel="stylesheet" href="/home.css"><script src="/assets/backgrounds/backgrounds.js"><\/script><link rel="modulepreload" href="/assets/moments/moments.js"><link rel="modulepreload" href="/assets/moments/lib.js"><link rel="modulepreload" href="/assets/moments/counter-rolls/moment.js"><link rel="modulepreload" href="/assets/moments/marquee-row/moment.js">');
     })();
   </script>
-  <script>if (location.pathname === '/') { document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700) }</script>
-  <script>if (location.pathname === '/') { document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500) }</script>
+  <script>if (/^\/(en\/?)?$/.test(location.pathname)) { document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700) }</script>
+  <script>if (/^\/(en\/?)?$/.test(location.pathname)) { document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500) }</script>
 </head>
 
 <body class="bg-darker text-slate-300 antialiased selection:bg-primary selection:text-white overflow-x-hidden">

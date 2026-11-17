@@ -265,16 +265,33 @@ const isLanguage = (value: string | null): value is Language => value === 'pl' |
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [language, setLanguageState] = React.useState<Language>(() => {
-    const requested = new URLSearchParams(window.location.search).get('lang');
+/** The home page has one URL per language: "/" is Polish, "/en/" is English. Other routes keep the saved choice. */
+export const homeLanguage = (path: string): Language | null => (/^\/en\/?$/.test(path) ? 'en' : path === '/' ? 'pl' : null);
+
+const readSaved = (): Language | null => {
+  try {
     const saved = localStorage.getItem('language');
-    const initial = isLanguage(requested) ? requested : isLanguage(saved) ? saved : 'pl';
+    return isLanguage(saved) ? saved : null;
+  } catch {
+    return null;
+  }
+};
+
+export const LanguageProvider: React.FC<{ children: ReactNode; initialLanguage?: Language }> = ({ children, initialLanguage }) => {
+  const [language, setLanguageState] = React.useState<Language>(() => {
+    if (initialLanguage) return initialLanguage;
+    const fromPath = homeLanguage(window.location.pathname);
+    if (fromPath) {
+      try { localStorage.setItem('language', fromPath); } catch { /* storage blocked: the path still decides */ }
+      return fromPath;
+    }
+    const requested = new URLSearchParams(window.location.search).get('lang');
     if (isLanguage(requested)) {
       localStorage.setItem('language', requested);
       window.history.replaceState(null, '', window.location.pathname + window.location.hash);
+      return requested;
     }
-    return initial;
+    return readSaved() ?? 'pl';
   });
 
   const setLanguage = (lang: Language) => {
@@ -284,6 +301,7 @@ export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }
 
   React.useEffect(() => {
     const handleStorageChange = () => {
+      if (homeLanguage(window.location.pathname)) return;
       const savedStorage = localStorage.getItem('language');
       if (savedStorage === 'en' || savedStorage === 'pl') {
         setLanguageState(savedStorage as Language);

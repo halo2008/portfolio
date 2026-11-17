@@ -21,6 +21,7 @@ const AppContent: React.FC = () => {
     <Router>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/en" element={<HomePage />} />
 
         {/* Lab Route with AuthProvider isolation */}
         <Route path="/lab" element={
