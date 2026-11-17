@@ -6,7 +6,10 @@ import remarkGfm from 'remark-gfm';
 const ChatMarkdown: React.FC<{ text: string }> = ({ text }) => (
     <Markdown
         remarkPlugins={[remarkGfm]}
-        components={{ a: ({ node: _node, ...props }) => <a {...props} target="_blank" rel="noopener noreferrer" /> }}
+        components={{
+            a: ({ node: _node, ...props }) =>
+                props.href?.startsWith('#') ? <a {...props} /> : <a {...props} target="_blank" rel="noopener noreferrer" />
+        }}
     >
         {text}
     </Markdown>

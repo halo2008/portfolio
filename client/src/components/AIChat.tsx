@@ -7,7 +7,9 @@ import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 const WS_URL = import.meta.env.VITE_WS_URL || '';
 // Loaded only when the chat opens, so the Markdown parser does not weigh on the page load.
-const ChatMarkdown = lazy(() => import('./ChatMarkdown'));
+// If the chunk cannot load (e.g. an old tab after a deploy), the answer stays readable as plain text.
+const PlainText: React.FC<{ text: string }> = ({ text }) => <span className="aichat__plain">{text}</span>;
+const ChatMarkdown = lazy(() => import('./ChatMarkdown').catch(() => ({ default: PlainText })));
 
 const AIChat: React.FC = () => {
   const { content, language } = useLanguage();

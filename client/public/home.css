@@ -224,3 +224,4 @@ footer.closing > .wrap { height: auto; }
 .aichat__md blockquote { padding-left: var(--s-3); border-left: 2px solid var(--line-strong); color: var(--muted); }
 .aichat__md table { display: block; overflow-x: auto; border-collapse: collapse; font-size: 13px; }
 .aichat__md :is(th, td) { padding: 4px 8px; border: 1px solid var(--line); text-align: left; }
+.aichat__plain { white-space: pre-wrap; }
