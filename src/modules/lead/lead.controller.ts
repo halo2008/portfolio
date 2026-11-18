@@ -5,7 +5,7 @@ import { CaptchaGuard } from '../chat/infrastructure/guards/captcha.guard';
 import { SlackService } from '../slack/slack.service';
 import { formatLeadMessage } from './lead-message';
 
-class LeadRequestDto {
+export class LeadRequestDto {
     @IsString()
     @MinLength(2)
     @MaxLength(100)
@@ -32,6 +32,37 @@ class LeadRequestDto {
     @IsOptional()
     @IsString()
     captcha?: string;
+
+    // Where the visitor came from (utm_* / ref / referrer), for crediting the lead.
+    @IsOptional()
+    @IsString()
+    @MaxLength(200)
+    source?: string;
+
+    @IsOptional()
+    @IsString()
+    @MaxLength(200)
+    medium?: string;
+
+    @IsOptional()
+    @IsString()
+    @MaxLength(200)
+    campaign?: string;
+
+    @IsOptional()
+    @IsString()
+    @MaxLength(200)
+    content?: string;
+
+    @IsOptional()
+    @IsString()
+    @MaxLength(200)
+    landing?: string;
+
+    @IsOptional()
+    @IsString()
+    @MaxLength(200)
+    referrer?: string;
 }
 
 @Controller('lead')
@@ -50,7 +81,7 @@ export class LeadController {
             this.logger.error({ msg: 'Lead notification not delivered', service: body.service });
             throw new ServiceUnavailableException('Lead could not be delivered');
         }
-        this.logger.log({ msg: 'Lead delivered', service: body.service, language: body.language });
+        this.logger.log({ msg: 'Lead delivered', service: body.service, language: body.language, source: body.source ?? 'direct', campaign: body.campaign });
         return { accepted: true };
     }
 }

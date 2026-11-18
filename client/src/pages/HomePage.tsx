@@ -9,6 +9,7 @@ import { ERP_MOCKUP } from '../components/mockups/erpMockupData';
 import TrackerPhone from '../components/mockups/TrackerMockups';
 import { TRACKER_MOCKUP } from '../components/mockups/trackerMockupData';
 import { useLanguage } from '../LanguageContext';
+import { withSource } from '../lib/attribution';
 import { Photo, PhotoRow } from '../types';
 
 const KIT_SCRIPTS = ['/assets/system.js', '/assets/motion/motion.js', '/assets/layout/layout.js'];
@@ -252,7 +253,7 @@ const HomePage: React.FC = () => {
                             <div className="section-head">
                                 <h2 id="erp-h">{product.title}</h2>
                                 <p>{product.lead}</p>
-                                <a className="link" href="/nakladka-subiekt-gt/">{product.subiekt}</a>
+                                <a className="link" href={withSource('/nakladka-subiekt-gt/')}>{product.subiekt}</a>
                             </div>
                             <div className="tabs" role="tablist" aria-label={product.title}>
                                 {product.tabs.map((tab, index) => (
@@ -338,7 +339,7 @@ const HomePage: React.FC = () => {
                             <ul>
                                 <li><a href="#services">{nav.services}</a></li>
                                 <li><a href="#work">{nav.work}</a></li>
-                                <li><a href="/nakladka-subiekt-gt/">{product.subiekt}</a></li>
+                                <li><a href={withSource('/nakladka-subiekt-gt/')}>{product.subiekt}</a></li>
                             </ul>
                         </div>
                         <div className="span-2 footer__col">
