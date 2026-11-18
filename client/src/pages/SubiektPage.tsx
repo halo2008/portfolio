@@ -70,11 +70,11 @@ const SubiektPage: React.FC = () => {
             <header className="nav">
                 <div className="wrap nav__bar">
                     <a className="skip-link" href="#top">Przejdź do treści</a>
-                    <a className="nav__logo" href="/">
+                    <a className="nav__logo" href={withSource('/')}>
                         <span className="mark mark--initial" aria-hidden="true">{name.charAt(0)}</span>{name}
                     </a>
                     <nav className="nav__links" aria-label="Główna">
-                        <div className="nav__item"><a className="nav__link" href="/">{page.home}</a></div>
+                        <div className="nav__item"><a className="nav__link" href={withSource('/')}>{page.home}</a></div>
                         <div className="nav__item"><a className="nav__link" href="#wymagania">{page.hero.secondary}</a></div>
                     </nav>
                     <div className="nav__actions">
@@ -152,7 +152,7 @@ const SubiektPage: React.FC = () => {
                     </div>
                     <div className="footer__legal">
                         <span>&copy; {new Date().getFullYear()} {name}</span>
-                        <a href="/">{page.home}</a>
+                        <a href={withSource('/')}>{page.home}</a>
                     </div>
                 </div>
             </footer>

@@ -137,7 +137,7 @@ const HomePage: React.FC = () => {
                         <div className="nav__item"><a className="nav__link" href="#erp">{nav.product}</a></div>
                     </nav>
                     <div className="nav__actions">
-                        <a className="nav__link" href={nav.language.code === 'en' ? '/en/' : '/'} lang={nav.language.code} hrefLang={nav.language.code}>{nav.language.label}</a>
+                        <a className="nav__link" href={withSource(nav.language.code === 'en' ? '/en/' : '/')} lang={nav.language.code} hrefLang={nav.language.code}>{nav.language.label}</a>
                         <a className="btn btn--primary" href="#call">{hero.primary}</a>
                     </div>
                     <button className="nav__toggle" type="button" aria-expanded="false" aria-label={home.meta.menu}>

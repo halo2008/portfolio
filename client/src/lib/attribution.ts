@@ -34,6 +34,7 @@ const consented = (): boolean => {
 };
 
 const readStored = (): Attribution | null => {
+    if (!consented()) return null;
     try {
         const raw = sessionStorage.getItem(STORAGE_KEY);
         return raw ? (JSON.parse(raw) as Attribution) : null;
@@ -49,6 +50,15 @@ export const persistAttribution = (): void => {
         sessionStorage.setItem(STORAGE_KEY, JSON.stringify(current));
     } catch {
         /* storage blocked: the attribution still goes with a form sent from this page */
+    }
+};
+
+/** Drops the saved attribution; call when the visitor declines statistics. */
+export const forgetAttribution = (): void => {
+    try {
+        sessionStorage.removeItem(STORAGE_KEY);
+    } catch {
+        /* nothing saved */
     }
 };
 

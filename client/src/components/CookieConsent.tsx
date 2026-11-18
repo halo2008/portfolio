@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLanguage } from '../LanguageContext';
-import { persistAttribution } from '../lib/attribution';
+import { forgetAttribution, persistAttribution } from '../lib/attribution';
 
 const STORAGE_KEY = 'analytics-consent';
 
@@ -51,6 +51,7 @@ const CookieConsent: React.FC = () => {
     const decide = (next: Decision) => {
         persistDecision(next);
         if (next === 'granted') persistAttribution();
+        else forgetAttribution();
         setDecision(next);
     };
 
