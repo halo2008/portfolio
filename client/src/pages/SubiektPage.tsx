@@ -3,6 +3,7 @@ import AIChat from '../components/AIChat';
 import CookieConsent from '../components/CookieConsent';
 import { SUBIEKT_PAGE } from '../data/subiekt';
 import { useLanguage } from '../LanguageContext';
+import { withSource } from '../lib/attribution';
 import type { Photo } from '../types';
 
 const KIT_SCRIPTS = ['/assets/system.js', '/assets/motion/motion.js', '/assets/layout/layout.js'];
@@ -69,15 +70,15 @@ const SubiektPage: React.FC = () => {
             <header className="nav">
                 <div className="wrap nav__bar">
                     <a className="skip-link" href="#top">Przejdź do treści</a>
-                    <a className="nav__logo" href="/">
+                    <a className="nav__logo" href={withSource('/')}>
                         <span className="mark mark--initial" aria-hidden="true">{name.charAt(0)}</span>{name}
                     </a>
                     <nav className="nav__links" aria-label="Główna">
-                        <div className="nav__item"><a className="nav__link" href="/">{page.home}</a></div>
+                        <div className="nav__item"><a className="nav__link" href={withSource('/')}>{page.home}</a></div>
                         <div className="nav__item"><a className="nav__link" href="#wymagania">{page.hero.secondary}</a></div>
                     </nav>
                     <div className="nav__actions">
-                        <a className="btn btn--primary" href="/#call">{page.hero.primary}</a>
+                        <a className="btn btn--primary" href={withSource('/#call')}>{page.hero.primary}</a>
                     </div>
                 </div>
             </header>
@@ -90,7 +91,7 @@ const SubiektPage: React.FC = () => {
                                 <h1 id="sub-hero-h">{page.hero.title}</h1>
                                 <p className="hero__lead">{page.hero.lead}</p>
                                 <div className="btn-row">
-                                    <a className="btn btn--primary" href="/#call">{page.hero.primary}</a>
+                                    <a className="btn btn--primary" href={withSource('/#call')}>{page.hero.primary}</a>
                                     <a className="btn btn--secondary" href="#wymagania">{page.hero.secondary}</a>
                                 </div>
                             </div>
@@ -133,7 +134,7 @@ const SubiektPage: React.FC = () => {
                             </div>
                             <Rows items={page.requirements.items} />
                             <div className="btn-row">
-                                <a className="btn btn--primary" href="/#call">{page.requirements.cta}</a>
+                                <a className="btn btn--primary" href={withSource('/#call')}>{page.requirements.cta}</a>
                             </div>
                         </div>
                         <div className="frame frame--photo frame--fill span-6 start-7"><Picture photo={page.requirements.photo} /></div>
@@ -151,7 +152,7 @@ const SubiektPage: React.FC = () => {
                     </div>
                     <div className="footer__legal">
                         <span>&copy; {new Date().getFullYear()} {name}</span>
-                        <a href="/">{page.home}</a>
+                        <a href={withSource('/')}>{page.home}</a>
                     </div>
                 </div>
             </footer>

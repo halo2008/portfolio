@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { useLanguage } from '../LanguageContext';
+import { getAttribution } from '../lib/attribution';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 const CAPTCHA_TIMEOUT_MS = 10000;
@@ -34,6 +35,7 @@ const LeadForm: React.FC = () => {
     if (!formElement.checkValidity()) return;
     const data = new FormData(formElement);
     const service = String(data.get('service') || '');
+    const attribution = getAttribution();
     inFlight.current = true;
     setSending(true);
     say(form.sending);
@@ -53,11 +55,12 @@ const LeadForm: React.FC = () => {
           service: service || undefined,
           language,
           captcha,
+          ...attribution,
         }),
       });
       if (!response.ok) throw new Error(`Lead request failed: ${response.status}`);
 
-      window.gtag?.('event', 'generate_lead', { service: service || 'other' });
+      window.gtag?.('event', 'generate_lead', { service: service || 'other', lead_source: attribution.source ?? 'direct', lead_campaign: attribution.campaign ?? '' });
       formElement.reset();
       say(form.sent);
     } catch {
